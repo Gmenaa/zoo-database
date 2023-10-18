@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--- <title>Sign Up • Zoo</title> -->
+    <title>Login • Zoo</title>
+    <!--? linking signup.html with signup.css for styling -->
+    <link rel="stylesheet" href="signup.css">
+</head>
+<body>
+    <main class="container forms">
+        <div class="form login">
+            <div class="content">
+                <header class="login-header">Login</header>
+                <!-- the form to input login information --> 
+                <!--? action='#' means that the form will be submitted to the current URL, seemless transition from login <-> sign up -->
+                <form action="#" method="post"> 
+                    <div class="field input-field">
+                        <input type="email" placeholder="Email" class="input" required>
+                    </div>
+                    <div class="field input-field">
+                        <input type="password" placeholder="Password" class="input" required>
+                    </div>
+                    <div class="form-link">
+                        <a href='#' class="forgot">Forgot Password?</a> 
+                    </div>
+                    <div class="field button-field">
+                        <button>Login</button>
+                    </div>
+                    <!--TODO: use js to alternate seemlessly from login <-> sign up -->
+                    <div class="form-link">
+                        <span>Already Have an Account? <a href="#" class="signup-link">Sign up</a></span> 
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+    </main>
+    <!--TODO: add a footer maybe -->
+</body>
+</html>
