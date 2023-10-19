@@ -26,6 +26,8 @@
     align-items: center;
     justify-content: center;
     background-color: var(--bg);
+
+    column-gap: 30px; /*! DELETE THIS */
 }
 
 .form {
@@ -36,7 +38,7 @@
     background-color: var(--bg-secondary);
 }
 
-.login-header {
+.content > header {
     font-size: 28px;
     font-weight: 600;
     color: var(--text-primary);
@@ -73,7 +75,6 @@ form > .field {
 }
 
 .field > button:hover {
-    background-color: var(--button-primary);
     cursor: pointer;
     transform: scale(1.05)
 }
@@ -96,4 +97,42 @@ form > .field {
 
 .form-link a:hover {
     text-decoration: underline;
+}
+
+.form.emp-login,
+.form.signup {
+    display: none;
+}
+
+.forms.show-signup 
+.form.signup {
+    display: block;
+}
+.forms.show-signup 
+.form.login {
+    display: none;
+}
+
+
+.forms.show-login 
+.form.login {
+    display: block;
+}
+.forms.show-login 
+.form.signup {
+    display: none;
+}
+
+.forms.show-empLogin 
+.form.emp-login {
+    display: block;
+}
+.forms.show-empLogin 
+.form.signup {
+    display: none;
+}
+
+.forms.show-empLogin  
+.form.login {
+    display: none;
 }

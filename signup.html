@@ -3,19 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--- <title>Sign Up • Zoo</title> -->
-    <title>Login • Zoo</title>
+    <title>Zoo</title>
     <!--? linking signup.html with signup.css for styling -->
     <link rel="stylesheet" href="signup.css">
 </head>
 <body>
     <main class="container forms">
+        <!--* the NON-GUEST login page (DBAs, Managers, Veternarians, etc...) -->
+        <div class="form emp-login">
+            <div class="content">
+                <header>Login</header>
+                <!-- the form to input NON-GUEST LOGIN information --> 
+                <!--? action='#' means that the form will be submitted to the current URL, seemless transition from login <-> sign up -->
+                <form action="#" > 
+                    <div class="field input-field">
+                        <input type="number" placeholder="ID Number" class="input" required>
+                    </div>
+                    <div class="field input-field">
+                        <input type="password" placeholder="Password" class="input" required>
+                    </div>
+                    <div class="form-link">
+                        <a href='#' class="forgot">Forgot Password?</a> 
+                    </div>
+                    <div class="field button-field">
+                        <button>Login</button>
+                    </div>
+                    <div class="form-link">
+                        <span>Guest Login: <a href="#" class="link login-link">Login</a></span> 
+                    </div>
+                    
+                </form>
+            </div>
+        </div>
+
+        <!--* the GUEST login page -->
+        <!--TODO: ADD name and address inputs -->
         <div class="form login">
             <div class="content">
-                <header class="login-header">Login</header>
-                <!-- the form to input login information --> 
-                <!--? action='#' means that the form will be submitted to the current URL, seemless transition from login <-> sign up -->
-                <form action="#" method="post"> 
+                <header>Login</header>
+                <!-- the form to input GUEST LOGIN information --> 
+                <form action="#" > 
                     <div class="field input-field">
                         <input type="email" placeholder="Email" class="input" required>
                     </div>
@@ -28,15 +55,46 @@
                     <div class="field button-field">
                         <button>Login</button>
                     </div>
-                    <!--TODO: use js to alternate seemlessly from login <-> sign up -->
                     <div class="form-link">
-                        <span>Already Have an Account? <a href="#" class="signup-link">Sign up</a></span> 
+                        <span>Don't Have an Account? <a href="#" class="link signup-link">Sign up</a></span> 
+                    </div>
+                    <div class="form-link">
+                        <span>Employee Login: <a href="#" class="link emp-login-link">Login</a></span> <!--! EMPLOYEE LOGIN: emp-login-link-->
                     </div>
                 </form>
             </div>
         </div>
-        
+
+        <!--* the sign up page for GUEST users -->
+        <div class="form signup">
+            <div class="content">
+                <header>Sign Up</header>
+                <!-- the form to input SIGN UP information --> 
+                <form action="#"> 
+                    <div class="field input-field">
+                        <input type="text" placeholder="Full Name" class="input" required>
+                    </div>
+                    <div class="field input-field">
+                        <input type="email" placeholder="Email" class="input" required>
+                    </div>
+                    <div class="field input-field">
+                        <input type="tel" placeholder="Phone Number" class="input" required>
+                    </div>
+                    <div class="field input-field">
+                        <input type="password" placeholder="Password" class="input" required>
+                    </div>
+                    <div class="field button-field">
+                        <button>Sign Up</button>
+                    </div>
+                    <div class="form-link">
+                        <span>Already Have an Account? <a href="#" class="link login-link">Login</a></span> 
+                    </div>
+                </form>
+            </div>
+        </div>
     </main>
-    <!--TODO: add a footer maybe -->
+
+    <!--? Javascript -->
+    <script src="script.js"></script>
 </body>
 </html>
