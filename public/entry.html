@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zoo</title>
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.png">
     <!--? linking signup.html with signup.css for styling -->
-    <link rel="stylesheet" href="signup.css">
+    <link rel="stylesheet" href="../src/entry.css">
 </head>
 <body>
     <main class="container forms">
@@ -17,7 +18,7 @@
                 <!--? action='#' means that the form will be submitted to the current URL, seemless transition from login <-> sign up -->
                 <form action="#" > 
                     <div class="field input-field">
-                        <input type="number" placeholder="ID Number" class="input" required>
+                        <input type="text" placeholder="ID Number" class="input" required>  <!--! keep type as 'text', 'number' may cause issues  -->
                     </div>
                     <div class="field input-field">
                         <input type="password" placeholder="Password" class="input" required>
@@ -31,13 +32,11 @@
                     <div class="form-link">
                         <span>Guest Login: <a href="#" class="link login-link">Login</a></span> 
                     </div>
-                    
                 </form>
             </div>
         </div>
 
         <!--* the GUEST login page -->
-        <!--TODO: ADD name and address inputs -->
         <div class="form login">
             <div class="content">
                 <header>Login</header>
@@ -80,6 +79,7 @@
                     <div class="field input-field">
                         <input type="tel" placeholder="Phone Number" class="input" required>
                     </div>
+                    <!--TODO: maybe add password strength validation  -->
                     <div class="field input-field">
                         <input type="password" placeholder="Password" class="input" required>
                     </div>
@@ -95,6 +95,6 @@
     </main>
 
     <!--? Javascript -->
-    <script src="script.js"></script>
+    <script src="../src/entry.js"></script>
 </body>
 </html>
