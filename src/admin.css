@@ -3,11 +3,10 @@
 :root {
     --text-primary: #000;
     --text-secondary: #fff;
-    --transition-speed: 1s;
-    --sidebar-color: #F5F5F5;
-    --sidebar-width: clamp(212px, 11vw, 250px); /*? clamp(min, ideal, max) */
-    --transition-notSidebar: margin-left 0.4s ease-in;
+    --bg-primary: #F5F5F5;
+    --sidebar-width: clamp(212px, 11vw, 250px);
     --transition-sidebar: width 0.4s ease-in;
+    --main-content-margin: clamp(250px, 5vw, 50px); 
 }
 
 * {
@@ -18,23 +17,19 @@
 }
 
 body {
+    background-color: var(--bg-primary);
     width: 100vw;
     height: 100vh;
-    display: grid;
-    grid-template-areas: /* divide page into grids */
-        "sidebar content"
-        "sidebar content";
-    grid-template-rows: 0.6fr 4fr; /* ≈20% of screen ≈80%* of screen */
-    grid-template-columns: 5rem 1fr;
 }
 
+/*! start of the sidebar section  */
 .sidebar {
-    background-color: var(--sidebar-color);
     position: fixed;
     transition: var(--transition-sidebar);
     overflow: hidden;
     height: 100vh;
     width: var(--sidebar-width);
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
 }
 
 .sidebar > .header {
@@ -44,4 +39,21 @@ body {
 
 .sidebar > .subsection {
     padding-left: 30px;
+}
+
+/*! start of main content page  */
+.main-content {
+    margin-left: var(--main-content-margin);
+    padding-top: 15px;
+}
+
+h2 {
+    padding-bottom: 15px;
+}
+
+.report-form,
+.modify-form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
 }
