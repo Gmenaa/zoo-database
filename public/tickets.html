@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoo • Tickets</title>
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.png">
+    <link rel="stylesheet" href="../src/tickets.css">
+</head>
+<body>
+  <!--TODO: add a header  -->
+  <header>
+
+  </header>
+
+  <table class="ticket-table">
+      <thead>
+        <tr>
+          <th>Ticket Group</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Regular (Ages 13-64)</td>
+          <td>$18.00</td>
+        </tr>
+        <tr>
+          <td>Child (Ages 3-12)</td>
+          <td>$14.00</td>
+        </tr>
+        <tr>
+          <td>Elder (Ages 65+)</td>
+          <td>$11.50</td>
+        </tr>
+        <tr>
+          <td>Infant (Ages 2 & Under)</td>
+          <td>Free</td>
+        </tr>
+        <tr>
+          <td>Local Student</td>
+          <td>Free</td>
+        </tr>
+      </tbody>
+  </table>
+  <h3>Select Tickets</h3>
+  <form class="book-tickets" action="">
+    <div class="form-field">
+      <!--TODO: autofill with users name  -->
+      <label for="name">First name:</label>
+      <input type="text" id="name" name="name">
+    </div>
+    <div class="form-field">
+      <label for="regular">Regular: </label>
+      <input type="number" id="regular" name="regular">
+    </div>
+    <div class="form-field">
+      <label for="child">Child: </label>
+      <input type="number" id="child" name="child">
+    </div>
+    <div class="form-field">
+      <label for="elder">Elder: </label>
+      <input type="number" id="elder" name="elder">
+    </div>
+    <div class="form-field">
+      <label for="infant">Infant: </label>
+      <input type="number" id="infant" name="infant">
+    </div>
+    <div class="form-field">
+      <label for="student">Student: </label>
+      <input type="number" id="student" name="student ">
+    </div>
+    <div class="form-field">
+      <input type="submit" value="Book!">
+    </div>
+  </form>
+  
+  <!--TODO: add a footer -->
+  <footer> 
+
+  </footer>
+</body>
+</html>
