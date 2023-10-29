@@ -1,7 +1,7 @@
 require('dotenv').config();
 const mysql = require('mysql2');
 
-const query1 = `INSERT INTO enclosures VALUES (1876, 'Chilly Waddle World', 'penguin', 8, 'open'}`;
+//const query1 = `INSERT INTO enclosures VALUES (1876, 'Chilly Waddle World', 'penguin', 8, 'open'}`;
 
 async function run() {
     const connection = await mysql.createConnection({
@@ -12,7 +12,7 @@ async function run() {
     });
 
     try {
-        const query1 = `INSERT INTO enclosures VALUES (876, 'Chilly Waddle World', 'penguin', 8, 'open')`;
+        //const query1 = `INSERT INTO enclosures VALUES (876, 'Chilly Waddle World', 'penguin', 8, 'open')`;
         await connection.execute(query1);
         console.log('Insertion successful.');
     } catch (error) {

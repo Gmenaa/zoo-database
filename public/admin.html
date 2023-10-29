@@ -91,25 +91,41 @@
         <div id="revenue-report" style="display: none;">
             <h2>Revenue Report</h2>
             <form id="main-revenue-report-form" class="report-form" action="">
-                <div class="outlet-info">
+                <fieldset class="outlet-info">
                     <h4>Outlet information</h4>
-                    <select>
-                        <option value="1">Select All</option>
-                        <option value="2">Outlet 1 (24992)</option>
-                        <option value="3">Outlet 2 (37421)</option>
-                        <option value="4">Outlet 3 (29831)</option>
-                    </select>
-                </div>
+
+                    <div>
+                        <input type="checkbox" id="safari-treasures" name="outlet" value="safari-treasures"/>
+                        <label for="safari-treasures">Safari Treasures Emporium</label>
+                    </div>
+                    
+                    <div>
+                        <input type="checkbox" id="trinkets-charms" name="outlet" value="trinkets-charms" />
+                        <label for="trinkets-charms">Trinkets and Charms</label>
+                    </div>
+                    
+                    <div>
+                        <input type="checkbox" id="creature-cuisine" name="outlet" value="creature-cuisine" />
+                        <label for="creature-cuisine">Creature Cuisine Corner</label>
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="lions-lollipops" name="outlet" value="lions-lollipop" />
+                        <label for="lions-lollipop">Lions Lollipops and Sweets</label>
+                    </div>     
+                </fieldset>
+             
 
                 <div class="date-info">
                     <h4>Revenue date from</h4>
-                    <input id="revenue-start-date" type="date">
+                    <input id="revenue-start-date" type="date" name="startdate">
                     <h4>Revenue date to</h4>
-                    <input id="revenue-end-date" type="date">
+                    <input id="revenue-end-date" type="date" name="enddate">
                 </div>
 
+
                 <div class="generate-report">
-                    <button>View Report</button>
+                    <input type="submit" onclick="generate_revenue_report()">
                 </div>
             </form>
         </div>
@@ -492,5 +508,7 @@
     </main>
 
     <script src="../src/admin.js"></script>
+
+    <script src="../revenuetest.js"></script>
 </body>
 </html>
