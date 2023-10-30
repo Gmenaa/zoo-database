@@ -17,7 +17,7 @@
 
 .hero {
     position: relative;
-    background: url(../assets/landing-hero.jpeg) no-repeat center;  /*! backgorund img could change, not final */
+    background: url(../landing-hero.jpeg) no-repeat center;  /*! backgorund img could change, not final */
     background-size: cover;
     height: 600px;
     overflow: hidden;
