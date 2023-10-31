@@ -13,18 +13,19 @@
         <div class="form emp-login">
             <div class="content">
                 <header>Login</header>
-                <form class="emp-login-form"> 
-                    <div class="field input-field">
-                        <input type="text" placeholder="ID Number" class="input" required> 
+                <!--! add appropriate action=""  -->
+                <form action="" method="post"> 
+                    <div  class="field input-field">
+                        <input id="emplogin_idnum" type="text" placeholder="ID Number" class="input" required> 
                     </div>
                     <div class="field input-field">
-                        <input type="password" placeholder="Password" class="input" required>
+                        <input id="emplogin_pass" type="password" placeholder="Password" class="input" required>
                     </div>
                     <div class="form-link">
                         <a href='/passwordreset' class="forgot">Forgot Password?</a> 
                     </div>
                     <div class="field button-field">
-                        <button>Login</button>
+                        <button type="submit">Login</button>
                     </div>
                     <div class="form-link">
                         <span>Guest Login: <a href="/" class="link login-link">Login</a></span> 

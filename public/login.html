@@ -12,25 +12,25 @@
         <div class="form login">
             <div class="content">
                 <header class="login-header">Login</header>
-                <form action="login" method="post"> 
+                <!--! add appropriate action=""  -->
+                <form action="" method="post"> 
                     <div class="field input-field">
-                        <input type="email" placeholder="Email" class="input" required>
+                        <input id="login_email" type="email" placeholder="Email" class="input" required>
                     </div>
                     <div class="field input-field">
-                        <input type="password" placeholder="Password" class="input" required>
+                        <input id="login_pass" type="password" placeholder="Password" class="input" required>
                     </div>
                     <div class="form-link">
                         <a href='/passwordreset' class="forgot">Forgot Password?</a> 
                     </div>
                     <div class="field button-field">
                         <form action ="login">
-                            <button type ="submit"> Login</button>
+                            <button onclick="getInput()" type ="submit">Login</button>
                         </form>
                     </div>
                     <div class="form-link">
                         <span>Employee Login: <a href="/emplogin" class="link emp-login-link">Login</a></span>
                     </div>
-                    <!--TODO: use js to alternate seemlessly from login <-> sign up -->
                     <div class="form-link">
                         <span>Already Have an Account? <a href="/register" class="signup-link">Sign up</a></span> 
                     </div>
@@ -38,6 +38,20 @@
             </div>
         </div>
         
+
+        <script>
+            function getInput() {
+                // Get the input element by its ID
+                alert("i am here")
+                let email = document.getElementById("useremail").value;
+                let password = document.getElementById("userpass").value;
+    
+                // Log the input value to the console
+                alert("user email: " + email);
+                alert("user password: " + password);
+            }
+        </script>
+
     </main>
 </body>
 </html>

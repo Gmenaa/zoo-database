@@ -13,21 +13,27 @@
             <div class="content">
                 <header>Sign Up</header>
                 <!-- the form to input SIGN UP information --> 
-                <form action="successful"> 
+                <form action="successful" method="post"> 
                     <div class="field input-field">
-                        <input type="text" placeholder="Full Name" class="input" required>
+                        <input id="register_firstname" type="text" placeholder="First Name" class="input" required>
                     </div>
                     <div class="field input-field">
-                        <input type="email" placeholder="Email" class="input" required>
+                        <input id="register_middlename" type="text" placeholder="Middle Name" class="input">
                     </div>
                     <div class="field input-field">
-                        <input type="tel" placeholder="Phone Number" class="input" required>
+                        <input id="register_lastname" type="text" placeholder="Last Name" class="input" required>
                     </div>
                     <div class="field input-field">
-                        <input type="password" placeholder="Password" class="input" required>
+                        <input id="register_email" type="email" placeholder="Email" class="input" required>
+                    </div>
+                    <div class="field input-field">
+                        <input id="register_phone" type="tel" placeholder="Phone Number" class="input" required>
+                    </div>
+                    <div class="field input-field">
+                        <input id="register_password" type="password" placeholder="Password" class="input" required>
                     </div>
                     <div class="field button-field">
-                        <button>Sign Up</button>
+                        <button type="submit">Sign Up</button>
                     </div>
                     <div class="form-link">
                         <span>Already Have an Account? <a href="/" class="link login-link">Login</a></span> 
