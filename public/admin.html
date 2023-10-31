@@ -10,69 +10,44 @@
 <body>
     <!--? sidebar (admin options) -->
     <aside class="sidebar">
-        <h1 class="header search-header">Search</h1>
-        <div class="subsection search-subsection">
-            <form id="sidebar-search" action="#">
-                <!--? Required 'Data queries' -->
-                <!--! ATLEAST 3, DONT HAVE TO DO ALL OF THESE, JUST OPTIONS -->
-                <!--TODO: add form to limit down the search to one attribute or set of attributes, generate general data on attribute/attributes -->
-                <div class="sidebar-link"> 
-                    <a href='#' onclick="changeContent('search-animals')">Animals</a>  
-                </div> 
-                <div class="sidebar-link"> 
-                    <a href='#' onclick="changeContent('search-enclosures')"">Enclosures</a>  
-                </div> 
-                <div class="sidebar-link"> 
-                    <a href='#' onclick="changeContent('search-employees')">Employees</a>  
-                </div> 
-                <div class="sidebar-link"> 
-                    <a href='#' onclick="changeContent('search-outlets')">Outlets</a>  
-                </div> 
-            </form>
-        </div>
+
         <h1 class="header reports-header">Reports</h1>
         <div class="subsection reports-subsection">
-            <form id="sidebar-report" action="#">
-                <!--? Required 'Data queries' -->
-                <!--! ATLEAST 3, DONT HAVE TO DO ALL OF THESE, JUST OPTIONS -->
-                <!--TODO: create form for atleast three reports to use for backend inputs -->
-                <div class="sidebar-link"> 
-                    <a href='#' onclick="changeContent('revenue-report')">Revenue Reports</a>  
-                </div> 
-                <div class="sidebar-link"> 
-                    <a href='#' onclick="changeContent('employee-report')">Employee Reports</a>  
-                </div> 
-                <div class="sidebar-link"> 
-                    <a href='#' onclick="changeContent('health-report')">Health Reports</a>  
-                </div> 
-                <div class="sidebar-link"> 
-                    <a href='#' onclick="changeContent('donor-report')">Donor Reports</a>  
-                </div> 
-            </form>
+            
+            <div class="sidebar-link"> 
+                <a href='./admin_revenue_rep.html'>Revenue Reports</a>  
+            </div> 
+            <div class="sidebar-link"> 
+                <a href='./admin_employee_rep.html'>Employee Reports</a>  
+            </div> 
+            <div class="sidebar-link"> 
+                <a href='./admin_health_rep.html'>Health Reports</a>  
+            </div> 
+            <div class="sidebar-link"> 
+                <a href='./admin_donor_rep.html'>Donor Reports</a>  
+            </div> 
+            
         </div>
+
+
         <h1 class="header admin-header">Administration</h1>
         <div class="subsection admin-subsection">
-            <!--? Required 'Data entry forms' -->
-            <!--! no specified amount, DONT HAVE TO DO ALL OF THESE, JUST OPTIONS -->
-            <!--TODO: create form to INSERT, DELETE, MODIFY DATA for backend inputs-->
 
-            <form id="sidebar-modify" action="#">
-                <div class="sidebar-link"> 
-                    <a href='#' onclick="changeContent('modify-animal')">Modify Animal</a>  
-                </div> 
-                <div class="sidebar-link"> 
-                    <a href='#' onclick="changeContent('modify-enclosure')">Modify Enclosure</a>  
-                </div> 
-                <div class="sidebar-link"> 
-                    <a href='#' onclick="changeContent('modify-employee')">Modify Employee</a>  
-                </div> 
-                <div class="sidebar-link"> 
-                    <a href='#' onclick="changeContent('modify-outlet')">Modify Outlet</a>  
-                </div> 
-                <div class="sidebar-link">
-                    <a href="#" onclick="changeContent('modify-health')">Modify Health</a>
-                </div>
-            </form>
+            <!--! since triggers rely on animal insertions and we mmust present triggers live, this is priority others are not! -->
+            <div class="sidebar-link"> 
+                <a href='./admin_mod_animal.html'>Modify Animal</a>  
+            </div> 
+            <!--  
+            <div class="sidebar-link"> 
+                <a href='./admin_mod_enclosure.html'>Modify Enclosure</a>  
+            </div> 
+            <div class="sidebar-link"> 
+                <a href='./admin_mod_employee.html'>Modify Employee</a>  
+            </div> 
+            <div class="sidebar-link"> 
+                <a href='#'>Modify Outlet</a>  
+            </div> 
+            -->
         </div>
 
         <!-- Need a space here (::nth child selector) -->
@@ -87,49 +62,6 @@
     <!--? start of main section -->
     <!--TODO: link 'view report' button to report generator -->
     <main class="main-content">
-        <!--* revenue report html -->
-        <div id="revenue-report" style="display: none;">
-            <h2>Revenue Report</h2>
-            <form id="main-revenue-report-form" class="report-form" action="">
-                <fieldset class="outlet-info">
-                    <h4>Outlet information</h4>
-
-                    <div>
-                        <input type="checkbox" id="safari-treasures" name="outlet" value="safari-treasures"/>
-                        <label for="safari-treasures">Safari Treasures Emporium</label>
-                    </div>
-                    
-                    <div>
-                        <input type="checkbox" id="trinkets-charms" name="outlet" value="trinkets-charms" />
-                        <label for="trinkets-charms">Trinkets and Charms</label>
-                    </div>
-                    
-                    <div>
-                        <input type="checkbox" id="creature-cuisine" name="outlet" value="creature-cuisine" />
-                        <label for="creature-cuisine">Creature Cuisine Corner</label>
-                    </div>
-
-                    <div>
-                        <input type="checkbox" id="lions-lollipops" name="outlet" value="lions-lollipop" />
-                        <label for="lions-lollipop">Lions Lollipops and Sweets</label>
-                    </div>     
-                </fieldset>
-             
-
-                <div class="date-info">
-                    <h4>Revenue date from</h4>
-                    <input id="revenue-start-date" type="date" name="startdate">
-                    <h4>Revenue date to</h4>
-                    <input id="revenue-end-date" type="date" name="enddate">
-                </div>
-
-
-                <div class="generate-report">
-                    <input type="submit" onclick="generate_revenue_report()">
-                </div>
-            </form>
-        </div>
-
         
         <!--* Employee report html -->  
         <div id="employee-report" style="display: none;">
@@ -499,16 +431,7 @@
         </div>
 
 
-        <!--* modify health html -->
-        <div>
-            <div class="modify-health">
-                
-            </div>
-        </div>
     </main>
-
-    <script src="../src/admin.js"></script>
-
-    <script src="../revenuetest.js"></script>
+    
 </body>
 </html>
