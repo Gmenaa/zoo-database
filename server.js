@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const bcrypt = require("bcrypt")
 const db_con = require('./models/db')
-
+const {parse} = require('querystring')
 //Helper function to display all the page
 function displayPage(path,res){
     fs.readFile(path,function(err,data){
@@ -11,14 +11,18 @@ function displayPage(path,res){
         res.end(data)
     })
 }
-let insert= () =>{
-    let query = `INSERT INTO guests VALUES (1,'somethin','asjdaskdjaksdjak','123456789')`
-    db_con.execute(query)
-    console.log('Insertion successful')
-    db_con.end()
-    console.log('Connection closed')
+function collectinput(request,callback){
+    const FORM_URLENCODED = 'application/x-www-form-urlencoded';
+    if (request.headers['content-type'] === FORM_URLENCODED){
+        let body = '';
+        request.on('data',chunk => {
+            body += chunk.toString();
+        });
+        request.on('end',()=>{
+            callback(parse(body));
+        });
     }
-
+}
 
 const server = http.createServer(function(req, res){
     if(req.url === "/" && req.method === 'GET'){
@@ -34,8 +38,28 @@ const server = http.createServer(function(req, res){
         displayPage("./public/tickets.html",res)
     }
     else if (req.url === "/register" && req.method === 'POST'){
-        insert()
-        res.end('User registered')
+        collectinput(req,parsedata=>{
+            console.log(parsedata)
+            const email =parsedata.email
+            const plainpassword = parsedata.password
+            const phonenumber = parsedata.phonenumber
+            const firstname = parsedata.full_name
+            const lastname = parsedata.full_name
+            bcrypt.hash(plainpassword,5,function(err,hash){
+                if (err){
+                    console.log(err)
+                }
+                else{
+                    const query = db_con.query('INSERT INTO guests(password,email,phonenumber,name_firstname,name_lastname) VALUES (?,?,?,?,?)', [hash,email,phonenumber,firstname,lastname], (err, res) => {
+                        if(err) throw err;
+                        console.log('Last insert ID:', res.insertId);
+                    
+                    })
+                }
+            })
+            res.writeHead(302, {Location: './login'});
+            res.end('User Registered')
+        })
     }
     else if (req.url === "/register"){
         displayPage("./public/register.html",res)
@@ -65,6 +89,7 @@ const server = http.createServer(function(req, res){
         res.end("No Page Found");
     }
 })
+
 
 const PORT = process.env.PORT || 5050;
 server.listen(PORT, () => console.log(`Sever running on port ${PORT}`))
