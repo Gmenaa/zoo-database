@@ -10,7 +10,26 @@
 <body>
     <!--? sidebar (admin options) -->
     <aside class="sidebar">
-
+        <h1 class="header search-header">Search</h1>
+        <div class="subsection search-subsection">
+            <form id="sidebar-search" action="#">
+                <!--? Required 'Data queries' -->
+                <!--! ATLEAST 3, DONT HAVE TO DO ALL OF THESE, JUST OPTIONS -->
+                <!--TODO: add form to limit down the search to one attribute or set of attributes, generate general data on attribute/attributes -->
+                <div class="sidebar-link"> 
+                    <a href='#' onclick="changeContent('search-animals')">Animals</a>  
+                </div> 
+                <div class="sidebar-link"> 
+                    <a href='#' onclick="changeContent('search-enclosures')">Enclosures</a>  
+                </div> 
+                <div class="sidebar-link"> 
+                    <a href='#' onclick="changeContent('search-employees')">Employees</a>  
+                </div> 
+                <div class="sidebar-link"> 
+                    <a href='#' onclick="changeContent('search-outlets')">Outlets</a>  
+                </div> 
+            </form>
+        </div>
         <h1 class="header reports-header">Reports</h1>
         <div class="subsection reports-subsection">
             
