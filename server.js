@@ -61,6 +61,39 @@ const server = http.createServer(function(req, res){
             res.end('User Registered')
         })
     }
+    else if (req.url === "/login" && req.method === 'POST'){
+        collectinput(req,parsedata=>{
+            console.log(parsedata)
+            const email =parsedata.email
+            const plainpassword = parsedata.password
+            const query = db_con.query('SELECT * FROM guests WHERE email = ?',[email],(err,res)=>{
+                if (err) throw err;
+                else if (res.length === 0){
+                    console.log("Email Not Found")
+                }
+                else{
+                    bcrypt.compare(plainpassword,res[0].password,function(err,result){
+                        if (err) throw err;
+                        else{
+                            if (result){
+                                console.log("User Logged In")
+                            }
+                            else{
+                                console.log("User Not Logged In")
+                            }
+                        }  
+                    })
+                }
+            })
+        })
+    }
+                        
+                               
+                           
+    else if(req.url ==='/hello'){
+        displayPage("./public/hello.html",res)
+    }
+    
     else if (req.url === "/register"){
         displayPage("./public/register.html",res)
     }

@@ -5,53 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zoo • Login</title>
     <link rel="icon" type="image/x-icon" href="./favicon.jpeg">
-    <link rel="stylesheet" href="../src/entry.css">
+    <link rel="stylesheet" href="/entry.css">
 </head>
 <body>
     <main class="container forms">
         <div class="form login">
             <div class="content">
                 <header class="login-header">Login</header>
-                <!--! add appropriate action=""  -->
-                <form action="" method="post"> 
+                <form action="login" method="post"> 
                     <div class="field input-field">
-                        <input id="login_email" type="email" placeholder="Email" class="input" required>
+                        <input type="email" placeholder="Email" class="input" name="email" required> <br /> 
                     </div>
                     <div class="field input-field">
-                        <input id="login_pass" type="password" placeholder="Password" class="input" required>
+                        <input type="password" placeholder="Password" class="input" name="password" required><br />
                     </div>
                     <div class="form-link">
                         <a href='/passwordreset' class="forgot">Forgot Password?</a> 
                     </div>
                     <div class="field button-field">
-                        <form action ="login">
-                            <button onclick="getInput()" type ="submit">Login</button>
-                        </form>
+                            <button type ="submit"> Login</button>
                     </div>
                     <div class="form-link">
                         <span>Employee Login: <a href="/emplogin" class="link emp-login-link">Login</a></span>
                     </div>
+                    <!--TODO: use js to alternate seemlessly from login <-> sign up -->
                     <div class="form-link">
-                        <span>Already Have an Account? <a href="/register" class="signup-link">Sign up</a></span> 
+                        <span>Don't Have an Account? <a href="/register" class="signup-link">Sign up</a></span> 
                     </div>
                 </form>
             </div>
         </div>
         
-
-        <script>
-            function getInput() {
-                // Get the input element by its ID
-                alert("i am here")
-                let email = document.getElementById("useremail").value;
-                let password = document.getElementById("userpass").value;
-    
-                // Log the input value to the console
-                alert("user email: " + email);
-                alert("user password: " + password);
-            }
-        </script>
-
     </main>
 </body>
 </html>
