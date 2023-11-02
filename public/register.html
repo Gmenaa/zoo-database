@@ -13,24 +13,24 @@
             <div class="content">
                 <header>Sign Up</header>
                 <!-- the form to input SIGN UP information --> 
-                <form action="successful" method="post"> 
+                <form action="register" method="post"> 
                     <div class="field input-field">
-                        <input id="register_firstname" type="text" placeholder="First Name" class="input" required>
+                        <input id="register_firstname" type="text" placeholder="First Name" name ="firstname" class="input" required><br />
                     </div>
                     <div class="field input-field">
-                        <input id="register_middlename" type="text" placeholder="Middle Name" class="input">
+                        <input id="register_middlename" type="text" placeholder="Middle Name" name="lastname" class="input"><br />
                     </div>
                     <div class="field input-field">
-                        <input id="register_lastname" type="text" placeholder="Last Name" class="input" required>
+                        <input id="register_lastname" type="text" placeholder="Last Name" name="middlename" class="input" required><br />
                     </div>
                     <div class="field input-field">
-                        <input id="register_email" type="email" placeholder="Email" class="input" required>
+                        <input id="register_email" type="email" placeholder="Email" name="email" class="input" required><br />
                     </div>
                     <div class="field input-field">
-                        <input id="register_phone" type="tel" placeholder="Phone Number" class="input" required>
+                        <input id="register_phone" type="tel" placeholder="Phone Number" name="phonenumber" class="input" required><br />
                     </div>
                     <div class="field input-field">
-                        <input id="register_password" type="password" placeholder="Password" class="input" required>
+                        <input id="register_password" type="password" placeholder="Password" name="password" class="input" required><br />
                     </div>
                     <div class="field button-field">
                         <button type="submit">Sign Up</button>
