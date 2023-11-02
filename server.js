@@ -43,14 +43,15 @@ const server = http.createServer(function(req, res){
             const email =parsedata.email
             const plainpassword = parsedata.password
             const phonenumber = parsedata.phonenumber
-            const firstname = parsedata.full_name
-            const lastname = parsedata.full_name
+            const firstname = parsedata.firstname
+            const lastname = parsedata.lastname
+            const middlename = parsedata.middlename
             bcrypt.hash(plainpassword,5,function(err,hash){
                 if (err){
                     console.log(err)
                 }
                 else{
-                    const query = db_con.query('INSERT INTO guests(password,email,phonenumber,name_firstname,name_lastname) VALUES (?,?,?,?,?)', [hash,email,phonenumber,firstname,lastname], (err, res) => {
+                    const query = db_con.query('INSERT INTO guests(password,email,phonenumber,name_firstname,name_middlename,name_lastname) VALUES (?,?,?,?,?,?)', [hash,email,phonenumber,firstname,middlename,lastname], (err, res) => {
                         if(err) throw err;
                         console.log('Last insert ID:', res.insertId);
                     
