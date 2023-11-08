@@ -3,9 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin • Donor Report</title>
+    <title>Admin • Donation Report</title>
+    <link rel="stylesheet" href="../src/donor.css">
 </head>
 <body>
+    <section class="wrapper-main">
+        <form action="/generate_donation_report" method="post" id="donation-report-form" class="report-form">
+            <h2>Donation Report Form</h2>
+            <div class="field input-field" id="checkbox-field">
+                <h4>Donation Purpose</h4>
+                <div class="checkbox-field-container">
+                    <input type="checkbox" id="animal-conservation" name="animal-conservation" value="conservation">
+                    <label for="animal-conservation">Animal Conservation</label>
+                </div>
 
+                <div class="checkbox-field-container">
+                    <input type="checkbox" id="habitat-improvement" name="habitat-improvements" value="improvement">
+                    <label for="habitat-improvement">Habitat Improvement</label>
+                </div>
+
+                <div class="checkbox-field-container">
+                    <input type="checkbox" id="education" name="education" value="education">
+                    <label for="education">Education</label>
+                </div>
+            </div>
+
+            <div class="field input-field" id="date-field">
+                <h4>Donation Date Range</h4>
+                <div class="date-field-container">
+                    <label for="donation-start-date">Donations from: </label>
+                    <input type="date" id="donation-start-date" name="donation-start-date" value="startdate">
+                </div>
+                
+
+                <div class="date-field-container">
+                    <label for="donation-end-date">Donations to: </label>
+                    <input type="date" id="donation-end-date" name="donation-end-date" value="enddate">
+                </div>
+            </div>
+
+            <div class="field input-field" id="button-field">
+                <h4>Generate Report</h4>
+                <div class="button-field-container">
+                    <button type="submit" value="submit">Generate</button>
+                </div>
+            </div>
+        </form>
+    </section>
 </body>
 </html>
