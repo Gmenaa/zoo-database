@@ -4,42 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin • Revenue Report</title>
+    <link rel="stylesheet" href="../src/revenue.css">
 </head>
 <body>
     <section class="wrapper-main">
         <form action="/generate_revenue_report" method="post" id="revenue-report-form" class="report-form">
-            <h2>Revenue Report</h2>
-            <div class="field input-field">
-                <h4>Outlet information</h4>
-                <input type="checkbox" id="safari-treasures" name="safari-treasures" value="safari">
-                <label for="safari-treasures">Safari Treasures Emporium</label>
+            <h2>Revenue Report Form</h2>
+            <div class="field input-field" id="checkbox-field">
+                <h4>Outlet Information</h4>
 
-                <input type="checkbox" id="trinkets-charms" name="trinkets-charms" value="trinkets">
-                <label for="trinkets-charms">Trinkets and Charms</label>
+                <div class="checkbox-field-container">
+                    <input type="checkbox" id="safari-treasures" name="safari-treasures" value="safari">
+                    <label for="safari-treasures">Safari Treasures Emporium</label>
+                </div>
 
-                <input type="checkbox" id="creature-cuisine" name="creature-cuisine" value="creature">
-                <label for="creature-cuisine">Creature Cuisine Corner</label>
+                <div class="checkbox-field-container">
+                    <input type="checkbox" id="trinkets-charms" name="trinkets-charms" value="trinkets">
+                    <label for="trinkets-charms">Trinkets and Charms</label>
+                </div>
 
-                <input type="checkbox" id="lions-lollipops" name="lions-lollipops" value="lions">
-                <label for="lions-lollipops">Lions Lollipops and Sweets</label>
+                <div class="checkbox-field-container">
+                    <input type="checkbox" id="creature-cuisine" name="creature-cuisine" value="creature">
+                    <label for="creature-cuisine">Creature Cuisine Corner</label>
+                </div>
+
+                <div class="checkbox-field-container">
+                    <input type="checkbox" id="lions-lollipops" name="lions-lollipops" value="lions">
+                    <label for="lions-lollipops">Lions Lollipops and Sweets</label>
+                </div>
             </div>
 
-            <div class="field input-field">
+            <div class="field input-field" id="date-field">
                 <h4>Revenue Date Range</h4>
-                <label for="revenue-start-date">Revenue Start Date</label>
-                <input type="date" id="revenue-start-date" name="revenue-start-date" value="startdate">
 
-                <label for="revenue-end-date">Revenue End Date</label>
-                <input type="date" id="revenue-end-date" name="revenue-end-date" value="enddate">
+                <div class="date-field-container">
+                    <label for="revenue-start-date">Revenue Start Date</label>
+                    <input type="date" id="revenue-start-date" name="revenue-start-date" value="startdate">
+                </div>
+                
+
+                <div class="date-field-container">
+                    <label for="revenue-end-date">Revenue End Date</label>
+                    <input type="date" id="revenue-end-date" name="revenue-end-date" value="enddate">
+                </div>
             </div>
 
-            <div class="field input-field">
+            <div class="field input-field" id="button-field">
                 <h4>Generate Report</h4>
-                <button type="submit" value="submit">Generate</button>
+                <div class="button-field-container">
+                    <button type="submit" value="submit">Generate</button>
+                </div>
             </div>
         </form>
     </section>
-
-    <script src="../src/admin_reveneue_rep.js"></script>
 </body>
 </html>
