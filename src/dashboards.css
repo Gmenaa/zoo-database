@@ -54,6 +54,10 @@ body {
     
 }
 
+.header-right-items  img:hover {
+    transform: scale(1.1);
+}
+
 
 /*! start of the sidebar section  */
 .sidebar {
