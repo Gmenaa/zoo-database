@@ -3,28 +3,15 @@ const fs = require('fs');
 const path = require('path');
 const bcrypt = require("bcrypt")
 const db_con = require('./models/db')
-const {parse} = require('querystring')
+const {displayPage} = require('./utils')
 //Helper function to display all the page
-function displayPage(path,res){
-    fs.readFile(path,function(err,data){
-        console.log(data)
-        res.end(data)
-    })
-}
-function collectinput(request,callback){
-    const FORM_URLENCODED = 'application/x-www-form-urlencoded';
-    if (request.headers['content-type'] === FORM_URLENCODED){
-        let body = '';
-        request.on('data',chunk => {
-            body += chunk.toString();
-        });
-        request.on('end',()=>{
-            callback(parse(body));
-        });
-    }
-}
-
+const {collectinput} = require('./utils')
+const {generatetoken} = require('./auth')
+const {verifytoken} = require('./auth')
+const {storeJWTcookie} = require('./auth')
+const cookie = require('cookie')
 const server = http.createServer(function(req, res){
+    //landing page and subpages
     if(req.url === "/" && req.method === 'GET'){
         displayPage("./public/index.html",res)
     }
@@ -32,7 +19,24 @@ const server = http.createServer(function(req, res){
         displayPage("./public/login.html",res)
     }
     else if(req.url==='/donations'&& req.method === 'GET'){
-        displayPage("./public/donations.html",res)
+        const cookies = cookie.parse(req.headers.cookie || '');
+        const accessToken = cookies.jwt;
+        if (!accessToken){
+            res.statusCode(401).json9({message:'Unauthorised'})
+            return
+        }
+        const verify = verifytoken(accessToken)
+        if (!verify){
+            res.statusCode(401).json({message:'Invalid Token'})
+            return
+        }
+        else if (verify){
+            displayPage("./public/donations.html",res)
+        }
+        else{
+            res.writeHead(302, {Location: './login'});
+            res.end('Unauthorised')
+        }
     }
     else if(req.url==='/tickets'&& req.method === 'GET'){
         displayPage("./public/tickets.html",res)
@@ -67,50 +71,183 @@ const server = http.createServer(function(req, res){
             console.log(parsedata)
             const email =parsedata.email
             const plainpassword = parsedata.password
-            const query = db_con.query('SELECT * FROM guests WHERE email = ?',[email],(err,res)=>{
+            db_con.query('SELECT * FROM guests WHERE email = ?',[email],(err,result)=>{
                 if (err) throw err;
                 else if (res.length === 0){
                     console.log("Email Not Found")
                 }
                 else{
-                    bcrypt.compare(plainpassword,res[0].password,function(err,result){
-                        if (err) throw err;
+                    const match =bcrypt.compareSync(plainpassword,result[0].password)
+                        if (match){
+                            const token = generatetoken({email})
+                            //store JWT in cookie
+                            storeJWTcookie(res,token)
+                            res.writeHead(302, {Location: './donations'});
+                            res.end('User Logged In')
+                        }
                         else{
-                            if (result){
-                                console.log("User Logged In")
-                            }
-                            else{
-                                console.log("User Not Logged In")
-                            }
-                        }  
-                    })
-                }
-            })
-        })
-    }
+                            res.writeHead(302, {Location: './login'});
+                            res.end('User Not Logged In')
+                        }
                         
-                               
-                           
-    else if(req.url ==='/hello'){
-        displayPage("./public/hello.html",res)
-    }
-    
-    else if (req.url === "/register"){
+                    } 
+                })
+            })
+        }                  
+    else if (req.url === "/register" && req.method === 'GET'){
         displayPage("./public/register.html",res)
     }
-    else if (req.url ==="/passwordreset"){
+    else if (req.url ==="/passwordreset" && req.method === 'GET'){
         displayPage("./public/passwordreset.html",res)
     }
-    else if (req.url ==="/emplogin"){
+    else if (req.url ==="/emplogin" && req.method === 'GET'){
         displayPage("./public/emplogin.html",res)
     }
+    else if (req.url === "/emplogin" && req.method === 'POST'){
+        collectinput(req,parsedata=>{
+            const employeeid = parsedata.employeeid
+            const password = parsedata.password
+            db_con.query('SELECT * FROM employees WHERE employeeid = ?',[employeeid],(err,result)=>{
+                if (err) throw err;
+                else if (result.length === 0){
+                    console.log("ID Not Found")
+                }
+                else{
+                    console.log(result[0].employeeid)
+                    console.log(result)
+                    if (password ===result[0].password){
+                        if (result[0].position === "manager"){
+                            const token = generatetoken({employeeid})
+                            storeJWTcookie(res,token)
+                            res.writeHead(302, {Location: './manager'})
+                            res.end('Check login')
+                        }
+                        else if (result[0].position === "admin"){
+                            const token = generatetoken({employeeid})
+                            storeJWTcookie(res,token)
+                            res.writeHead(302, {Location: './admin'})
+                            res.end('Check login')
+                        }
+                        else if (result[0].position === "veterinarian"){
+                            const token = generatetoken({employeeid})
+                            storeJWTcookie(res,token)
+                            res.writeHead(302, {Location: './vet'})
+                            res.end('Check login')
+                        }
+                        else{
+                            res.writeHead(302, {Location: './emplogin'});
+                            res.end('User Not Logged In')   
+                        }
+                        
+                    } 
+                }
+            })
+            })
+    }
+
+//Manager page and subpages
+    else if(req.url === "/manager" && req.method === 'GET'){
+        const cookies = cookie.parse(req.headers.cookie || '');
+        const accessToken = cookies.jwt;
+        if (!accessToken){
+            res.statusCode(401).json({message:'Unauthorised'})
+            return
+        }
+        const verify = verifytoken(accessToken)
+        if (!verify){
+            res.statusCode(401).json({message:'Invalid Token'})
+            return
+        }
+        else if (verify){
+            displayPage("./public/manager.html",res)
+        }
+        else{
+            res.writeHead(302, {Location: './emplogin'});
+            res.end('Unauthorised')
+        }
+    }
+    else if(req.url === "/man_em_rep" && req.method === 'GET'){
+        displayPage("./public/manager_employee_rep.html",res)
+    }
+    else if(req.url === "/man_mod_emp" && req.method === 'GET'){
+        displayPage("./public/manager_mod_employee.html",res)
+    }
+    else if(req.url ==="/man_rev_rep" && req.method === 'GET'){
+        displayPage("./public/manager_revenue_rep.html",res)
+    }
+
+//Veterinarian page and subpages
+    else if(req.url ==="/vet_health_rep" && req.method === 'GET'){
+        displayPage("./public/vet_health_rep.html",res)
+    }
+    else if(req.url ==="/vet_mod_health" && req.method === 'GET'){
+        displayPage("./public/vet_mod_healthrecord.html",res)
+    }
+    else if(req.url ==="/vet" && req.method === 'GET'){
+        const cookies = cookie.parse(req.headers.cookie || '');
+        const accessToken = cookies.jwt;
+        if (!accessToken){
+            res.statusCode(401).json({message:'Unauthorized'})
+            return
+        }
+        const verify = verifytoken(accessToken)
+        if (!verify){
+            res.statusCode(401).json({message:'Invalid Token'})
+            return
+        }
+        else if (verify){
+            displayPage("./public/vet.html",res)
+        }
+        else{
+            res.writeHead(302, {Location: './emplogin'});
+            res.end('Unauthorised')
+        }
+        displayPage("./public/vet.html",res)
+    }
+
+//Admin page and subpages
+    else if(req.url ==="/admin" && req.method === 'GET'){
+        const cookies = cookie.parse(req.headers.cookie || '');
+        const accessToken = cookies.jwt;
+        if (!accessToken){
+            res.statusCode(401).json({message:'Unauthorised'})
+            return
+        }
+        const verify = verifytoken(accessToken)
+        if (!verify){
+            res.statusCode(401).json({message:'Invalid Token'})
+            return
+        }
+        else if (verify){
+            displayPage("./public/admin.html",res)
+        }
+        else{
+            res.writeHead(302, {Location: './emplogin'});
+            res.end('Unauthorized')
+        }
+    }
+    else if(req.url ==="/admin_donor_rep" && req.method === 'GET'){
+        displayPage("./public/admin_donor_rep.html",res)
+    }
+    else if(req.url ==="/admin_emp_rep" && req.method === 'GET'){
+        displayPage("./public/admin_employee_rep.html",res)
+    }
+    else if(req.url ==="/admin_health_rep" && req.method === 'GET'){
+        displayPage("./public/admin_health_rep.html",res)
+    }
+    else if(req.url ==="/admin_mod_animal" && req.method === 'GET'){
+        displayPage("./public/admin_mod_animal.html",res)
+    }
+    else if(req.url ==="/admin_rev_rep"&& req.method === 'GET'){
+        displayPage("./public/admin_revenue_rep.html",res)
+    }
+
+//Read CSS and JPEG files
     else if(req.url.match("\.css$")){
         var cssPath = path.join(__dirname,'src', req.url);
         var fileStream = fs.createReadStream(cssPath);
         res.writeHead(200, {"Content-Type": "text/css"});
         fileStream.pipe(res);
-    
-    
     }
     else if(req.url.match("\.jpeg$")){
         var jpegPath = path.join(__dirname,'assets', req.url);
