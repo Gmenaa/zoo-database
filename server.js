@@ -22,7 +22,7 @@ const server = http.createServer(function(req, res){
         const cookies = cookie.parse(req.headers.cookie || '');
         const accessToken = cookies.jwt;
         if (!accessToken){
-            res.statusCode(401).json9({message:'Unauthorised'})
+            res.statusCode(401).json({message:'Unauthorised'})
             return
         }
         const verify = verifytoken(accessToken)
@@ -133,12 +133,15 @@ const server = http.createServer(function(req, res){
                             storeJWTcookie(res,token)
                             res.writeHead(302, {Location: './vet'})
                             res.end('Check login')
-                        }
+                        }  
                         else{
                             res.writeHead(302, {Location: './emplogin'});
                             res.end('User Not Logged In')   
                         }
-                        
+                    }
+                    else{
+                        res.writeHead(302, {Location: './emplogin'});
+                        res.end('User Not Logged In')   
                     } 
                 }
             })
