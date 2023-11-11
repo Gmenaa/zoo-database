@@ -9,7 +9,12 @@ const {collectinput} = require('./utils')
 const {generatetoken} = require('./auth')
 const {verifytoken} = require('./auth')
 const {storeJWTcookie} = require('./auth')
-const cookie = require('cookie')
+const cookie = require('cookie');
+const { parseArgs } = require('util');
+
+let userId = "";
+let userFirstName = "";
+
 const server = http.createServer(function(req, res){
     //landing page and subpages
     if(req.url === "/" && req.method === 'GET'){
@@ -18,11 +23,11 @@ const server = http.createServer(function(req, res){
     else if(req.url==='/login'&& req.method === 'GET'){
         displayPage("./public/login.html",res)
     }
-    else if(req.url==='/donations'&& req.method === 'GET'){
+    else if(req.url==='/guest'&& req.method === 'GET'){
         const cookies = cookie.parse(req.headers.cookie || '');
         const accessToken = cookies.jwt;
         if (!accessToken){
-            res.statusCode(401).json9({message:'Unauthorised'})
+            res.statusCode(401).json({message:'Unauthorised'})
             return
         }
         const verify = verifytoken(accessToken)
@@ -31,7 +36,46 @@ const server = http.createServer(function(req, res){
             return
         }
         else if (verify){
-            displayPage("./public/donations.html",res)
+            console.log(userId);
+            console.log(userFirstName);
+
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(`
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Zoo</title>
+                <link rel="stylesheet" href="./styles.css">
+                
+            </head>
+            <body>
+                <div class="hero">
+                    
+                    <header>
+                        <div class="links header-links">
+                            <a href="/tickets">Tickets</a>
+                            <a href="">Our Animals</a>
+                            <a href="">Stores</a>
+                            <a href="/donations">Donate</a>
+                        </div>
+                    </header>
+                    
+                    <div class="hero-text button-field">
+                        <h1><span>Welcome, ${userFirstName}</span></h1> 
+                        <button>Sign out</button>
+                        <!-- <button onclick="document.location='/'">Sign out</button> -->
+                    </div>
+                </div>
+                <main>
+                    <!--TODO: add a main section to the landing page maybe news, updates, doesnt really matter, not priority at the moment  -->
+                </main>
+                </div>
+            </body>
+            </html>
+            `)
+            //displayPage("./public/guest.html",res)
         }
         else{
             res.writeHead(302, {Location: './login'});
@@ -79,10 +123,14 @@ const server = http.createServer(function(req, res){
                 else{
                     const match =bcrypt.compareSync(plainpassword,result[0].password)
                         if (match){
+                            //! loook here
+                            userId = result[0].guestid
+                            userFirstName = result[0].name_firstname;
+
                             const token = generatetoken({email})
                             //store JWT in cookie
                             storeJWTcookie(res,token)
-                            res.writeHead(302, {Location: './donations'});
+                            res.writeHead(302, {Location: './guest'});
                             res.end('User Logged In')
                         }
                         else{
