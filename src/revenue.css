@@ -1,0 +1,89 @@
+/*! can be used for admins and managers! dont create another for managers*/
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap');
+
+:root {
+    --text-primary: #000;
+    --text-secondary: #FFF;
+    --bg: #F5F5F5;
+    --bg-secondary: #FFFFFF;
+    --accent: #4663AC;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    background-color: var(--bg);
+}
+
+section {
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+}
+
+.report-form {
+    text-align: left;
+    max-width: 618px;
+    width: 80%;
+    padding: 30px;
+    margin-top: 100px;
+    border-radius: 6px;
+    background-color: var(--bg-secondary);
+}
+
+.input-field {
+    padding-top: 30px;
+}
+
+.checkbox-field-container {
+    display: flex;
+    padding-top: 15px;
+}
+
+#checkbox-field input[type="checkbox"] {
+    margin-right: 20px;
+}
+
+input[type="checkbox"]:hover {
+    cursor: pointer;
+    transform: scale(1.2);
+}
+
+
+.date-field-container {
+    display: flex;
+    padding-top: 15px;
+    justify-content: space-between;
+}
+
+#date-field input[type="date"] {
+    width: 250px;
+}
+
+.button-field-container {
+    padding-top: 15px;
+}
+
+#button-field button[type="submit"] {
+    background-color: var(--accent);
+    color: var(--text-secondary);
+
+    border-radius: 6px;
+    border-style: solid;
+
+    width: 130px;
+    height: 30px;
+}
+
+button[type="submit"]:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+}
+ 

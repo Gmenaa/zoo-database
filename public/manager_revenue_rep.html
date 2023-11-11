@@ -4,8 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manager • Revenue Report</title>
+    <link rel="stylesheet" href="../src/revenue.css">
 </head>
 <body>
-    
+    <section class="wrapper-main">
+        <!--! change path  -->
+        <form action="/generate_revenue_report" method="post" id="revenue-report-form" class="report-form">
+            <h2>Revenue Report Form</h2>
+            <div class="field input-field" id="date-field">
+                <h4>Revenue Date Range</h4>
+
+                <div class="date-field-container">
+                    <label for="revenue-start-date">Revenue Start Date</label>
+                    <input type="date" id="revenue-start-date" name="revenue-start-date" value="startdate">
+                </div>
+                
+
+                <div class="date-field-container">
+                    <label for="revenue-end-date">Revenue End Date</label>
+                    <input type="date" id="revenue-end-date" name="revenue-end-date" value="enddate">
+                </div>
+            </div>
+
+            <div class="field input-field" id="button-field">
+                <h4>Generate Report</h4>
+                <div class="button-field-container">
+                    <button type="submit" value="submit">Generate</button>
+                </div>
+            </div>
+        </form>
+    </section>
 </body>
 </html>
