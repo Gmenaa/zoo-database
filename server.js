@@ -36,9 +36,6 @@ const server = http.createServer(function(req, res){
             return
         }
         else if (verify){
-            console.log(userId);
-            console.log(userFirstName);
-
             res.writeHead(200, { 'Content-Type': 'text/html' });
             res.end(`
             <!DOCTYPE html>
@@ -123,7 +120,7 @@ const server = http.createServer(function(req, res){
                 else{
                     const match =bcrypt.compareSync(plainpassword,result[0].password)
                         if (match){
-                            //! loook here
+                            //! declaring user info
                             userId = result[0].guestid
                             userFirstName = result[0].name_firstname;
 
@@ -164,6 +161,9 @@ const server = http.createServer(function(req, res){
                     console.log(result[0].employeeid)
                     console.log(result)
                     if (password ===result[0].password){
+                        // ! declaring employee info
+                        userId = result[0].guestid
+                        userFirstName = result[0].name_firstname;
                         if (result[0].position === "manager"){
                             const token = generatetoken({employeeid})
                             storeJWTcookie(res,token)
@@ -193,7 +193,7 @@ const server = http.createServer(function(req, res){
             })
     }
 
-//Manager page and subpages
+//? Manager page and subpages
     else if(req.url === "/manager" && req.method === 'GET'){
         const cookies = cookie.parse(req.headers.cookie || '');
         const accessToken = cookies.jwt;
@@ -207,7 +207,59 @@ const server = http.createServer(function(req, res){
             return
         }
         else if (verify){
-            displayPage("./public/manager.html",res)
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(`
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Zoo • Manager</title>
+                <link rel="stylesheet" href="../dashboards.css">
+            </head>
+            <body>
+                <header class="header">
+                    <div class="header-left-items">
+                        <h2>Manager Dashboard</h2>
+                        <span>Welcome, ${userFirstName} </span>
+                    </div>
+
+                    <div class="header-right-items">
+                        <div class="signout-link">
+                            <!--TODO: actually logout and redirect to the home landing page  -->
+                            <a href="./"><img src="../signout.jpeg" alt="signout icon link"></a>
+                        </div>
+                    </div>
+                </header>
+
+                <!--? sidebar (manager options) -->
+                <section class="sidebar">
+                    <h1 class="sidebar-header">Reports</h1>
+                    <div class="subsection reports-subsection">
+                        <div class="sidebar-link"> 
+                            <a href='./man_rev_rep'>Revenue Reports</a>  
+                        </div> 
+                    </div>
+
+
+                    <h1 class="sidebar-header">Management</h1>
+                    <div class="subsection admin-subsection">
+                        <div class="sidebar-link"> 
+                            <a href='./man_mod_emp'>Modify Employees</a>  
+                        </div> 
+                    </div>
+                </section>
+
+                <!--? maybe display news, notifs, anything here idk, not priority -->
+                <main class="main">
+                    
+                </main>
+                
+            </body>
+            </html>
+            
+            `)
+            //displayPage("./public/manager.html",res)
         }
         else{
             res.writeHead(302, {Location: './emplogin'});
@@ -224,13 +276,7 @@ const server = http.createServer(function(req, res){
         displayPage("./public/manager_revenue_rep.html",res)
     }
 
-//Veterinarian page and subpages
-    else if(req.url ==="/vet_health_rep" && req.method === 'GET'){
-        displayPage("./public/vet_health_rep.html",res)
-    }
-    else if(req.url ==="/vet_mod_health" && req.method === 'GET'){
-        displayPage("./public/vet_mod_healthrecord.html",res)
-    }
+//? Veterinarian page and subpages
     else if(req.url ==="/vet" && req.method === 'GET'){
         const cookies = cookie.parse(req.headers.cookie || '');
         const accessToken = cookies.jwt;
@@ -244,7 +290,60 @@ const server = http.createServer(function(req, res){
             return
         }
         else if (verify){
-            displayPage("./public/vet.html",res)
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(`
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Zoo • Veterinarian</title>
+                <link rel="stylesheet" href="../dashboards.css">
+            </head>
+            <body>
+                <header class="header">
+                    <div class="header-left-items">
+                        <h2>Veterinarian Dashboard</h2>
+                        <span>Welcome, ${userFirstName} </span>
+                    </div>
+
+                    <div class="header-right-items">
+                        <div class="signout-link">
+                            <!--TODO: actually logout and redirect to the home landing page  -->
+                            <a href="./"><img src="../signout.jpeg" alt="signout icon link"></a>
+                        </div>
+                    </div>
+                    
+                </header>
+
+                <!--? sidebar (vet options) -->
+                <section class="sidebar">
+                    <h1 class="sidebar-header">Reports</h1>
+                    <div class="subsection reports-subsection">
+                        <div class="sidebar-link"> 
+                            <a href='./vet_health_rep'>Health Reports</a>  
+                        </div> 
+                    </div>
+
+
+                    <h1 class="sidebar-header">Veterinary</h1>
+                    <div class="subsection admin-subsection">
+                        <div class="sidebar-link"> 
+                            <a href='./vet_mod_health'>Modify Health Records</a>  
+                        </div> 
+                    </div>
+                </section>
+
+                <!--? maybe display news, notifs, anything here idk, not priority -->
+                <main class="main">
+                    
+                </main>
+                
+            </body>
+            </html>
+            
+            `)
+            //displayPage("./public/vet.html",res)
         }
         else{
             res.writeHead(302, {Location: './emplogin'});
@@ -253,7 +352,14 @@ const server = http.createServer(function(req, res){
         displayPage("./public/vet.html",res)
     }
 
-//Admin page and subpages
+    else if(req.url ==="/vet_health_rep" && req.method === 'GET'){
+        displayPage("./public/vet_health_rep.html",res)
+    }
+    else if(req.url ==="/vet_mod_health" && req.method === 'GET'){
+        displayPage("./public/vet_mod_healthrecord.html",res)
+    }
+    
+//? Admin page and subpages
     else if(req.url ==="/admin" && req.method === 'GET'){
         const cookies = cookie.parse(req.headers.cookie || '');
         const accessToken = cookies.jwt;
@@ -266,8 +372,89 @@ const server = http.createServer(function(req, res){
             res.statusCode(401).json({message:'Invalid Token'})
             return
         }
-        else if (verify){
-            displayPage("./public/admin.html",res)
+        else if (verify) {
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(`
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Zoo • Admin</title>
+                <link rel="stylesheet" href="../dashboards.css">
+                <!-- <link rel="stylesheet" href="../admin.css"> -->
+            </head>
+            <body>
+                <header class="header">
+                    <div class="header-left-items">
+                        <h2>Admin Dashboard</h2>
+                        <span>Welcome, ${userFirstName}</span>
+                    </div>
+
+                    <div class="header-right-items">
+                        <div class="signout-link">
+                            <!--TODO: actually logout and redirect to the home landing page  -->
+                            <a href="./"><img src="../signout.jpeg" alt="signout icon link"></a>
+                            
+                        </div>
+                    </div>
+                    
+                </header>
+
+                <!--? sidebar (admin options) -->
+                <section class="sidebar">
+
+                    <h1 class="sidebar-header">Reports</h1>
+                    <div class="subsection reports-subsection">
+                        
+                        <div class="sidebar-link"> 
+                            <a href='./admin_rev_rep'>Revenue Reports</a>  
+                        </div> 
+                        <!--
+                        <div class="sidebar-link"> 
+                            <a href='./admin_emp_rep'>Employee Reports</a>  
+                        </div> 
+                        -->
+                        <div class="sidebar-link"> 
+                            <a href='./admin_health_rep'>Health Reports</a>  
+                        </div> 
+                        <div class="sidebar-link"> 
+                            <a href='./admin_donor_rep'>Donation Reports</a> 
+                        </div> 
+                        
+                    </div>
+
+
+                    <h1 class="sidebar-header">Administration</h1>
+                    <div class="subsection admin-subsection">
+
+                        <!--! since triggers rely on animal insertions and we mmust present triggers live, this is priority others are not! -->
+                        <div class="sidebar-link"> 
+                            <a href='./admin_mod_animal'>Modify Animals</a>  
+                        </div> 
+                        <!--  
+                        <div class="sidebar-link"> 
+                            <a href='./admin_mod_enclosure.html'>Modify Enclosure</a>  
+                        </div> 
+                        <div class="sidebar-link"> 
+                            <a href='./admin_mod_employee.html'>Modify Employee</a>  
+                        </div> 
+                        <div class="sidebar-link"> 
+                            <a href='#'>Modify Outlet</a>  
+                        </div> 
+                        -->
+                    </div>
+                </section>
+
+                <!--? maybe display news, notifs, anything here idk, not priority -->
+                <main class="main">
+                    
+                </main>
+                
+            </body>
+            </html>
+            `)
+            //displayPage("./public/admin.html",res)
         }
         else{
             res.writeHead(302, {Location: './emplogin'});
@@ -290,7 +477,7 @@ const server = http.createServer(function(req, res){
         displayPage("./public/admin_revenue_rep.html",res)
     }
 
-//Read CSS and JPEG files
+//? Read CSS and JPEG files
     else if(req.url.match("\.css$")){
         var cssPath = path.join(__dirname,'src', req.url);
         var fileStream = fs.createReadStream(cssPath);
