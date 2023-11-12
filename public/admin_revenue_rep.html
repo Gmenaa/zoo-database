@@ -8,28 +8,29 @@
 </head>
 <body>
     <section class="wrapper-main">
-        <form action="/generate_revenue_report" method="post" id="revenue-report-form" class="report-form">
+        <form action="/admin_rev_rep" method="post" id="revenue-report-form" class="report-form">
             <h2>Revenue Report Form</h2>
             <div class="field input-field" id="checkbox-field">
                 <h4>Outlet Information</h4>
 
                 <div class="checkbox-field-container">
-                    <input type="checkbox" id="safari-treasures" name="safari-treasures" value="safari">
+                    <!--! value="outletid" -->
+                    <input type="checkbox" id="safari-treasures" name="safaritreasures" value="1">
                     <label for="safari-treasures">Safari Treasures Emporium</label>
                 </div>
 
                 <div class="checkbox-field-container">
-                    <input type="checkbox" id="trinkets-charms" name="trinkets-charms" value="trinkets">
+                    <input type="checkbox" id="trinkets-charms" name="trinketscharms" value="2">
                     <label for="trinkets-charms">Trinkets and Charms</label>
                 </div>
 
                 <div class="checkbox-field-container">
-                    <input type="checkbox" id="creature-cuisine" name="creature-cuisine" value="creature">
+                    <input type="checkbox" id="creature-cuisine" name="creaturecuisine" value="3">
                     <label for="creature-cuisine">Creature Cuisine Corner</label>
                 </div>
 
                 <div class="checkbox-field-container">
-                    <input type="checkbox" id="lions-lollipops" name="lions-lollipops" value="lions">
+                    <input type="checkbox" id="lions-lollipops" name="lionslollipops" value="4">
                     <label for="lions-lollipops">Lions Lollipops and Sweets</label>
                 </div>
             </div>
@@ -39,13 +40,13 @@
 
                 <div class="date-field-container">
                     <label for="revenue-start-date">Revenue Start Date</label>
-                    <input type="date" id="revenue-start-date" name="revenue-start-date" value="startdate">
+                    <input type="date" id="revenue-start-date" name="revenuestartdate" value="startdate">
                 </div>
                 
 
                 <div class="date-field-container">
                     <label for="revenue-end-date">Revenue End Date</label>
-                    <input type="date" id="revenue-end-date" name="revenue-end-date" value="enddate">
+                    <input type="date" id="revenue-end-date" name="revenueenddate" value="enddate">
                 </div>
             </div>
 

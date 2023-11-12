@@ -11,6 +11,7 @@ const {verifytoken} = require('./auth')
 const {storeJWTcookie} = require('./auth')
 const cookie = require('cookie');
 const { parseArgs } = require('util');
+const { start } = require('repl');
 
 let userId = "";
 let userFirstName = "";
@@ -275,6 +276,9 @@ const server = http.createServer(function(req, res){
     else if(req.url ==="/man_rev_rep" && req.method === 'GET'){
         displayPage("./public/manager_revenue_rep.html",res)
     }
+    else if(req.url ==="/man_rev_rep" && req.method === 'POST'){
+        
+    }
 
 //? Veterinarian page and subpages
     else if(req.url ==="/vet" && req.method === 'GET'){
@@ -475,6 +479,46 @@ const server = http.createServer(function(req, res){
     }
     else if(req.url ==="/admin_rev_rep"&& req.method === 'GET'){
         displayPage("./public/admin_revenue_rep.html",res)
+    }
+    else if(req.url === "/admin_rev_rep" && req.method === 'POST'){
+        collectinput(req, parsedata => {
+            const outlets = [];
+
+            const safari = parsedata.safaritreasures;
+            const trinkets = parsedata.trinketscharms;
+            const creature = parsedata.creaturecuisine;
+            const lions = parsedata.lionslollipops;
+
+            const startDate = parsedata.revenuestartdate;
+            const endDate = parsedata.revenueenddate;
+
+            if(safari !== undefined) outlets.push(safari);
+            if(trinkets !== undefined) outlets.push(trinkets);
+            if(creature !== undefined) outlets.push(creature);
+            if(lions !== undefined) outlets.push(lions);
+
+            for(let i = 0; i < outlets.length; i++) {
+                db_con.query(`SELECT * FROM revenue_report WHERE outletid = ? AND revenuedate BETWEEN ? AND ?`, [outlets[i], startDate, endDate], (err, result) => {
+                    if (err) throw err;
+                    else if (result.length === 0){
+                        console.log("Date Not Found")
+                    }
+                    else {
+                        //console.log(result);
+                        db_con.query(`SELECT SUM(revenueamount) AS subtotal FROM revenue_report WHERE outletid = ? AND revenuedate BETWEEN ? AND ?`, [outlets[i], startDate, endDate], (err, sumResult) => {
+                            if (err) throw err;
+                            else if (result.length === 0){
+                                console.log("Subtotal Not Found")
+                            }
+                            else {
+                                console.log(result);
+                                console.log("Subtotal: ", sumResult[0].subtotal);
+                            }
+                        })
+                    }
+                })
+            }
+        })
     }
 
 //? Read CSS and JPEG files
