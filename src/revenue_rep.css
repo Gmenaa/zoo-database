@@ -73,6 +73,12 @@ table tbody tr:nth-of-type(even) {
     background-color: var(--table-even-row-bg);
 }
 
+/*? affecting everything other than the first table row, and the columns after the first 3 */
+tr:not(:nth-child(2)) td:nth-child(-n+3) {
+    color: transparent;
+    user-select: none;
+}
+
 .container {
     padding: 50px;
     display: flex;
