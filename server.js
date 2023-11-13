@@ -497,9 +497,21 @@ const server = http.createServer(function(req, res){
             const endDate = parsedata.revenueenddate;
 
             const renderHtml = () => {
-                const responseHtml = htmlTables.join('<br>') + '<br>';
+                const responseHtml = htmlTables.join('');
                 res.writeHead(200, { 'Content-Type': 'text/html' });
-                res.write(responseHtml);
+                res.write(`
+                <html>
+                    <head>
+                        <link rel="stylesheet" href="../revenue_rep.css">
+                    </head>
+                    <body>
+                        <header>
+                            <a href="/admin">Home</a>
+                        </header>
+                        ${responseHtml}
+                    </body>
+                </html>
+                `);
                 res.end();
             };
 
@@ -522,23 +534,26 @@ const server = http.createServer(function(req, res){
                                 console.log("Subtotal Not Found");
                             } else {
                                 const tableHtml = 
-                                    `<table border="1">
+                                    `
+                                    <div class="container">
+                                    <table border="1">
                                     <tr>
-                                        <th>Outlet ID</th>
-                                        <th>Outlet Name</th>
-                                        <th>Outlet Type</th>
-                                        <th>Date of Revenue</th>
-                                        <th>Revenue Amount</th>
+                                        <th class="outletid-col">Outlet ID</th>
+                                        <th class="outletname-col">Outlet Name</th>
+                                        <th class="outlettype-col">Outlet Type</th>
+                                        <th class="revenuedate-col">Date of Sales</th>
+                                        <th class="revenueamount-col">Sales Amount</th>
                                     </tr>` +
                                         result.map (
                                         row => 
                                         `<tr>
-                                            <td>${row.outletid}</td>
-                                            <td>${row.outletname}</td>
-                                            <td>${row.outlettype}</td>
-                                            <td>${row.revenuedate}</td>
-                                            <td>${row.revenueamount}</td>
-                                        </tr>`).join('') + `</table><br>Subtotal: ${sumResult[0].subtotal}`;
+                                            <td class="outletid-col">${row.outletid}</td>
+                                            <td class="outletname-col">${row.outletname}</td>
+                                            <td class="outlettype-col">${row.outlettype}</td>
+                                            <td class="revenuedate-col">${row.revenuedate}</td>
+                                            <td class="revenueamount-col">$${row.revenueamount}</td>
+                                        </tr>`).join('') + `</table> <div class="subtotal">Revenue Subtotal: $${sumResult[0].subtotal}</div>
+                                        </div>`;
 
                                 htmlTables.push(tableHtml);
 
