@@ -83,6 +83,9 @@ const server = http.createServer(function(req, res){
     else if(req.url==='/tickets'&& req.method === 'GET'){
         displayPage("./public/tickets.html",res)
     }
+    else if(req.url==='/donations'&& req.method === 'GET'){
+        displayPage("./public/donations.html",res)
+    }
     else if (req.url === "/register" && req.method === 'POST'){
         collectinput(req,parsedata=>{
             console.log(parsedata)
@@ -483,6 +486,7 @@ const server = http.createServer(function(req, res){
     else if(req.url === "/admin_rev_rep" && req.method === 'POST'){
         collectinput(req, parsedata => {
             const outlets = [];
+            const htmlTables = [];
 
             const safari = parsedata.safaritreasures;
             const trinkets = parsedata.trinketscharms;
@@ -492,32 +496,65 @@ const server = http.createServer(function(req, res){
             const startDate = parsedata.revenuestartdate;
             const endDate = parsedata.revenueenddate;
 
+            const renderHtml = () => {
+                const responseHtml = htmlTables.join('<br>') + '<br>';
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.write(responseHtml);
+                res.end();
+            };
+
             if(safari !== undefined) outlets.push(safari);
             if(trinkets !== undefined) outlets.push(trinkets);
             if(creature !== undefined) outlets.push(creature);
             if(lions !== undefined) outlets.push(lions);
 
-            for(let i = 0; i < outlets.length; i++) {
-                db_con.query(`SELECT * FROM revenue_report WHERE outletid = ? AND revenuedate BETWEEN ? AND ?`, [outlets[i], startDate, endDate], (err, result) => {
+            const processOutlet = (outletIndex) => {
+                const outletId = outlets[outletIndex];
+
+                db_con.query(`SELECT * FROM revenue_report WHERE outletid = ? AND revenuedate BETWEEN ? AND ?`, [outletId, startDate, endDate], (err, result) => {
                     if (err) throw err;
-                    else if (result.length === 0){
-                        console.log("Date Not Found")
-                    }
-                    else {
-                        //console.log(result);
-                        db_con.query(`SELECT SUM(revenueamount) AS subtotal FROM revenue_report WHERE outletid = ? AND revenuedate BETWEEN ? AND ?`, [outlets[i], startDate, endDate], (err, sumResult) => {
+                    else if (result.length === 0) {
+                        htmlTables.push(`<p>No data found for Outlet ${outletId}</p>`);
+                    } else {
+                        db_con.query(`SELECT SUM(revenueamount) AS subtotal FROM revenue_report WHERE outletid = ? AND revenuedate BETWEEN ? AND ?`, [outletId, startDate, endDate], (err, sumResult) => {
                             if (err) throw err;
-                            else if (result.length === 0){
-                                console.log("Subtotal Not Found")
+                            else if (sumResult.length === 0) {
+                                console.log("Subtotal Not Found");
+                            } else {
+                                const tableHtml = 
+                                    `<table border="1">
+                                    <tr>
+                                        <th>Outlet ID</th>
+                                        <th>Outlet Name</th>
+                                        <th>Outlet Type</th>
+                                        <th>Date of Revenue</th>
+                                        <th>Revenue Amount</th>
+                                    </tr>` +
+                                        result.map (
+                                        row => 
+                                        `<tr>
+                                            <td>${row.outletid}</td>
+                                            <td>${row.outletname}</td>
+                                            <td>${row.outlettype}</td>
+                                            <td>${row.revenuedate}</td>
+                                            <td>${row.revenueamount}</td>
+                                        </tr>`).join('') + `</table><br>Subtotal: ${sumResult[0].subtotal}`;
+
+                                htmlTables.push(tableHtml);
+
+                                if (outletIndex + 1 < outlets.length) {
+                                    processOutlet(outletIndex + 1);
+                                } 
+                                else {
+                                    renderHtml();
+                                }
                             }
-                            else {
-                                console.log(result);
-                                console.log("Subtotal: ", sumResult[0].subtotal);
-                            }
-                        })
-                    }
-                })
-            }
+                        });
+                    }   
+                });
+            };
+
+            processOutlet(0);
         })
     }
 
