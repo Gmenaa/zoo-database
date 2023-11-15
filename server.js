@@ -80,12 +80,31 @@ const server = http.createServer(function(req, res){
             res.end('Unauthorised')
         }
     }
+
+    // ? Guest Tickets page
     else if(req.url==='/tickets'&& req.method === 'GET'){
         displayPage("./public/tickets.html",res)
     }
+    else if(req.url==='/tickets'&& req.method === 'POST'){
+        
+    }
+
+    // ? Guest donations page
     else if(req.url==='/donations'&& req.method === 'GET'){
         displayPage("./public/donations.html",res)
     }
+    else if(req.url==='/donations'&& req.method === 'POST'){
+        // ! figure out how to insert current present date
+        collectinput(req, parsedata => {
+            const purpose =  parsedata.donationpurpose;
+            const amount = parsedata.amount;
+
+            console.log(userId);
+            console.log(purpose);
+            console.log(amount);
+        });
+    }
+
     else if (req.url === "/register" && req.method === 'POST'){
         collectinput(req,parsedata=>{
             console.log(parsedata)
@@ -125,7 +144,7 @@ const server = http.createServer(function(req, res){
                     const match =bcrypt.compareSync(plainpassword,result[0].password)
                         if (match){
                             //! declaring user info
-                            userId = result[0].guestid
+                            userId = result[0].guestid;
                             userFirstName = result[0].name_firstname;
 
                             const token = generatetoken({email})

@@ -56,7 +56,9 @@ body {
     font-weight: 400;
 }
 
-.form-field input[type="submit"] {
+.form-field button[type="submit"] {
+    color: var(--bg-secondary);
+    
     margin-top: 40px;
     margin-right: 50px;
     height: 2.5em;
@@ -68,7 +70,7 @@ body {
     background-color: var(--green-primary);
 }
 
-.form-field input[type="submit"]:hover {
+.form-field button[type="submit"]:hover {
     cursor: pointer;
     transform: scale(1.05)
 }
