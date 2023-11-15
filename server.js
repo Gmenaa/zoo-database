@@ -197,6 +197,8 @@ const server = http.createServer(function(req, res){
             })
     }
 
+
+
 //? Manager page and subpages
     else if(req.url === "/manager" && req.method === 'GET'){
         const cookies = cookie.parse(req.headers.cookie || '');
@@ -249,7 +251,7 @@ const server = http.createServer(function(req, res){
                     <h1 class="sidebar-header">Management</h1>
                     <div class="subsection admin-subsection">
                         <div class="sidebar-link"> 
-                            <a href='./man_mod_emp'>Modify Employees</a>  
+                            <a href=''>Modify Employees</a>  
                         </div> 
                     </div>
                 </section>
@@ -277,8 +279,10 @@ const server = http.createServer(function(req, res){
         displayPage("./public/manager_revenue_rep.html",res)
     }
     else if(req.url ==="/man_rev_rep" && req.method === 'POST'){
-        
+        // ! Managers should only be able to see the revenue for their specific outlet, consider global var to track managers outlet
     }
+
+
 
 //? Veterinarian page and subpages
     else if(req.url ==="/vet" && req.method === 'GET'){
@@ -333,7 +337,7 @@ const server = http.createServer(function(req, res){
                     <h1 class="sidebar-header">Veterinary</h1>
                     <div class="subsection admin-subsection">
                         <div class="sidebar-link"> 
-                            <a href='./vet_mod_health'>Modify Health Records</a>  
+                            <a href=''>Modify Health Records</a>  
                         </div> 
                     </div>
                 </section>
@@ -362,6 +366,8 @@ const server = http.createServer(function(req, res){
         displayPage("./public/vet_mod_healthrecord.html",res)
     }
     
+
+
 //? Admin page and subpages
     else if(req.url ==="/admin" && req.method === 'GET'){
         const cookies = cookie.parse(req.headers.cookie || '');
@@ -429,19 +435,19 @@ const server = http.createServer(function(req, res){
 
                         <!--! since triggers rely on animal insertions and we mmust present triggers live, this is priority others are not! -->
                         <div class="sidebar-link"> 
-                            <a href='./admin_mod_animal'>Modify Animals</a>  
+                            <a href=''>Modify Animals</a>  
                         </div> 
-                        <!--  
+
+                        
                         <div class="sidebar-link"> 
-                            <a href='./admin_mod_enclosure.html'>Modify Enclosure</a>  
+                            <a href=''>Modify Enclosures</a>  
                         </div> 
+
+
                         <div class="sidebar-link"> 
-                            <a href='./admin_mod_employee.html'>Modify Employee</a>  
+                            <a href=''>Modify Outlets</a>  
                         </div> 
-                        <div class="sidebar-link"> 
-                            <a href='#'>Modify Outlet</a>  
-                        </div> 
-                        -->
+                        
                     </div>
                 </section>
 
@@ -659,6 +665,8 @@ const server = http.createServer(function(req, res){
             processOutlet(0);
         })
     }
+
+
 
 //? Read CSS and JPEG files
     else if(req.url.match("\.css$")){
