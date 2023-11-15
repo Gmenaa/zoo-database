@@ -270,9 +270,6 @@ const server = http.createServer(function(req, res){
             res.end('Unauthorised')
         }
     }
-    else if(req.url === "/man_em_rep" && req.method === 'GET'){
-        displayPage("./public/manager_employee_rep.html",res)
-    }
     else if(req.url === "/man_mod_emp" && req.method === 'GET'){
         displayPage("./public/manager_mod_employee.html",res)
     }
@@ -358,7 +355,6 @@ const server = http.createServer(function(req, res){
         }
         displayPage("./public/vet.html",res)
     }
-
     else if(req.url ==="/vet_health_rep" && req.method === 'GET'){
         displayPage("./public/vet_health_rep.html",res)
     }
@@ -417,11 +413,7 @@ const server = http.createServer(function(req, res){
                         <div class="sidebar-link"> 
                             <a href='./admin_rev_rep'>Revenue Reports</a>  
                         </div> 
-                        <!--
-                        <div class="sidebar-link"> 
-                            <a href='./admin_emp_rep'>Employee Reports</a>  
-                        </div> 
-                        -->
+                        
                         <div class="sidebar-link"> 
                             <a href='./admin_health_rep'>Health Reports</a>  
                         </div> 
@@ -471,8 +463,103 @@ const server = http.createServer(function(req, res){
     else if(req.url ==="/admin_donor_rep" && req.method === 'GET'){
         displayPage("./public/admin_donor_rep.html",res)
     }
-    else if(req.url ==="/admin_emp_rep" && req.method === 'GET'){
-        displayPage("./public/admin_employee_rep.html",res)
+    else if(req.url ==="/admin_donor_rep" && req.method === 'POST') {
+        collectinput(req, parsedata => {
+            const donations = [];
+            const htmlTables = [];
+
+            const conservation = parsedata.wildlifeconservation;
+            const outreach = parsedata.communityoutreach;
+            const education = parsedata.educationprograms;
+            const research = parsedata.researchprograms;
+
+            const startDate = parsedata.donationstartdate;
+            const endDate = parsedata.donationenddate;
+
+            const renderHtml = () => {
+                const responseHtml = htmlTables.join('');
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.write(`
+                <html>
+                    <head>
+                        <link rel="stylesheet" href="../donation_rep.css">
+                    </head>
+                    <body>
+                        <header>
+                            <a href="/admin">Home</a>
+                        </header>
+                        ${responseHtml}
+                    </body>
+                </html>
+                `);
+                res.end();
+            };
+
+            if(conservation !== undefined) donations.push(conservation);
+            if(outreach !== undefined) donations.push(outreach);
+            if(education !== undefined) donations.push(education);
+            if(research !== undefined) donations.push(research);
+
+            const processDonation = (donationindex) => {
+                const donationType = donations[donationindex]; // "Research", "Conservation", "..."
+
+                db_con.query(`SELECT * FROM donation_report WHERE donationpurpose = ? AND donationdate BETWEEN ? AND ? ORDER BY donationdate`, [donationType, startDate, endDate], (err, result) => {
+                    if (err) throw err;
+                    else if (result.length === 0) {
+                        console.log("ERROR IN DONATE REPORT")
+                    }
+                    else {
+                        console.log(result); 
+                        db_con.query(`SELECT SUM(donationamount) AS subtotal FROM donation_report WHERE donationpurpose = ? AND donationdate BETWEEN ? AND ?`, [donationType, startDate, endDate], (err, sumResult) => {
+                            if (err) throw err;
+                            else if (sumResult.length === 0) {
+                                console.log("Subtotal Not Found");
+                            }
+                            else {
+                                
+
+                                const tableHtml = 
+                                    `
+                                    <div class="container">
+                                    <table border="1">
+                                    <tr>
+                                        <th class="">Donor ID</th>
+                                        <th class="">Donation ID</th>
+                                        <th class="">Donor First Name</th>
+                                        <th class="">Donor Last Name</th>
+                                        <th class="">Donation Purpose</th>
+                                        <th class="">Donation Date</th>
+                                        <th class="">Donation</th>
+                                    </tr>` +
+                                        result.map (
+                                        row => 
+                                        `<tr>
+                                            <td class="">${row.guestid}</td>
+                                            <td class="">${row.donationid}</td>
+                                            <td class="">${row.name_firstname}</td>
+                                            <td class="">${row.name_lastname}</td>
+                                            <td class="">${row.donationpurpose}</td>
+                                            <td class="">${row.donationdate}</td>
+                                            <td class="">$${row.donationamount}</td>
+                                        </tr>`).join('') + `</table> <div class="subtotal"><strong>Donations Subtotal: $${sumResult[0].subtotal}</strong></div>
+                                        </div>`;
+
+                                htmlTables.push(tableHtml);
+
+                                if(donationindex + 1 < donations.length) {
+                                    processDonation(donationindex + 1);
+                                } 
+                                else {
+                                    renderHtml();
+                                }
+                            }
+                        }); 
+                    }
+                });
+            }
+
+            processDonation(0);
+        });
     }
     else if(req.url ==="/admin_health_rep" && req.method === 'GET'){
         displayPage("./public/admin_health_rep.html",res)
@@ -552,7 +639,7 @@ const server = http.createServer(function(req, res){
                                             <td class="outlettype-col">${row.outlettype}</td>
                                             <td class="revenuedate-col">${row.revenuedate}</td>
                                             <td class="revenueamount-col">$${row.revenueamount}</td>
-                                        </tr>`).join('') + `</table> <div class="subtotal">Revenue Subtotal: $${sumResult[0].subtotal}</div>
+                                        </tr>`).join('') + `</table> <div class="subtotal"><strong>Revenue Subtotal: $${sumResult[0].subtotal}</strong></div>
                                         </div>`;
 
                                 htmlTables.push(tableHtml);

@@ -8,37 +8,43 @@
 </head>
 <body>
     <section class="wrapper-main">
-        <form action="/generate_donation_report" method="post" id="donation-report-form" class="report-form">
+        <form action="/admin_donor_rep" method="post" id="donation-report-form" class="report-form">
             <h2>Donation Report Form</h2>
             <div class="field input-field" id="checkbox-field">
                 <h4>Donation Purpose</h4>
                 <div class="checkbox-field-container">
-                    <input type="checkbox" id="animal-conservation" name="animal-conservation" value="conservation">
-                    <label for="animal-conservation">Animal Conservation</label>
+                    <input type="checkbox" id="wildlife-conservation" name="wildlifeconservation" value="Conservation">
+                    <label for="wildlife-conservation">Wildlife Conservation</label>
                 </div>
 
                 <div class="checkbox-field-container">
-                    <input type="checkbox" id="habitat-improvement" name="habitat-improvements" value="improvement">
-                    <label for="habitat-improvement">Habitat Improvement</label>
+                    <input type="checkbox" id="community-outreach" name="communityoutreach" value="Outreach">
+                    <label for="community-outreach">Community Outreach</label>
                 </div>
 
                 <div class="checkbox-field-container">
-                    <input type="checkbox" id="education" name="education" value="education">
-                    <label for="education">Education</label>
+                    <input type="checkbox" id="education-programs" name="educationprograms" value="Education">
+                    <label for="education-programs">Education</label>
                 </div>
+
+                <div class="checkbox-field-container">
+                    <input type="checkbox" id="research-programs" name="researchprograms" value="Research">
+                    <label for="research-programs">Research</label>
+                </div>
+
             </div>
 
             <div class="field input-field" id="date-field">
                 <h4>Donation Date Range</h4>
                 <div class="date-field-container">
                     <label for="donation-start-date">Donations from: </label>
-                    <input type="date" id="donation-start-date" name="donation-start-date" value="startdate">
+                    <input type="date" id="donation-start-date" name="donationstartdate" value="startdate">
                 </div>
                 
 
                 <div class="date-field-container">
                     <label for="donation-end-date">Donations to: </label>
-                    <input type="date" id="donation-end-date" name="donation-end-date" value="enddate">
+                    <input type="date" id="donation-end-date" name="donationenddate" value="enddate">
                 </div>
             </div>
 
