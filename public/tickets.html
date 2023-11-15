@@ -14,59 +14,63 @@
   </header>
 
   <table class="ticket-table">
-      <thead>
-        <tr>
-          <th>Ticket Group</th>
-          <th>Price</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Regular (Ages 13-64)</td>
-          <td>$18.00</td>
-        </tr>
-        <tr>
-          <td>Child (Ages 3-12)</td>
-          <td>$14.00</td>
-        </tr>
-        <tr>
-          <td>Elder (Ages 65+)</td>
-          <td>$11.50</td>
-        </tr>
-        <tr>
-          <td>Infant (Ages 2 & Under)</td>
-          <td>Free</td>
-        </tr>
-        <tr>
-          <td>Local Student</td>
-          <td>Free</td>
-        </tr>
-      </tbody>
+    <thead>
+      <tr>
+        <th>Ticket Group</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Regular (Ages 13-64)</td>
+        <td>$18.00</td>
+      </tr>
+      <tr>
+        <td>Child (Ages 3-12)</td>
+        <td>$14.00</td>
+      </tr>
+      <tr>
+        <td>Elder (Ages 65+)</td>
+        <td>$11.50</td>
+      </tr>
+      <tr>
+        <td>Infant (Ages 2 & Under)</td>
+        <td>Free</td>
+      </tr>
+      <tr>
+        <td>Local Student</td>
+        <td>Free</td>
+      </tr>
+    </tbody>
   </table>
   <h3>Select Tickets</h3>
-  <form class="book-tickets" action="">
+  <form action="/tickets" method="post" class="book-tickets">
+    <div class="form-field">
+      <label for="visit-date">Schedule Visit: </label>
+      <input type="date" id="visit-date" name="visitdate" min="">
+    </div>
     <div class="form-field">
       <label for="regular">Regular: </label>
-      <input type="number" id="regular" name="regular">
+      <input type="number" id="regular" name="regularticket">
     </div>
     <div class="form-field">
       <label for="child">Child: </label>
-      <input type="number" id="child" name="child">
+      <input type="number" id="child" name="childticket">
     </div>
     <div class="form-field">
       <label for="elder">Elder: </label>
-      <input type="number" id="elder" name="elder">
+      <input type="number" id="elder" name="elderticket">
     </div>
     <div class="form-field">
       <label for="infant">Infant: </label>
-      <input type="number" id="infant" name="infant">
+      <input type="number" id="infant" name="infantticket">
     </div>
     <div class="form-field">
       <label for="student">Student: </label>
-      <input type="number" id="student" name="student ">
+      <input type="number" id="student" name="studentticket">
     </div>
     <div class="form-field">
-      <input type="submit" value="Book!">
+      <button type="submit">Book!</button>
     </div>
   </form>
   
@@ -74,5 +78,19 @@
   <footer> 
 
   </footer>
+
+  <!--? preventing the selection of past dates  -->
+  <script>
+    var today = new Date();
+    today.setDate(today.getDate() - 1); // Set the date to one day in the past
+
+    var formattedToday = today.toISOString().split('T')[0];
+    document.getElementById("visit-date").setAttribute("min", formattedToday);
+    /*
+    var today = new Date().toISOString().split('T')[0];
+    document.getElementById("visit-date").setAttribute("min", today);
+    */
+  </script>
+
 </body>
 </html>

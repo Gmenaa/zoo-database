@@ -82,11 +82,28 @@ const server = http.createServer(function(req, res){
     }
 
     // ? Guest Tickets page
-    else if(req.url==='/tickets'&& req.method === 'GET'){
+    else if(req.url==='/tickets' && req.method === 'GET'){
         displayPage("./public/tickets.html",res)
     }
     else if(req.url==='/tickets'&& req.method === 'POST'){
-        
+        collectinput(req, parsedata => {
+            const visitdate = parsedata.visitdate;
+            const regular = parsedata.regularticket;
+            const child = parsedata.childticket;
+            const elder = parsedata.elderticket;
+            const infant = parsedata.infantticket;
+            const statdent = parsedata.studentticket;
+
+            console.log(userId);
+
+            console.log(visitdate);
+            console.log(regular);
+            console.log(child);
+            console.log(elder);
+            console.log(infant);
+            console.log(statdent);
+
+        })
     }
 
     // ? Guest donations page
