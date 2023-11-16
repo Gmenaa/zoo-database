@@ -6,6 +6,7 @@ const db_con = require('./models/db')
 const {displayPage} = require('./utils')
 //Helper function to display all the page
 const {collectinput} = require('./utils')
+const {getcurrentdate} = require('./utils')
 const {generatetoken} = require('./auth')
 const {verifytoken} = require('./auth')
 const {storeJWTcookie} = require('./auth')
@@ -111,14 +112,21 @@ const server = http.createServer(function(req, res){
         displayPage("./public/donations.html",res)
     }
     else if(req.url==='/donations'&& req.method === 'POST'){
-        // ! figure out how to insert current present date
         collectinput(req, parsedata => {
             const purpose =  parsedata.donationpurpose;
             const amount = parsedata.amount;
-
-            console.log(userId);
+            const date = getcurrentdate();
+            console.log(date);
+            console.log("User ID is:", userId);
             console.log(purpose);
             console.log(amount);
+            const query = db_con.query('INSERT INTO donations(donorid,donationamount,donationpurpose,donationdate) VALUES (?,?,?,?)', [userId,amount,purpose,date], (err, result) => {
+                if(err) throw err;
+                console.log('Last donation insert ID:', result.insertId);
+                //alert(`Your Donation of $${donationamount} towards ${donationpurpose} was a success! Thank You! :)`)
+                res.writeHead(302, {Location: './donations'});
+                res.end('Donation Made')
+            });
         });
     }
 
@@ -606,9 +614,6 @@ const server = http.createServer(function(req, res){
     else if(req.url ==="/admin_health_rep" && req.method === 'GET'){
         displayPage("./public/admin_health_rep.html",res)
     }
-    else if(req.url ==="/admin_mod_animal" && req.method === 'GET'){
-        displayPage("./public/admin_mod_animal.html",res)
-    }
     else if(req.url ==="/admin_rev_rep"&& req.method === 'GET'){
         displayPage("./public/admin_revenue_rep.html",res)
     }
@@ -624,6 +629,19 @@ const server = http.createServer(function(req, res){
 
             const startDate = parsedata.revenuestartdate;
             const endDate = parsedata.revenueenddate;
+
+            //const currentDate = new Date().toDateString();
+
+            /*
+            const currentDate = new Date();
+            const year = currentDate.getFullYear();
+            const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+            const day = String(currentDate.getDate()).padStart(2, '0');
+
+            const formattedDate = `${year}-${month}-${day}`;
+            console.log(startDate);
+            console.log(formattedDate);
+            */
 
             const renderHtml = () => {
                 const responseHtml = htmlTables.join('');
