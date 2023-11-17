@@ -89,20 +89,39 @@ const server = http.createServer(function(req, res){
     else if(req.url==='/tickets'&& req.method === 'POST'){
         collectinput(req, parsedata => {
             const visitdate = parsedata.visitdate;
-            const regular = parsedata.regularticket;
-            const child = parsedata.childticket;
-            const elder = parsedata.elderticket;
-            const infant = parsedata.infantticket;
-            const statdent = parsedata.studentticket;
 
-            console.log(userId);
+            var regular = parsedata.regularticket;
+            if (regular=='') regular = 0; 
 
+            var child = parsedata.childticket;
+            if (child=='') child = 0; 
+
+            var elder = parsedata.elderticket;
+            if (elder=='') elder = 0; 
+
+            var infant = parsedata.infantticket;
+            if (infant=='') infant = 0; 
+
+            var student = parsedata.studentticket;
+            if (student=='') student = 0; 
+
+            var pricetotal=(regular*18+child*14+elder*11.50);
+
+            console.log("User ID is: ", userId);
             console.log(visitdate);
             console.log(regular);
             console.log(child);
             console.log(elder);
             console.log(infant);
-            console.log(statdent);
+            console.log(student);
+
+            const query = db_con.query('INSERT INTO tickets(guestid,no_regular,no_child,no_elder,no_infant,no_student,totalprice,visitdate) VALUES (?,?,?,?,?,?,?,?)', [userId,regular,child,elder,infant,student,pricetotal,visitdate], (err, result) => {
+                if(err) throw err;
+                console.log('Last ticket insert ID:', result.insertId);
+                alert("Booked!")
+                res.writeHead(302, {Location: './tickets'});
+                res.end('Tickets Booked')
+            });
 
         })
     }
