@@ -4,9 +4,205 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zoo • Stores</title>
+    <link rel="stylesheet" href="../stores.css">
 </head>
 <body>
     <section class="products" id="products">
+        <form action="/stores" method="post">
+            <h1 class="heading"> Featured <span>Online Products</span></h1>
+
+            <h2>Safari Treasures Emporium</h2>
+            <div class="safari">
+                <div class="box-container">
+                    <div class="box">
+                        <span class="item-name">Lion Plushie</span>
+                        <div class="image">
+                            <img src="../lionplush2.jpeg" alt="">
+                        </div>
+                        <div class="subimage">
+                            <span class="price-tag">$24.99</span>
+                            <label for="lion">Item Quantity: </label>
+                            <input type="number" id="lion" name="lioneplush">
+                        </div>                    
+                    </div>
+                </div>
+        
+                <div class="box-container">
+                    <div class="box">
+                        <span class="item-name">Safari Hat</span>
+                        <div class="image">
+                            <img src="../safarihat.jpeg" alt="">
+                        </div>
+                        <div class="subimage">
+                            <span class="price-tag">$25.99</span>
+                            <label for="hat">Item Quantity: </label>
+                            <input type="number" id="hat" name="safarihat">
+                        </div>
+                    </div>
+                    
+                </div>
+        
+                <div class="box-container">
+                    <div class="box">
+                        <span class="item-name">Giraffe Plushie</span>
+                        <div class="image">
+                            <img src="../giraffeplush2.jpeg" alt="">
+                        </div>
+                        <div class="subimage">
+                            <span class="price-tag">$26.99</span>
+                            <label for="giraffe">Item Quantity: </label>
+                            <input type="number" id="giraffe" name="giraffeplush">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <h2>Trinkets and Charms</h2>
+            <div class="trinkets">
+                <div class="box-container">
+                    <div class="box">
+                        <span class="item-name">Animal Figurine Sets</span>
+                        <div class="image">
+                            <img src="../figurines.jpeg" alt="">
+                        </div>
+                        <div class="subimage">
+                            <span class="price-tag">$30.99</span>
+                            <label for="figurines">Item Quantity: </label>
+                            <input type="number" id="figurines" name="animalfigurines">
+                        </div>                    
+                    </div>
+                </div>
+        
+                <div class="box-container">
+                    <div class="box">
+                        <span class="item-name">Animal Keychain Charms</span>
+                        <div class="image">
+                            <img src="../keychaincharms.jpeg" alt="">
+                        </div>
+                        <div class="subimage">
+                            <span class="price-tag">$19.99</span>
+                            <label for="keychain">Item Quantity: </label>
+                            <input type="number" id="keychain" name="keychaincharms">
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="box-container">
+                    <div class="box">
+                        <span class="item-name">Necklace</span>
+                        <div class="image">
+                            <img src="../necklace.jpeg" alt="">
+                        </div>
+                        <div class="subimage">
+                            <span class="price-tag">$26.99</span>
+                            <label for="necklaces">Item Quantity: </label>
+                            <input type="number" id="necklaces" name="necklace">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <h1 class="heading"> Skip the line! <span>Order Online</span></h1>
+
+            <h2>Creature Cuisine Corner</h2>
+            <div class="creature">
+                <div class="box-container">
+                    <div class="box">
+                        <span class="item-name">Pizza Slice</span>
+                        <div class="image">
+                            <img src="../pizza.jpeg" alt="">
+                        </div>
+                        <div class="subimage">
+                            <span class="price-tag">$5.99</span>
+                            <label for="pizza">Item Quantity: </label>
+                            <input type="number" id="pizza" name="pizzaslice">
+                        </div>                    
+                    </div>
+                </div>
+        
+                <div class="box-container">
+                    <div class="box">
+                        <span class="item-name">Turkey Sandwich</span>
+                        <div class="image">
+                            <img src="../sandwhich2.jpeg" alt="">
+                        </div>
+                        <div class="subimage">
+                            <span class="price-tag">$3.99</span>
+                            <label for="sandwhich">Item Quantity: </label>
+                            <input type="number" id="sandwhich" name="turkeysandwhich">
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="box-container">
+                    <div class="box">
+                        <span class="item-name">Hot Dog</span>
+                        <div class="image">
+                            <img src="../hotdog.jpeg" alt="">
+                        </div>
+                        <div class="subimage">
+                            <span class="price-tag">$2.99</span>
+                            <label for="hotdog">Item Quantity: </label>
+                            <input type="number" id="hotdog" name="hotdogs">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+            <h2>Lions Lollipops and Sweets</h2>
+            <div class="lions">
+                <div class="box-container">
+                    <div class="box">
+                        <span class="item-name">Ice Cream</span>
+                        <div class="image">
+                            <img src="../icecream.jpeg" alt="">
+                        </div>
+                        <div class="subimage">
+                            <span class="price-tag">$1.99</span>
+                            <label for="icecream">Item Quantity: </label>
+                            <input type="number" id="icecream" name="icecreams">
+                        </div>                    
+                    </div>
+                </div>
+        
+                <div class="box-container">
+                    <div class="box">
+                        <span class="item-name">Slushie</span>
+                        <div class="image">
+                            <img src="../slushie.jpeg" alt="">
+                        </div>
+                        <div class="subimage">
+                            <span class="price-tag">$3.99</span>
+                            <label for="slushie">Item Quantity: </label>
+                            <input type="number" id="slushie" name="slushies">
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="box-container">
+                    <div class="box">
+                        <span class="item-name">Popsicles</span>
+                        <div class="image">
+                            <img src="../popsicle2.jpeg" alt="">
+                        </div>
+                        <div class="subimage">
+                            <span class="price-tag">$1.99</span>
+                            <label for="popsicle">Item Quantity: </label>
+                            <input type="number" id="popsicle" name="popsicles">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="submit-field">
+                <button type="submit">Purchase!</button>
+            </div>
+            
+        </form>
         
     </section>
 </body>

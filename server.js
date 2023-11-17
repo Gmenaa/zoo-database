@@ -56,7 +56,7 @@ const server = http.createServer(function(req, res){
                         <div class="links header-links">
                             <a href="/tickets">Tickets</a>
                             <a href="">Our Animals</a>
-                            <a href="">Stores</a>
+                            <a href="/stores">Stores</a>
                             <a href="/donations">Donate</a>
                         </div>
                     </header>
@@ -124,6 +124,124 @@ const server = http.createServer(function(req, res){
             });
 
         })
+    }
+
+    // ? Guest stores Page
+    else if(req.url==='/stores' && req.method === 'GET'){
+        displayPage("./public/stores.html",res)
+    }
+    else if(req.url==='/stores' && req.method === 'POST'){
+        collectinput(req, parsedata => {
+            // safari, trinkets, creature, lions hold quantities of items bought
+            const safari = [];
+            const safariprice = [24.99, 25.99, 26.99];
+
+            const trinkets = [];
+            const trinketsprice = [30.99, 19.99, 26.99];
+
+            const creature = [];
+            const creatureprice = [5.99, 3.99, 2.99];
+
+            const lions = [];
+            const lionsprice = [1.99, 3.99, 1.99];
+
+            //? outlet 1 safari treasures
+            const lionplush = parsedata.lioneplush;
+            const safarihat = parsedata.safarihat;
+            const giraffeplush = parsedata.giraffeplush;
+            safari.push(lionplush, safarihat, giraffeplush);
+
+            //? outlet 2 trinkets
+            const animalfigurines = parsedata.animalfigurines;
+            const keychaincharms = parsedata.keychaincharms;
+            const necklace = parsedata.necklace;
+            trinkets.push(animalfigurines, keychaincharms, necklace);
+
+            //? outlet 3 creature
+            const pizzaslice = parsedata.pizzaslice;
+            const turkeysandwhich = parsedata.turkeysandwhich;
+            const hotdogs = parsedata.hotdogs;
+            creature.push(pizzaslice, turkeysandwhich, hotdogs);
+
+            //? outlet 4 lions
+            const icecreams = parsedata.icecreams;
+            const slushies = parsedata.slushies;
+            const popsicles = parsedata.popsicles;
+            lions.push(icecreams, slushies, popsicles);
+
+            // ? todays date
+            const date = getcurrentdate();
+
+            console.log(safari);
+            console.log(trinkets);
+            console.log(creature);
+            console.log(lions);
+
+            const insertRevenue = (outletid, none, date) => {
+                db_con.query(
+                    `INSERT INTO revenue (outletid, revenueamount, revenuedate) VALUES (?, ?, ?)`,
+                    [outletid, none, date],
+                    (err, result) => {
+                        if (err) throw err;
+                        console.log(`Inserted revenue for outlet ${outletid}`);
+                    }
+                );
+            };
+    
+            // Function to update revenue amount in the database
+            const updateRevenue = (outletid, totalAmount) => {
+                db_con.query(
+                    `UPDATE revenue SET revenueamount = revenueamount + ? WHERE outletid = ? AND revenuedate = ?`,
+                    [totalAmount, outletid, date],
+                    (err, result) => {
+                        if (err) throw err;
+                        console.log(`Updated revenue for outlet ${outletid}`);
+                    }
+                );
+            };
+
+            const checkRevenueExists = (outletid, callback) => {
+                db_con.query(
+                    'SELECT * FROM revenue WHERE outletid = ? AND revenuedate = ?',
+                    [outletid, date],
+                    (err, result) => {
+                        if (err) throw err;
+                        callback(result.length > 0); // true if record exists, false otherwise
+                    }
+                );
+            };
+    
+            // Process each outlet, insert initial revenue, and then update
+            const processOutlet = (outletid, items, prices) => {
+                let totalAmount = 0;
+    
+                items.forEach((quantity, index) => {
+                    if (quantity && !isNaN(quantity)) {
+                        totalAmount += quantity * prices[index];
+                    }
+                });
+    
+                // Check if revenue record exists for the outlet
+                checkRevenueExists(outletid, (exists) => {
+                    if (!exists) {
+                        // Insert initial revenue if record doesn't exist
+                        insertRevenue(outletid, 0, date);
+                    }
+
+                    // Update revenue subsequently
+                    updateRevenue(outletid, totalAmount);
+                });
+            };
+    
+            processOutlet(1, safari, safariprice);
+            processOutlet(2, trinkets, trinketsprice);
+            processOutlet(3, creature, creatureprice);
+            processOutlet(4, lions, lionsprice);
+
+            res.writeHead(302, {Location: './stores'});
+            res.end('profit');
+
+        });
     }
 
     // ? Guest donations page

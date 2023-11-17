@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+    --text-primary: #000;
+    --text-secondary: #fff;
+    --green-dark: #6AA342;
+    /* --faint-green: #e0f2e9; */
+    --green-primary: #98BF64;;
+    --faint-green: #D1FFBD; 
+    --bg: #FAF9F6;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    padding: 16px;
+}
+
+
+h1 {
+    text-align: center;
+    background-color: var(--faint-green);
+    font-size: 32px;
+    padding: 15px;
+}
+
+h1 span {
+    color: var(--green-dark)
+}
+
+h1:not(:first-of-type) {
+    margin-top: 30px;
+}
+
+h2 {
+    padding: 28px 0px;
+    
+}
+ 
+.safari, 
+.trinkets,
+.creature,
+.lions {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.box-container {
+    flex: 0 0 auto;
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    background-color: white;
+    padding: 30px;
+    border-radius: 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adjust values as needed */
+}
+
+img {
+    width: 310px;
+    height: 327px;
+}
+
+.subimage {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 12.5px;
+
+    transition: background-color 0.3s ease; /* Adjust the duration and timing function as needed */
+}
+
+.box-container:hover .subimage {
+    background-color: var(--faint-green);
+}
+
+.box .item-name {
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.subimage span {
+    color: var(--green-dark);
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.subimage label {
+    font-weight: bold;
+}
+
+.subimage input {
+    text-align: center;
+    font-size: 16px;
+    height: 28px;
+}
+
+.submit-field {
+    padding-top: 30px;
+    text-align: center;
+}
+
+button[type="submit"] {
+    margin-top: 20px;
+    margin-right: 50px;
+    height: 2.5em;
+    width: 50%;
+    border: none; 
+    font-size: 16px;
+    font-weight: 400;
+    border-radius: 6px;
+    color: var(--text-secondary);
+    background-color: var(--green-primary);
+}
+
+button[type="submit"]:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+}
