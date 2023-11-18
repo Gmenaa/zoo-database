@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
 
 :root {
     --text-primary: #000;
@@ -28,26 +29,43 @@
 }
 
 /*? on wrap, gap may need to be lowered depending on amount of links */
+header {
+    display: flex;
+    background-color: #232b2b;
+    justify-content: space-between;
+    padding: 0px 32px;
+}
+
+header > span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 32px;
+    font-weight: bold;
+}
+
 .header-links {
     display: flex;
     justify-content: center;
-    align-content: center;
+    align-items: center;
     flex-wrap: wrap;
     gap: 5rem;
-    padding-top: 25px;
+    
+    height:  8vh;
 }
 
 .header-links > a {
     text-decoration: none;
     color: var(--text-secondary);
-    background-color: #98BF64; 
-    padding: 5px 11px; 
-    border: 2px solid var(--head-links-brdr);
+    font-size: 16px;
+    
 }
 
 .header-links > a:hover {
     text-decoration: underline;
 }
+
 
 .hero-text {
     position: absolute;

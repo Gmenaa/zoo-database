@@ -2,6 +2,7 @@
 
 :root {
     --text-primary: #000;
+    --text-secondary: #FFF;
     --bg: #F5F5F5;
     --bg-secondary: #FFFFFF;
     --header-bg: #6AA342;
@@ -16,9 +17,50 @@
 }
 
 body {
+    background-color: var(--bg);
+}
+
+header {
+    display: flex;
+    width: 100%;
+    background-color: #232b2b;
+    justify-content: space-between;
+    padding: 0px 32px;
+}
+
+header > span {
     display: flex;
     justify-content: center;
-    background-color: var(--bg);
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.header-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5rem;
+    
+    height:  8vh;
+}
+
+.header-links > a {
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 16px;
+    
+}
+
+.header-links > a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
 }
 
 .donate-form {

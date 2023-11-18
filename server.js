@@ -50,21 +50,21 @@ const server = http.createServer(function(req, res){
                 
             </head>
             <body>
+                <header>
+                    <span>Central Houston Zoo</span>
+                    <div class="links header-links">
+                        <a href="/tickets">Order Tickets</a>
+                        <a href="">My Tickets</a>
+                        <a href="">Our Animals</a>
+                        <a href="/stores">Stores</a>
+                        <a href="/donations">Donate</a>
+                    </div>
+                </header>
                 <div class="hero">
-                    
-                    <header>
-                        <div class="links header-links">
-                            <a href="/tickets">Tickets</a>
-                            <a href="">Our Animals</a>
-                            <a href="/stores">Stores</a>
-                            <a href="/donations">Donate</a>
-                        </div>
-                    </header>
-                    
                     <div class="hero-text button-field">
                         <h1><span>Welcome, ${userFirstName}</span></h1> 
-                        <button>Sign out</button>
-                        <!-- <button onclick="document.location='/'">Sign out</button> -->
+                        
+                        <button onclick="document.location='./'">Sign out</button> 
                     </div>
                 </div>
                 <main>
@@ -118,7 +118,6 @@ const server = http.createServer(function(req, res){
             const query = db_con.query('INSERT INTO tickets(guestid,no_regular,no_child,no_elder,no_infant,no_student,totalprice,visitdate) VALUES (?,?,?,?,?,?,?,?)', [userId,regular,child,elder,infant,student,pricetotal,visitdate], (err, result) => {
                 if(err) throw err;
                 console.log('Last ticket insert ID:', result.insertId);
-                alert("Booked!")
                 res.writeHead(302, {Location: './tickets'});
                 res.end('Tickets Booked')
             });

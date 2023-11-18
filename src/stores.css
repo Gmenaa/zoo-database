@@ -17,10 +17,49 @@
     font-family: 'Poppins', sans-serif;
 }
 
-body {
-    padding: 16px;
+
+
+header {
+    display: flex;
+    width: 100%;
+    background-color: #232b2b;
+    justify-content: space-between;
+    padding: 0px 32px;
 }
 
+header > span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.header-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5rem;
+    
+    height:  8vh;
+}
+
+.header-links > a {
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 16px;
+    
+}
+
+.header-links > a:hover {
+    text-decoration: underline;
+}
+
+form {
+    padding: 16px;
+}
 
 h1 {
     text-align: center;
