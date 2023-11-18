@@ -6,59 +6,92 @@
     <title>Document</title>
 </head>
 <body>
-        <div class="container">
-            <h1 class="mt-4 mb-4 text-center text-primary"></h1>
+    <div class="container">
+        <h1 class="mt-4 mb-4 text-center text-primary"></h1>
 
-            <span id="message"></span>
-            <div class="card">
-                <div class="card-header">
-                    <div class="row">
-                        <div class="col col-sm-9">Sample Data</div>
-                        <div class="col col-sm-3">
-                        </div>
+        <span id="message"></span>
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col col-sm-9">Sample Data</div>
+                    <div class="col col-sm-3">
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered" id="sample_data">
-                            <thead>
-                                <tr>
-                                    <th>Arrival ID</th>
-                                    <th>Animal Class</th>
-                                    <th>Animal Species</th>
-                                    <th>Animal Name</th>
-                                    <th>Birth Date</th>
-                                    <th>Arrival Date</th>
-                                    <th>Sex</th>
-                                    <th>Enclosure</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% data.forEach(function(row) { %>
-                                    <tr>
-                                        <td><%= row.animalid %></td>
-                                        <td><%= row.class %></td>
-                                        <td><%= row.species %></td>
-                                        <td><%= row.name %></td>
-                                        <td><%= row.birthdate %></td>
-                                        <td><%= row.arrivaldate %></td>
-                                        <td><%= row.sex %></td>
-                                        <td><%= row.enclosureid %></td>
-                                        <td>
-                                           
-                                            <a href="/edit/<%= row.animalid %>">Edit</a>
-                                            <a href="/delete/<%= row.animalid %>">Delete</a>
-                                        </td>
-                                    </tr>
-                                <% }); %>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
             </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <button type="add-button"> Add </button>
+                    <table class="table table-striped table-bordered" id="sample_data">
+                        <thead>
+                            <tr>
+                                
+                                <th>Animal Class</th>
+                                <th>Animal Species</th>
+                                <th>Animal Name</th>
+                                <th>Birth Date</th>
+                                <th>Arrival Date</th>
+                                <th>Sex</th>
+                                <th>Enclosure</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% data.forEach(function(row) { %>
+                                <tr>
+                                    
+                                    <td><%= row.class %></td>
+                                    <td><%= row.species %></td>
+                                    <td><%= row.name %></td>
+                                    <td><%= row.birthdate %></td>
+                                    <td><%= row.arrivaldate %></td>
+                                    <td><%= row.sex %></td>
+                                    <td><%= row.enclosureid %></td>
+                                    <td>
+                                        <button class="button edit-button"> Edit </button>
+                                        <button class="button delete-button" > Delete </button>
+
+                                        <dialog class="modal" id="edit-modal">
+                                            <form action="/test/edit" method="post">
+                                    
+                                                <input type="text" name="editclass" value= "<%= row.class %>" >
+                                                <input type="text" name="editspecies" value="<%= row.species %>">
+                                                <input type="text" name="editname" value="<%= row.name %>">
+                                                <input type="text" name="editbirth" value="<%= row.birthdate %>">
+                                                <input type="text" name="editarrival" value="<%= row.arrivaldate %>">
+                                                <input type="text" name="editsex" value="<%= row.sex %>">
+                                                <input type="text" name="editenclosure" value="<%= row.enclosureid %>">
+                                    
+                                                <button type="submit">Edit</button>
+                                            </form>
+                                        </dialog>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
         </div>
-    </form>
+    </div>
+ <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var editButtons = document.querySelectorAll('.edit-button');
+        var editModals = document.querySelectorAll('.modal');
+
+        editButtons.forEach(function (button, index) {
+            button.addEventListener('click', function () {
+                editModals[index].showModal();
+            });
+        });
+
+        editModals.forEach(function (modal) {
+            modal.addEventListener('click', function () {
+                modal.close();
+            });
+        });
+    });
+</script>
+
 </body>
 </html>

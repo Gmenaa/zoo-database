@@ -14,6 +14,7 @@ const {storeJWTcookie} = require('./auth')
 const cookie = require('cookie');
 const { parseArgs } = require('util');
 const { start } = require('repl');
+const { col } = require('sequelize');
 
 let userId = "";
 let userFirstName = "";
@@ -861,7 +862,8 @@ const server = http.createServer(function(req, res){
 
     else if(req.url === "/test" && req.method === 'GET') {
         
-        db_con.query(`SELECT * FROM animals`, (err, result) => {
+        //! ALL QUERIES OF THIS KIND MUST INCLUDE "WHERE deleted = 0"
+        db_con.query(`SELECT * FROM animals WHERE deleted = 0`, (err, result) => {
             if(err) throw err;
             else {
                 displayView("./views/test.ejs",res, result);
@@ -870,8 +872,11 @@ const server = http.createServer(function(req, res){
 
         
     }
-    else if(req.url === "/test" && req.method === 'POST') {
-        
+    else if(req.url === "/test/edit" && req.method === 'POST') {
+        collectinput(req, parsedata => {
+            const animalclass = parsedata.editclass;
+            console.log(animalclass);
+        })
     }
 
 
