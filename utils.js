@@ -1,4 +1,6 @@
 const fs = require('fs');
+const ejs = require('ejs');
+
 const {parse} = require('querystring')
 function displayPage(path,res){
     fs.readFile(path,function(err,data){
@@ -29,4 +31,21 @@ function getcurrentdate(){
     return formattedDate;
 }
 
-module.exports = {displayPage, collectinput, getcurrentdate}
+
+
+
+const displayView = (viewPath, res, data) => {
+    ejs.renderFile(viewPath, { data }, (err, html) => {
+      if (err) {
+        console.error('EJS rendering error: ', err);
+        
+      } else {
+        res.end(html);
+      }
+    });
+  };
+
+
+
+
+module.exports = {displayPage, collectinput, getcurrentdate, displayView}

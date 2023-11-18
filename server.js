@@ -4,6 +4,7 @@ const path = require('path');
 const bcrypt = require("bcrypt")
 const db_con = require('./models/db')
 const {displayPage} = require('./utils')
+const {displayView} = require('./utils')
 //Helper function to display all the page
 const {collectinput} = require('./utils')
 const {getcurrentdate} = require('./utils')
@@ -854,6 +855,23 @@ const server = http.createServer(function(req, res){
 
             processOutlet(0);
         })
+    }
+
+
+
+    else if(req.url === "/test" && req.method === 'GET') {
+        
+        db_con.query(`SELECT * FROM animals`, (err, result) => {
+            if(err) throw err;
+            else {
+                displayView("./views/test.ejs",res, result);
+            }
+        });
+
+        
+    }
+    else if(req.url === "/test" && req.method === 'POST') {
+        
     }
 
 
