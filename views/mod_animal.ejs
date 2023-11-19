@@ -20,7 +20,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <button type="add-button"> Add </button>
+                    <button class="button add-button"> Add </button>
                     <table class="table table-striped table-bordered" id="sample_data">
                         <thead>
                             <tr>
@@ -51,7 +51,7 @@
                                         <button class="button delete-button" > Delete </button>
 
                                         <dialog class="modal" id="edit-modal">
-                                            <form action="/test/edit" method="post"> 
+                                            <form action="/mod_animal/edit" method="post"> 
                                                 <!--? to relay id to server, hidden  -->
                                                 <input type="hidden" name="id_edit" value="<%= row.animalid %>"> 
 
@@ -68,7 +68,7 @@
                                         </dialog>
 
                                         <dialog class="modal" id="delete-modal">
-                                            <form action="/test/delete" method="post"> 
+                                            <form action="/mod_animal/delete" method="post"> 
                                                 <!--? to relay id to server, hidden  -->
                                                 <input type="hidden" name="id_delete" value="<%= row.animalid %>"> 
 
@@ -94,25 +94,69 @@
         </div>
     </div>
 
+    <!--! add modal starts here -->
+    <dialog class="modal" id="add-modal">
+        <form action="/mod_animal/add" method="post"> 
+            <div class="field input-field">
+                <input id="class_animal" type="text" placeholder="Class" name ="addclass" class="input" required><br />
+            </div>
+            <div class="field input-field">
+                <input id="species_animal" type="text" placeholder="Species" name="addspecies" class="input" required><br />
+            </div>
+            <div class="field input-field">
+                <input id="name_animal" type="text" placeholder="Name" name="addname" class="input" required><br />
+            </div>
+            <div class="field input-field">
+                <input id="birthdate_animal" type="date" placeholder="Birthdate" name="addbirthdate" class="input" ><br />
+            </div>
+            <div class="field input-field">
+                <input id="arrival_animal" type="date" placeholder="Arrival Date" name="addarrival" class="input" required><br />
+            </div>
+            <div class="field input-field">
+                <input id="sex_animal" type="text" placeholder="Sex" name="addsex" class="input" required><br />
+            </div>
+            <div class="field input-field">
+                <input id="Enclosure_animal" type="text" placeholder="Enclosure ID" name="addenclosure" class="input" required><br />
+            </div>
+            <div class="field button-field">
+                <button type="submit">Add</button>
+            </div>
+            <div class="form-link">
+                <span><a href="/mod_animal" class="link login-link">View animal</a></span> 
+            </div>
+
+            <button type="submit">Delete</button>
+        </form>
+    </dialog>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // ADD EXIT BUTTON FEATURE IN MODALS
+            var exitButton = document.querySelectorAll('.exit-button');
+
+            var addButton = document.querySelector('.add-button');
             var editButtons = document.querySelectorAll('.edit-button');
             var deleteButtons =  document.querySelectorAll('.delete-button');
 
+            var addModal = document.querySelector('#add-modal')
             var editModals = document.querySelectorAll('#edit-modal');
             var deleteModals = document.querySelectorAll('#delete-modal');
 
+            addButton.addEventListener('click', function () {
+                addModal.showModal();
+            })
             editButtons.forEach(function (button, index) {
                 button.addEventListener('click', function () {
                     editModals[index].showModal();
                 });
             });
-
             deleteButtons.forEach(function (button, index) {
                 button.addEventListener('click', function () {
                     deleteModals[index].showModal();
                 });
             });
+
+            
         });
     </script>
 

@@ -617,7 +617,7 @@ const server = http.createServer(function(req, res){
 
                         <!--! since triggers rely on animal insertions and we mmust present triggers live, this is priority others are not! -->
                         <div class="sidebar-link"> 
-                            <a href=''>Modify Animals</a>  
+                            <a href='./mod_animal'>Modify Animals</a>  
                         </div> 
 
                         
@@ -752,6 +752,9 @@ const server = http.createServer(function(req, res){
     else if(req.url ==="/admin_health_rep" && req.method === 'GET'){
         displayPage("./public/admin_health_rep.html",res)
     }
+    else if(req.url ==="/admin_health_rep" && req.method === 'POST'){
+        
+    }
     else if(req.url ==="/admin_rev_rep"&& req.method === 'GET'){
         displayPage("./public/admin_revenue_rep.html",res)
     }
@@ -858,21 +861,42 @@ const server = http.createServer(function(req, res){
         })
     }
 
-
-
-    else if(req.url === "/test" && req.method === 'GET') {
-        
+    else if(req.url === "/mod_animal" && req.method === 'GET') {
         //! ALL QUERIES OF THIS KIND MUST INCLUDE "WHERE deleted = 0"
-        db_con.query(`SELECT * FROM animals WHERE deleted = 0`, (err, result) => {
+        db_con.query(`SELECT * FROM animals WHERE deleted = 0 ORDER BY species`, (err, result) => {
             if(err) throw err;
             else {
-                displayView("./views/test.ejs",res, result);
+                displayView("./views/mod_animal.ejs",res, result);
             }
         });
-
-        
     }
-    else if(req.url === "/test/edit" && req.method === 'POST') {
+    else if (req.url === "/mod_animal/add" && req.method === 'POST') {
+        collectinput(req, parsedata => {
+            const animal_class = parsedata.addclass;
+            const species = parsedata.addspecies;
+            const name = parsedata.addname;
+            const birthdate = parsedata.addbirthdate;
+            const arrival = parsedata.addarrival;
+            const sex = parsedata.addsex;
+            const enclosure = parsedata.addenclosure;
+
+            if(animal_class === '') animal_class = null;
+            if(species === '') species = null;
+            if(name === '') name = null;
+            if(birthdate === '') birthdate = null;
+            if(arrival === '') arrival = null;
+            if(sex === '') sex = null;
+            if(enclosure === '') enclosure = null;
+
+            const insert_animal = db_con.query('INSERT into animals(class,species,name,birthdate,arrivaldate,sex,enclosureid) VALUES (?,?,?,?,?,?,?)',[animal_class,species,name,birthdate,arrival,sex,enclosure], (err, result) => {
+                if(err) throw err;
+                console.log('Last animal insert ID:', result.insertId);
+            });
+            res.writeHead(302, {Location: '/mod_animal'});
+            res.end('Animal added')
+        }) 
+    }
+    else if(req.url === "/mod_animal/edit" && req.method === 'POST') {
         collectinput(req, parsedata => {
             const animalid = parsedata.id_edit;
             var animalclass = parsedata.editclass;
@@ -896,23 +920,20 @@ const server = http.createServer(function(req, res){
             db_con.query(`UPDATE animals SET class = ?, species = ?, name = ?, birthdate = ?, arrivaldate = ?, sex = ?, enclosureid = ? WHERE animalid = ?`, [animalclass, species, name, birthday, arrival, sex, enclosure, animalid], (err, result) => {
                 if (err) throw err;
                 else {
-                    // console.log(result);
-                    res.writeHead(302, {Location: '/test'});
+                    res.writeHead(302, {Location: '/mod_animal'});
                     res.end('Animal edited')
                 }
             })
         })
     }
-
-    else if(req.url === "/test/delete" && req.method === 'POST') {
+    else if(req.url === "/mod_animal/delete" && req.method === 'POST') {
         collectinput(req, parsedata => {
             const animalid = parsedata.id_delete;
 
             db_con.query(`UPDATE animals SET deleted = 1 WHERE animalid = ?`, [animalid], (err, result) => {
                 if (err) throw err;
                 else {
-                    // console.log(result);
-                    res.writeHead(302, {Location: '/test'});
+                    res.writeHead(302, {Location: '/mod_animal'});
                     res.end('Animal deleted')
                 }
             })
