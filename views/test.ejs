@@ -51,8 +51,10 @@
                                         <button class="button delete-button" > Delete </button>
 
                                         <dialog class="modal" id="edit-modal">
-                                            <form action="/test/edit" method="post">
-                                    
+                                            <form action="/test/edit" method="post"> 
+                                                <!--? to relay id to server, hidden  -->
+                                                <input type="hidden" name="id_edit" value="<%= row.animalid %>"> 
+
                                                 <input type="text" name="editclass" value= "<%= row.class %>" >
                                                 <input type="text" name="editspecies" value="<%= row.species %>">
                                                 <input type="text" name="editname" value="<%= row.name %>">
@@ -74,24 +76,19 @@
             
         </div>
     </div>
- <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var editButtons = document.querySelectorAll('.edit-button');
-        var editModals = document.querySelectorAll('.modal');
 
-        editButtons.forEach(function (button, index) {
-            button.addEventListener('click', function () {
-                editModals[index].showModal();
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var editButtons = document.querySelectorAll('.edit-button');
+            var editModals = document.querySelectorAll('.modal');
+
+            editButtons.forEach(function (button, index) {
+                button.addEventListener('click', function () {
+                    editModals[index].showModal();
+                });
             });
         });
-
-        editModals.forEach(function (modal) {
-            modal.addEventListener('click', function () {
-                modal.close();
-            });
-        });
-    });
-</script>
+    </script>
 
 </body>
 </html>
