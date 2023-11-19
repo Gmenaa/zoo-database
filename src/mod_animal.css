@@ -82,6 +82,12 @@ table tbody tr:nth-of-type(even) {
     background-color: var(--table-even-row-bg);
 }
 
+.btn-edit-delete {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+}
+
 .button {
     margin: 2.5px 6px;
     color: var(--text-secondary);

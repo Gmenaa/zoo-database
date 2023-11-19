@@ -866,6 +866,17 @@ const server = http.createServer(function(req, res){
         db_con.query(`SELECT * FROM animals WHERE deleted = 0 ORDER BY species`, (err, result) => {
             if(err) throw err;
             else {
+                result.forEach(row => {
+                    if(row.birthdate !== null) {
+                        const dateObject = new Date(row.birthdate);
+                        const dateFormatted = dateObject.toISOString().split('T')[0];
+                        row.birthdate = dateFormatted;
+                    }
+                    const dateObject = new Date(row.arrivaldate);
+                    const dateFormatted = dateObject.toISOString().split('T')[0];
+                    row.arrivaldate = dateFormatted;
+                });
+
                 displayView("./views/mod_animal.ejs",res, result);
             }
         });
@@ -875,7 +886,7 @@ const server = http.createServer(function(req, res){
             const animal_class = parsedata.addclass;
             const species = parsedata.addspecies;
             const name = parsedata.addname;
-            const birthdate = parsedata.addbirthdate;
+            var birthdate = parsedata.addbirthdate;
             const arrival = parsedata.addarrival;
             const sex = parsedata.addsex;
             const enclosure = parsedata.addenclosure;

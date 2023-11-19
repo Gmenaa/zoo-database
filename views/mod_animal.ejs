@@ -37,23 +37,65 @@
                         <td><%= row.sex %></td>
                         <td><%= row.enclosureid %></td>
                         <td>
-                            <button class="button edit-button"> Edit </button>
-                            <button class="button delete-button" > Delete </button>
+                            <div class="btn-edit-delete">
+                                <button class="button edit-button"> Edit </button>
+                                <button class="button delete-button" > Delete </button>
+                            </div>
+                            
 
                             <dialog class="modal" id="edit-modal">
                                 <form action="/mod_animal/edit" method="post"> 
                                     <!--? to relay id to server, hidden  -->
                                     <input type="hidden" name="id_edit" value="<%= row.animalid %>"> 
 
-                                    <input type="text" name="editclass" value= "<%= row.class %>" >
-                                    <input type="text" name="editspecies" value="<%= row.species %>">
-                                    <input type="text" name="editname" value="<%= row.name %>">
-                                    <input type="text" name="editbirth" value="<%= row.birthdate %>">
-                                    <input type="text" name="editarrival" value="<%= row.arrivaldate %>">
-                                    <input type="text" name="editsex" value="<%= row.sex %>">
-                                    <input type="text" name="editenclosure" value="<%= row.enclosureid %>">
-                        
-                                    <button type="submit">Edit</button>
+                                    <div class="field input-field">
+                                        <label for="class_animal_edit">Animal Class: </label>
+                                        <select name="editclass" id="class_animal_edit">
+                                            <option value="mammal" <%= row.class === 'mammal' ? 'selected' : '' %>>Mammal</option>
+                                            <option value="bird" <%= row.class === 'bird' ? 'selected' : '' %>>Bird</option>
+                                            <option value="reptile" <%= row.class === 'reptile' ? 'selected' : '' %>>Reptile</option>
+                                            <option value="amphibian" <%= row.class === 'amphibian' ? 'selected' : '' %>>Amphibian</option>
+                                            <option value="fish" <%= row.class === 'fish' ? 'selected' : '' %>>Fish</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="species_animal_edit">Animal Species: </label>
+                                        <input id="species_animal_edit" type="text" name="editspecies" value="<%= row.species %>" required>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="name_animal_edit">Animal Name: </label>
+                                        <input id="name_animal_edit" type="text" name="editname" value="<%= row.name %>" required>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="birthdate_animal_edit">Birthdate: </label>
+                                        
+                                        <input id="birthdate_animal_edit" type="date" name="editbirth" value="<%= row.birthdate %>" >
+                                    </div>
+
+                                    <div class="field input-field"> 
+                                        <label for="arrival_animal_edit">Arrival date: </label>
+                                        <input id="arrival_animal_edit" type="date" name="editarrival" value="<%= row.arrivaldate %>" required>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <span class="sex_animal">Sex: </span>
+                                        <label for="male_radio_edit">M: </label>
+                                        <input id="male_radio_edit" type="radio" name="editsex" value="M" <%= row.sex === 'M' ? 'checked' : '' %> required>
+                                        <label for="female_radio_edit">F: </label>
+                                        <input id="female_radio_edit" type="radio" name="editsex" value="F" <%= row.sex === 'F' ? 'checked' : '' %> required>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <input id="Enclosure_animal_edit" type="text" name="editenclosure" value="<%= row.enclosureid %>" required>
+                                    </div>
+                                    
+                                    <div class="field button-field">
+                                        <button type="submit">Edit</button>
+                                        <!-- <button id="exit-button">Exit</button> -->
+                                    </div>
                                 </form>
                             </dialog>
 
@@ -70,7 +112,10 @@
                                     <input type="text" name="deletesex" value="<%= row.sex %>" readonly>
                                     <input type="text" name="deleteenclosure" value="<%= row.enclosureid %>" readonly>
                         
-                                    <button type="submit">Delete</button>
+                                    <div class="field button-field">
+                                        <button type="submit">Delete</button>
+                                        <!-- <button id="exit-button">Exit</button> -->
+                                    </div>
                                 </form>
                             </dialog>
                         </td>
@@ -84,42 +129,61 @@
     <dialog class="modal" id="add-modal">
         <form action="/mod_animal/add" method="post"> 
             <div class="field input-field">
-                <input id="class_animal" type="text" placeholder="Class" name ="addclass" class="input" required><br />
-            </div>
-            <div class="field input-field">
-                <input id="species_animal" type="text" placeholder="Species" name="addspecies" class="input" required><br />
-            </div>
-            <div class="field input-field">
-                <input id="name_animal" type="text" placeholder="Name" name="addname" class="input" required><br />
-            </div>
-            <div class="field input-field">
-                <input id="birthdate_animal" type="date" placeholder="Birthdate" name="addbirthdate" class="input" ><br />
-            </div>
-            <div class="field input-field">
-                <input id="arrival_animal" type="date" placeholder="Arrival Date" name="addarrival" class="input" required><br />
-            </div>
-            <div class="field input-field">
-                <input id="sex_animal" type="text" placeholder="Sex" name="addsex" class="input" required><br />
-            </div>
-            <div class="field input-field">
-                <input id="Enclosure_animal" type="text" placeholder="Enclosure ID" name="addenclosure" class="input" required><br />
-            </div>
-            <div class="field button-field">
-                <button type="submit">Add</button>
-            </div>
-            <div class="form-link">
-                <span><a href="/mod_animal" class="link login-link">View animal</a></span> 
+                <!-- <input id="class_animal" type="text" placeholder="Class" name ="addclass" class="input" required><br /> -->
+                <label for="class_animal">Animal Class: </label>
+                <select name="addclass" id="class_animal">
+                    <option value="mammal">Mammal</option>
+                    <option value="bird">Bird</option>
+                    <option value="reptile">Reptile</option>
+                    <option value="amphibian">Amphibian</option>
+                    <option value="fish">Fish</option>
+                </select>
             </div>
 
-            <button type="submit">Delete</button>
+            <div class="field input-field">
+                <label for="species_animal">Animal Species: </label>
+                <input id="species_animal" type="text" placeholder="Species" name="addspecies" class="input" required>
+            </div>
+
+            <div class="field input-field">
+                <label for="name_animal">Animal Name: </label>
+                <input id="name_animal" type="text" placeholder="Name" name="addname" class="input" required>
+            </div>
+
+            <div class="field input-field">
+                <label for="birthdate_animal">Birthdate: </label>
+                <input id="birthdate_animal" type="date" placeholder="Birthdate" name="addbirthdate" class="input" >
+            </div>
+
+            <div class="field input-field">
+                <label for="arrival_animal">Arrival date: </label>
+                <input id="arrival_animal" type="date" placeholder="Arrival Date" name="addarrival" class="input" required>
+            </div>
+
+            <div class="field input-field">
+                <!-- <input id="sex_animal" type="text" placeholder="Sex" name="addsex" class="input" required> -->
+                <span class="sex_animal">Sex: </span>
+                <label for="male_radio">M: </label>
+                <input id="male_radio" type="radio" name="addsex" value="M" required>
+                <label for="female_radio">F: </label>
+                <input id="female_radio" type="radio" name="addsex" value="F" required>
+            </div>
+
+            <div class="field input-field">
+                <input id="Enclosure_animal" type="text" placeholder="Enclosure ID" name="addenclosure" class="input" required>
+            </div>
+
+            <div class="field button-field">
+                <button type="submit">Add</button>
+                <!-- <button id="exit-button">Exit</button> -->
+            </div>
         </form>
     </dialog>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // ADD EXIT BUTTON FEATURE IN MODALS
-            var exitButton = document.querySelectorAll('.exit-button');
-
+            
             var addButton = document.querySelector('.add-button');
             var editButtons = document.querySelectorAll('.edit-button');
             var deleteButtons =  document.querySelectorAll('.delete-button');
@@ -141,6 +205,7 @@
                     deleteModals[index].showModal();
                 });
             });
+
         });
     </script>
 
