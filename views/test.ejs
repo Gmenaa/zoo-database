@@ -66,6 +66,23 @@
                                                 <button type="submit">Edit</button>
                                             </form>
                                         </dialog>
+
+                                        <dialog class="modal" id="delete-modal">
+                                            <form action="/test/delete" method="post"> 
+                                                <!--? to relay id to server, hidden  -->
+                                                <input type="hidden" name="id_delete" value="<%= row.animalid %>"> 
+
+                                                <input type="text" name="deleteclass" value= "<%= row.class %>" readonly>
+                                                <input type="text" name="deletespecies" value="<%= row.species %>" readonly>
+                                                <input type="text" name="deletename" value="<%= row.name %>" readonly>
+                                                <input type="text" name="deletebirth" value="<%= row.birthdate %>" readonly>
+                                                <input type="text" name="deletearrival" value="<%= row.arrivaldate %>" readonly>
+                                                <input type="text" name="deletesex" value="<%= row.sex %>" readonly>
+                                                <input type="text" name="deleteenclosure" value="<%= row.enclosureid %>" readonly>
+                                    
+                                                <button type="submit">Delete</button>
+                                            </form>
+                                        </dialog>
                                     </td>
                                 </tr>
                             <% }); %>
@@ -80,11 +97,20 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var editButtons = document.querySelectorAll('.edit-button');
-            var editModals = document.querySelectorAll('.modal');
+            var deleteButtons =  document.querySelectorAll('.delete-button');
+
+            var editModals = document.querySelectorAll('#edit-modal');
+            var deleteModals = document.querySelectorAll('#delete-modal');
 
             editButtons.forEach(function (button, index) {
                 button.addEventListener('click', function () {
                     editModals[index].showModal();
+                });
+            });
+
+            deleteButtons.forEach(function (button, index) {
+                button.addEventListener('click', function () {
+                    deleteModals[index].showModal();
                 });
             });
         });

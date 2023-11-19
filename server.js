@@ -904,6 +904,21 @@ const server = http.createServer(function(req, res){
         })
     }
 
+    else if(req.url === "/test/delete" && req.method === 'POST') {
+        collectinput(req, parsedata => {
+            const animalid = parsedata.id_delete;
+
+            db_con.query(`UPDATE animals SET deleted = 1 WHERE animalid = ?`, [animalid], (err, result) => {
+                if (err) throw err;
+                else {
+                    // console.log(result);
+                    res.writeHead(302, {Location: '/test'});
+                    res.end('Animal deleted')
+                }
+            })
+        })
+    }
+
 
 
 //? Read CSS and JPEG files
