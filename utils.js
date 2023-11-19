@@ -44,8 +44,10 @@ const displayView = (viewPath, res, data) => {
       }
     });
   };
+function alerting(message){
+    alert(message)
+}
 
 
 
-
-module.exports = {displayPage, collectinput, getcurrentdate, displayView}
+module.exports = {displayPage, collectinput, getcurrentdate, displayView,alerting}

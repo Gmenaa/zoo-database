@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adding animal</title>
+    
+</head>
+<body>
+    <main class="container forms">
+        <div class="form signup">
+            <div class="content">
+                <header>Adding animal</header>
+
+                <form action="/test/add_animal" method="post"> 
+                    <div class="field input-field">
+                        <input id="class_animal" type="text" placeholder="Class" name ="class" class="input" required><br />
+                    </div>
+                    <div class="field input-field">
+                        <input id="species_animal" type="text" placeholder="Species" name="species" class="input" required><br />
+                    </div>
+                    <div class="field input-field">
+                        <input id="name_animal" type="text" placeholder="Name" name="name" class="input" required><br />
+                    </div>
+                    <div class="field input-field">
+                        <input id="birthdate_animal" type="date" placeholder="Birthdate" name="birthdate" class="input" ><br />
+                    </div>
+                    <div class="field input-field">
+                        <input id="arrival_animal" type="date" placeholder="Arrival Date" name="arrival" class="input" required><br />
+                    </div>
+                    <div class="field input-field">
+                        <input id="sex_animal" type="text" placeholder="Sex" name="sex" class="input" required><br />
+                    </div>
+                    <div class="field input-field">
+                        <input id="Enclosure_animal" type="text" placeholder="Enclosure ID" name="enclosure" class="input" required><br />
+                    </div>
+                    <div class="field button-field">
+                        <button type="submit">Add</button>
+                    </div>
+                    <div class="form-link">
+                        <span><a href="/test" class="link login-link">View animal</a></span> 
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

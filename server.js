@@ -14,7 +14,7 @@ const {storeJWTcookie} = require('./auth')
 const cookie = require('cookie');
 const { parseArgs } = require('util');
 const { start } = require('repl');
-
+const { alerting } = require('./utils');
 let userId = "";
 let userFirstName = "";
 
@@ -24,6 +24,11 @@ const server = http.createServer(function(req, res){
         displayPage("./public/index.html",res)
     }
     else if(req.url==='/login'&& req.method === 'GET'){
+        const referer = req.headers.referer || '';
+        const cameFromRegister = referer.endsWith('/register');   
+        if (cameFromRegister){
+            res.write('<script>alert("Registration Successful!");</script>');
+        }
         displayPage("./public/login.html",res)
     }
     else if(req.url==='/guest'&& req.method === 'GET'){
@@ -85,6 +90,11 @@ const server = http.createServer(function(req, res){
 
     // ? Guest Tickets page
     else if(req.url==='/tickets' && req.method === 'GET'){
+        const referer = req.headers.referer || '';
+        const cameFromticket= referer.endsWith('/tickets');   
+        if (cameFromticket){
+            res.write('<script>alert("Your tickets were succesfully booked!");</script>');
+        }
         displayPage("./public/tickets.html",res)
     }
     else if(req.url==='/tickets'&& req.method === 'POST'){
@@ -246,6 +256,11 @@ const server = http.createServer(function(req, res){
 
     // ? Guest donations page
     else if(req.url==='/donations'&& req.method === 'GET'){
+        const referer = req.headers.referer || '';
+        const cameFromdonation = referer.endsWith('/donations');   
+        if (cameFromdonation){
+            res.write('<script>alert("Your Donation was a success! Thank You! :)");</script>');
+        }
         displayPage("./public/donations.html",res)
     }
     else if(req.url==='/donations'&& req.method === 'POST'){
@@ -289,7 +304,7 @@ const server = http.createServer(function(req, res){
                 }
             })
             res.writeHead(302, {Location: './login'});
-            res.end('User Registered')
+            res.end('<script>alert("Registration Successful!")</script>');
         })
     }
     else if (req.url === "/login" && req.method === 'POST'){
@@ -870,11 +885,79 @@ const server = http.createServer(function(req, res){
 
         
     }
-    else if(req.url === "/test" && req.method === 'POST') {
-        
+    else if (req.url === "/test/add_animal" && req.method === 'GET') {
+        const referer = req.headers.referer || '';
+        const cameFromadd= referer.endsWith('/test/add_animal');   
+        if (cameFromadd){
+            res.write('<script>alert("Your animals is successfully inserted!");</script>');
+        }
+        displayPage("./public/add_animal.html",res)
     }
+    else if (req.url === "/test/add_animal" && req.method === 'POST') {
+        collectinput(req, parsedata => {
+            const animal_class = parsedata.class;
+            const species = parsedata.species;
+            const name = parsedata.name;
+            const birthdate = parsedata.birthdate;
+            const arrival = parsedata.arrival;
+            const sex = parsedata.sex;
+            const enclosure = parsedata.enclosure;
+            if(animal_class === '') animal_class = null;
+            if(species === '') species = null;
+            if(name === '') name = null;
+            if(birthdate === '') birthdate = null;
+            if(arrival === '') arrival = null;
+            if(sex === '') sex = null;
+            if(enclosure === '') enclosure = null;
+            
+            const insert_animal = db_con.query('INSERT into animals(class,species,name,birthdate,arrivaldate,sex,enclosureid) VALUES (?,?,?,?,?,?,?)',[animal_class,species,name,birthdate,arrival,sex,enclosure], (err, result) => {
+                if(err){
+                    if (err == "Error: Animal and enclosure species does not match."){
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <h1> The ${species} species doesn't belong to the ${enclosure} enclosure, please try again.</h1>
+                        <p>Go back to add animal <a href="/test/add_animal">Back</a>.</p>
+                        </body>
+                        </html>`);
+                }
+                    else if (err == "Error: Cannot insert into that enclosure."){
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <h1> The ${enclosure} enclosure is full, please delete an animal to continue inserting.</h1>
+                        <p>Go back to add animal <a href="/test/add_animal">Back</a>.</p>
+                        </body>
+                        </html>`);
+                    }
 
-
+                    else{
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end(`<!DOCTYPE html>
+                            <html>
+                            <body>
+                            <h1> ${err}</h1>
+                            <p>Go back to add animal <a href="/test/add_animal">Back</a>.</p>
+                            </body>
+                            </html>`);  
+                    }
+                }
+                else{
+                console.log('Last animal insert ID:', result.insertId);
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <h1>Add animal Successful!</h1>
+                        <p>Go back to view <a href="/test">View</a>.</p>
+                        </body>
+                        </html>`);
+            }
+            });     
+    }
+        )}
 
 //? Read CSS and JPEG files
     else if(req.url.match("\.css$")){
