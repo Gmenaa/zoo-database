@@ -50,7 +50,11 @@ const displayView = (viewPath, res, data) => {
     });
   };
 
+  function alerting(message) {
+    alert(message);
+  }
 
 
 
-module.exports = {displayPage, collectinput, getcurrentdate, yyyymmdd, displayView}
+
+module.exports = {displayPage, collectinput, getcurrentdate, yyyymmdd, displayView, alerting}
