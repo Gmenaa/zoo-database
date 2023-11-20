@@ -40,13 +40,12 @@ function yyyymmdd(long) {
 
 
 const displayView = (viewPath, res, data) => {
-    ejs.renderFile(viewPath, { data }, (err, html) => {
-      if (err) {
-        console.error('EJS rendering error: ', err);
-        
-      } else {
-        res.end(html);
-      }
+      ejs.renderFile(viewPath, data, (err, html) => {
+        if (err) {
+            console.error('EJS rendering error: ', err);
+        } else {
+            res.end(html);
+        }
     });
   };
 

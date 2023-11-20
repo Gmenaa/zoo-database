@@ -11,6 +11,7 @@
         <a href="/admin">Home</a>
     </header>
     <div class="container">
+        <% const uniqueEnclosureNames = Array.from(new Set(enclosureResults.map(row => row.enclosurename))); %>
         <button class="button add-button"> Add </button>
         <table>
             <thead>
@@ -26,7 +27,7 @@
                 </tr>
             </thead>
             <tbody>
-                <% data.forEach(function(row) { %>
+                <% result.forEach(function(row) { %>
                     <tr>
                         
                         <td><%= row.class %></td>
@@ -35,7 +36,7 @@
                         <td><%= row.birthdate %></td>
                         <td><%= row.arrivaldate %></td>
                         <td><%= row.sex %></td>
-                        <td><%= row.enclosureid %></td>
+                        <td><%= row.enclosurename %></td>
                         <td>
                             <div class="btn-edit-delete">
                                 <button class="button edit-button"> Edit </button>
@@ -89,7 +90,20 @@
                                     </div>
 
                                     <div class="field input-field">
-                                        <input id="Enclosure_animal_edit" type="text" name="editenclosure" value="<%= row.enclosureid %>" required>
+                                        
+                                        <!-- <input id="Enclosure_animal_edit" type="text" name="editenclosure" value="<%= row.enclosureid %>" required> -->
+                                        <label for="enclosure_animal_edit">Enclosure: </label>
+                                        <select name="editenclosure" id="enclosure_animal_edit" required>
+                                            <!-- Iterate over the unique enclosure names directly -->
+                                            <% uniqueEnclosureNames.forEach(enclosureName => { %>
+                                                <option value="<%= enclosureResults.find(row => row.enclosurename === enclosureName).enclosureid %>"
+                                                    <%= row.enclosurename === enclosureName ? 'selected' : '' %>
+                                                >
+                                                    <%= enclosureName %>
+                                                </option>
+                                            <% }); %>
+                                        </select>
+
                                     </div>
                                     
                                     <div class="field button-field">
@@ -110,7 +124,7 @@
                                     <input type="text" name="deletebirth" value="<%= row.birthdate %>" readonly>
                                     <input type="text" name="deletearrival" value="<%= row.arrivaldate %>" readonly>
                                     <input type="text" name="deletesex" value="<%= row.sex %>" readonly>
-                                    <input type="text" name="deleteenclosure" value="<%= row.enclosureid %>" readonly>
+                                    <input type="text" name="deleteenclosure" value="<%= row.enclosurename %>" readonly>
                         
                                     <div class="field button-field">
                                         <button type="submit">Delete</button>
@@ -170,7 +184,17 @@
             </div>
 
             <div class="field input-field">
-                <input id="Enclosure_animal" type="text" placeholder="Enclosure ID" name="addenclosure" class="input" required>
+                <!-- <input id="Enclosure_animal" type="text" placeholder="Enclosure ID" name="addenclosure" class="input" required> -->
+                <label for="enclosure_animal_add">Enclosure: </label>
+                <select name="addenclosure" id="enclosure_animal_add" required>
+                    <!-- Iterate over the unique enclosure names directly -->
+                    <% uniqueEnclosureNames.forEach(enclosureName => { %>
+                        <option value="<%= enclosureResults.find(row => row.enclosurename === enclosureName).enclosureid %>">
+                            <%= enclosureName %>
+                        </option>
+                    <% }); %>
+                </select>
+                
             </div>
 
             <div class="field button-field">

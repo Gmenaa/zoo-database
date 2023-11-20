@@ -603,9 +603,7 @@ const server = http.createServer(function(req, res){
 
                     <div class="header-right-items">
                         <div class="signout-link">
-                            <!--TODO: actually logout and redirect to the home landing page  -->
                             <a href="./"><img src="../signout.jpeg" alt="signout icon link"></a>
-                            
                         </div>
                     </div>
                     
@@ -884,17 +882,36 @@ const server = http.createServer(function(req, res){
         }
         */
         //! ALL QUERIES OF THIS KIND MUST INCLUDE "WHERE deleted = 0"
-        db_con.query(`SELECT * FROM animals WHERE deleted = 0 ORDER BY species`, (err, result) => {
-            if(err) throw err;
+        db_con.query(`SELECT * FROM animals AS a
+                    LEFT JOIN enclosures AS e ON a.enclosureid = e.enclosureid
+                    WHERE a.deleted = 0 AND e.deleted = 0
+                    ORDER BY a.species`, (err, result) => { 
+            if (err) throw err;
             else {
-                result.forEach(row => {
-                    if(row.birthdate !== null) {
-                        row.birthdate = yyyymmdd(row.birthdate);
-                    }
-                    row.arrivaldate = yyyymmdd(row.arrivaldate);
+                // Extracting all unique enclosureids from the result set
+                const enclosureIds = result.map(row => row.enclosureid);
+        
+                // Fetching enclosure names for all unique enclosureids
+                db_con.query(`SELECT * FROM enclosures WHERE enclosureid IN (?) AND deleted = 0`, [enclosureIds], (err, enclosureResults) => {
+                    if (err) throw err;
+        
+                    // Creating a map for quick lookup of enclosure names based on enclosureid
+                    const enclosureMap = {};
+                    enclosureResults.forEach(enclosureRow => {
+                        enclosureMap[enclosureRow.enclosureid] = enclosureRow.enclosurename;
+                    });
+        
+                    // Updating the result with enclosure names
+                    result.forEach(row => {
+                        if (row.birthdate !== null) {
+                            row.birthdate = yyyymmdd(row.birthdate);
+                        }
+                        row.arrivaldate = yyyymmdd(row.arrivaldate);
+                        row.enclosurename = enclosureMap[row.enclosureid];
+                    });
+        
+                    displayView("./views/mod_animal.ejs", res, { result, enclosureResults });
                 });
-
-                displayView("./views/mod_animal.ejs",res, result);
             }
         });
     }
@@ -950,16 +967,16 @@ const server = http.createServer(function(req, res){
                     }
                 }
                 else {
-                    console.log('Last animal insert ID:', result.insertId);
+                    //console.log('Last animal insert ID:', result.insertId);
                     
-                    res.writeHead(302, {Location: '/mod_animal'});
+                    //res.writeHead(302, {Location: '/mod_animal'});
                     //res.end('<script>alert("Animal Added!")</script>');
                     
                 }
                 
             });
-            //res.writeHead(302, {Location: '/mod_animal'});
-            //res.end('Animal added')
+            res.writeHead(302, {Location: '/mod_animal'});
+            res.end('Animal added')
         }) 
     }
     else if(req.url === "/mod_animal/edit" && req.method === 'POST') {
