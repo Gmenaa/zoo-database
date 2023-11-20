@@ -8,6 +8,7 @@ const {displayView} = require('./utils')
 //Helper function to display all the page
 const {collectinput} = require('./utils')
 const {getcurrentdate} = require('./utils')
+const {yyyymmdd} = require('./utils')
 const {generatetoken} = require('./auth')
 const {verifytoken} = require('./auth')
 const {storeJWTcookie} = require('./auth')
@@ -729,7 +730,7 @@ const server = http.createServer(function(req, res){
                                             <td class="">${row.name_firstname}</td>
                                             <td class="">${row.name_lastname}</td>
                                             <td class="">${row.donationpurpose}</td>
-                                            <td class="">${row.donationdate}</td>
+                                            <td class="">${yyyymmdd(row.donationdate)}</td>
                                             <td class="">$${row.donationamount}</td>
                                         </tr>`).join('') + `</table> <div class="subtotal"><strong>Donations Subtotal: $${sumResult[0].subtotal}</strong></div>
                                         </div>`;
@@ -833,7 +834,7 @@ const server = http.createServer(function(req, res){
                                             <td class="outletid-col">${row.outletid}</td>
                                             <td class="outletname-col">${row.outletname}</td>
                                             <td class="outlettype-col">${row.outlettype}</td>
-                                            <td class="revenuedate-col">${row.revenuedate}</td>
+                                            <td class="revenuedate-col">${yyyymmdd(row.revenuedate)}</td>
                                             <td class="revenueamount-col">$${row.revenueamount}</td>
                                         </tr>`).join('') + `</table> <div class="subtotal"><strong>Revenue Subtotal: $${sumResult[0].subtotal}</strong></div>
                                         </div>`;
@@ -863,13 +864,9 @@ const server = http.createServer(function(req, res){
             else {
                 result.forEach(row => {
                     if(row.birthdate !== null) {
-                        const dateObject = new Date(row.birthdate);
-                        const dateFormatted = dateObject.toISOString().split('T')[0];
-                        row.birthdate = dateFormatted;
+                        row.birthdate = yyyymmdd(row.birthdate);
                     }
-                    const dateObject = new Date(row.arrivaldate);
-                    const dateFormatted = dateObject.toISOString().split('T')[0];
-                    row.arrivaldate = dateFormatted;
+                    row.arrivaldate = yyyymmdd(row.arrivaldate);
                 });
 
                 displayView("./views/mod_animal.ejs",res, result);

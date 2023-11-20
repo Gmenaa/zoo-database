@@ -31,7 +31,12 @@ function getcurrentdate(){
     return formattedDate;
 }
 
+function yyyymmdd(long) {
+  const dateObject = new Date(long);
+  const dateFormatted = dateObject.toISOString().split('T')[0];
 
+  return dateFormatted;
+}
 
 
 const displayView = (viewPath, res, data) => {
@@ -48,4 +53,4 @@ const displayView = (viewPath, res, data) => {
 
 
 
-module.exports = {displayPage, collectinput, getcurrentdate, displayView}
+module.exports = {displayPage, collectinput, getcurrentdate, yyyymmdd, displayView}

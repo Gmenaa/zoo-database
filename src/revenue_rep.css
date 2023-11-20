@@ -91,23 +91,23 @@ tr:not(:nth-child(2)) td:nth-child(-n+3) {
 }   
 
 .outletid-col {
-    width: 100px;
+    width: 10%;
 }
 
 .outletname-col {
-    width: 250px;
+    width: 25%; 
 }
 
 .outlettype-col {
-    width: 150px;
+    width: 12.5%;
 }
 
 .revenuedate-col {
-    width: 600px;
+    width: 17.5%;
 }
 
 .revenueamount-col {
-    width: 150px;
+    width: 12.5%;
 }
 
 .total-sum {
