@@ -655,6 +655,7 @@ const server = http.createServer(function(req, res){
         collectinput(req, parsedata => {
             const donations = [];
             const htmlTables = [];
+            let subtotals = [];
 
             const conservation = parsedata.wildlifeconservation;
             const outreach = parsedata.communityoutreach;
@@ -666,6 +667,7 @@ const server = http.createServer(function(req, res){
 
             const renderHtml = () => {
                 const responseHtml = htmlTables.join('');
+                const totalSum = subtotals.reduce((acc, subtotal) => acc + subtotal, 0);
                 res.writeHead(200, { 'Content-Type': 'text/html' });
                 res.write(`
                 <html>
@@ -677,6 +679,7 @@ const server = http.createServer(function(req, res){
                             <a href="/admin">Home</a>
                         </header>
                         ${responseHtml}
+                        <div class="total-sum"><strong>Total Donations: $${totalSum}</strong></div>
                     </body>
                 </html>
                 `);
@@ -704,7 +707,8 @@ const server = http.createServer(function(req, res){
                                 console.log("Subtotal Not Found");
                             }
                             else {
-                                
+                                let subtotalValue = sumResult[0].subtotal;
+                                subtotals.push(subtotalValue);
 
                                 const tableHtml = 
                                     `
@@ -712,7 +716,6 @@ const server = http.createServer(function(req, res){
                                     <table border="1">
                                     <tr>
                                         <th class="">Donor ID</th>
-                                        <th class="">Donation ID</th>
                                         <th class="">Donor First Name</th>
                                         <th class="">Donor Last Name</th>
                                         <th class="">Donation Purpose</th>
@@ -723,7 +726,6 @@ const server = http.createServer(function(req, res){
                                         row => 
                                         `<tr>
                                             <td class="">${row.guestid}</td>
-                                            <td class="">${row.donationid}</td>
                                             <td class="">${row.name_firstname}</td>
                                             <td class="">${row.name_lastname}</td>
                                             <td class="">${row.donationpurpose}</td>
@@ -762,6 +764,7 @@ const server = http.createServer(function(req, res){
         collectinput(req, parsedata => {
             const outlets = [];
             const htmlTables = [];
+            let subtotals = [];
 
             const safari = parsedata.safaritreasures;
             const trinkets = parsedata.trinketscharms;
@@ -771,21 +774,9 @@ const server = http.createServer(function(req, res){
             const startDate = parsedata.revenuestartdate;
             const endDate = parsedata.revenueenddate;
 
-            //const currentDate = new Date().toDateString();
-
-            /*
-            const currentDate = new Date();
-            const year = currentDate.getFullYear();
-            const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-            const day = String(currentDate.getDate()).padStart(2, '0');
-
-            const formattedDate = `${year}-${month}-${day}`;
-            console.log(startDate);
-            console.log(formattedDate);
-            */
-
             const renderHtml = () => {
                 const responseHtml = htmlTables.join('');
+                const totalSum = subtotals.reduce((acc, subtotal) => acc + subtotal, 0);
                 res.writeHead(200, { 'Content-Type': 'text/html' });
                 res.write(`
                 <html>
@@ -797,6 +788,7 @@ const server = http.createServer(function(req, res){
                             <a href="/admin">Home</a>
                         </header>
                         ${responseHtml}
+                        <div class="total-sum"><strong>Total Revenue: $${totalSum}</strong></div>
                     </body>
                 </html>
                 `);
@@ -810,7 +802,7 @@ const server = http.createServer(function(req, res){
 
             const processOutlet = (outletIndex) => {
                 const outletId = outlets[outletIndex];
-
+                
                 db_con.query(`SELECT * FROM revenue_report WHERE outletid = ? AND revenuedate BETWEEN ? AND ?`, [outletId, startDate, endDate], (err, result) => {
                     if (err) throw err;
                     else if (result.length === 0) {
@@ -821,6 +813,9 @@ const server = http.createServer(function(req, res){
                             else if (sumResult.length === 0) {
                                 console.log("Subtotal Not Found");
                             } else {
+                                let subtotalValue = sumResult[0].subtotal;
+                                subtotals.push(subtotalValue);
+
                                 const tableHtml = 
                                     `
                                     <div class="container">

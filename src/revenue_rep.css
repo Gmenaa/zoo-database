@@ -109,3 +109,9 @@ tr:not(:nth-child(2)) td:nth-child(-n+3) {
 .revenueamount-col {
     width: 150px;
 }
+
+.total-sum {
+    text-align: center;
+    font-size: 1.5rem;
+    padding: 30px;
+}
