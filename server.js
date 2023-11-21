@@ -16,6 +16,7 @@ const cookie = require('cookie');
 const { parseArgs } = require('util');
 const { start } = require('repl');
 const { alerting } = require('./utils');
+const { col } = require('sequelize');
 
 let userId = "";
 let userFirstName = "";
@@ -452,7 +453,7 @@ const server = http.createServer(function(req, res){
                     <h1 class="sidebar-header">Management</h1>
                     <div class="subsection admin-subsection">
                         <div class="sidebar-link"> 
-                            <a href=''>Modify Employees</a>  
+                            <a href=''>Modify Inventory</a>  
                         </div> 
                     </div>
                 </section>
@@ -530,7 +531,7 @@ const server = http.createServer(function(req, res){
                     <h1 class="sidebar-header">Reports</h1>
                     <div class="subsection reports-subsection">
                         <div class="sidebar-link"> 
-                            <a href='./vet_health_rep'>Health Reports</a>  
+                            <a href=''>Veterinary Expenses Reports</a>  
                         </div> 
                     </div>
 
@@ -620,7 +621,7 @@ const server = http.createServer(function(req, res){
                         </div> 
                         
                         <div class="sidebar-link"> 
-                            <a href='./admin_health_rep'>Health Reports</a>  
+                            <a href='./admin_health_rep'>Veterinary Expenses Reports</a>  
                         </div> 
                         <div class="sidebar-link"> 
                             <a href='./admin_donor_rep'>Donation Reports</a> 
@@ -644,7 +645,7 @@ const server = http.createServer(function(req, res){
 
 
                         <div class="sidebar-link"> 
-                            <a href=''>Modify Outlets</a>  
+                            <a href='./mod_employee'>Modify Employees</a>  
                         </div> 
                         
                     </div>
@@ -873,14 +874,8 @@ const server = http.createServer(function(req, res){
         })
     }
 
+    // ADMIN mod animal
     else if(req.url === "/mod_animal" && req.method === 'GET') {
-        /*
-        const referer = req.headers.referer || '';
-        const cameFromadd= referer.endsWith('/mod_animal/add');   
-        if (cameFromadd){
-            res.write('<script>alert("Your animals is successfully inserted!");</script>');
-        }
-        */
         //! ALL QUERIES OF THIS KIND MUST INCLUDE "WHERE deleted = 0"
         db_con.query(`SELECT * FROM animals AS a
                     LEFT JOIN enclosures AS e ON a.enclosureid = e.enclosureid
@@ -1021,6 +1016,155 @@ const server = http.createServer(function(req, res){
                 }
             })
         })
+    }
+    
+    // ADMIN mod employee
+    else if(req.url === "/mod_employee" && req.method === 'GET') {
+        db_con.query(`SELECT e.*, o.outletname, m.name_firstname AS manager_firstname, m.name_lastname AS manager_lastname
+                    FROM employees AS e
+                    LEFT JOIN outlets AS o ON e.worksat = o.outletid
+                    LEFT JOIN employees AS m ON e.managerid = m.employeeid
+                    WHERE e.deleted = 0 AND o.deleted = 0
+                    ORDER BY e.managerid` , (err, result) => {
+            if(err) throw err;
+
+            const outletIds = result.map(row => row.worksat);
+
+            db_con.query(`SELECT * from outlets WHERE outletid IN (?) AND deleted = 0`, [outletIds], (err, outletResults) => {
+                if(err) throw err;
+
+                result.forEach(row => {
+                    row.hiredate = yyyymmdd(row.hiredate)
+
+                    row.managerid = row.managerid || ""; //? Handle the case where there may not be a manager
+                    row.manager_name = `${row.manager_firstname} ${row.manager_lastname}`;
+                });
+    
+                displayView("./views/mod_employee.ejs",res, {result, outletResults});
+            })
+            
+        }) 
+    }
+    else if(req.url === "/mod_employee/add" && req.method === 'POST') {
+        collectinput(req, parsedata => {
+            const empid = parsedata.id_add;
+
+            const email = parsedata.addemail;
+            const password = parsedata.addpassword;
+            const position = parsedata.addposition;
+            const hiredate = parsedata.addhiredate;
+            const worksat = parsedata.addworksat;  // 1, 2, 3, 4, 5, 6
+            const fname = parsedata.addfname;
+            let mname = parsedata.addmname;
+            const lname = parsedata.addlname;
+            const schedule = parsedata.addschedule; // "MON-THU"...
+            const salary = parsedata.addsalary;
+
+            console.log(email);
+            console.log(password);
+            console.log(position);
+            console.log(hiredate);
+            console.log(worksat);  
+            console.log(fname);
+            console.log(mname);
+            console.log(lname);
+            console.log(schedule);
+            console.log(salary);
+
+            if(mname === '') mname = null;
+
+            db_con.query(`SELECT * FROM employees WHERE managerid IS NULL AND worksat = ?`, [worksat], (err, result) => {
+                if(err) throw err;
+
+                const manager = result[0].employeeid;
+
+                db_con.query(`INSERT INTO employees(employee_email, password, position, hiredate, worksat, name_firstname, name_middlename, name_lastname, workschedule, salary, managerid) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [email, password, position, hiredate, worksat, fname, mname, lname, schedule, salary, manager], (err, result) => {
+                    if (err) throw err;
+                    else {
+                        res.writeHead(302, {Location: '/mod_employee'});
+                        res.end('Employee Added')
+                    }
+                })
+                
+            })
+
+        })
+    }
+    else if(req.url === "/mod_employee/edit" && req.method === 'POST') {
+        collectinput(req, parsedata => {
+            const empid = parsedata.id_edit;
+
+            const email = parsedata.editemail;
+            const password = parsedata.editpassword;
+            const position = parsedata.editposition;
+            const hiredate = parsedata.edithiredate;
+            const worksat = parsedata.editworksat;  // 1, 2, 3, 4, 5, 6
+            const fname = parsedata.editfname;
+            let mname = parsedata.editmname;
+            const lname = parsedata.editlname;
+            const schedule = parsedata.editschedule; // "MON-THU"...
+            const salary = parsedata.editsalary;
+
+            console.log(email);
+            console.log(password);
+            console.log(position);
+            console.log(hiredate);
+            console.log(worksat);
+            console.log(fname);
+            console.log(mname);
+            console.log(lname);
+            console.log(schedule);
+            console.log(salary);
+
+            if(mname === '') mname = null;
+
+            db_con.query(`SELECT * FROM employees WHERE managerid IS NULL AND worksat = ?`, [worksat], (err, result) => {
+                if(err) throw err;
+
+                const manager = result[0].employeeid;
+
+                // updating a manager
+                if(manager == empid) {
+                    db_con.query(`UPDATE employees SET employee_email = ?, password = ?, position = ?, hiredate = ?, worksat = ?, name_firstname = ?, name_middlename = ?, name_lastname = ?, workschedule = ?, salary = ?, managerid = null WHERE employeeid = ?`, [email, password, position, hiredate, worksat, fname, mname, lname, schedule, salary, empid], (err, result) => {
+                        if (err) throw err;
+                        else {
+                            res.writeHead(302, {Location: '/mod_employee'});
+                            res.end('Employee edited')
+                        }
+                    })
+                }
+
+                // updating everyone else
+                else {
+                    db_con.query(`UPDATE employees SET employee_email = ?, password = ?, position = ?, hiredate = ?, worksat = ?, name_firstname = ?, name_middlename = ?, name_lastname = ?, workschedule = ?, salary = ?, managerid = ? WHERE employeeid = ?`, [email, password, position, hiredate, worksat, fname, mname, lname, schedule, salary, manager, empid], (err, result) => {
+                        if (err) throw err;
+                        else {
+                            res.writeHead(302, {Location: '/mod_employee'});
+                            res.end('Employee edited')
+                        }
+                    })
+                }
+                
+            })
+
+            
+        })
+        
+    }
+    else if(req.url === "/mod_employee/delete" && req.method === 'POST') {
+        collectinput(req, parsedata => {
+            const employeeid = parsedata.id_delete;
+
+            db_con.query(`UPDATE employees SET deleted = 1 WHERE employeeid = ?`, [employeeid], (err, result) => {
+                if (err) throw err;
+                else {
+                    res.writeHead(302, {Location: '/mod_employee'});
+                    res.end('Employee deleted')
+                }
+            })
+        })
+
+        
     }
 
 

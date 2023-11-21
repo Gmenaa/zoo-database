@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./mod_animal.css">
+    <title>Modify Employees</title>
+</head>
+<body>
+    <header>
+        <a href="/admin">Home</a>
+    </header>
+    <div class="container">
+        <% const uniqueOutletNames = Array.from(new Set(outletResults.map(row => row.outletname))); %>
+        <button class="button add-button"> Add </button>
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee Email</th>
+                    <th>Password</th>
+                    <th>Position</th>
+                    <th>Hire Date</th>
+                    <th>Works At</th>
+                    <th>First Name</th>
+                    <th>Middle Name</th>
+                    <th>Last Name</th>
+                    <th>Schedule</th>
+                    <th>Annual Salary</th>
+                    <th>Manager</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                <% result.forEach(function(row) { %>
+                    <tr>
+                        
+                        <td><%= row.employee_email %></td>
+                        <td><%= row.password %></td>
+                        <td><%= row.position %></td>
+                        <td><%= row.hiredate %></td>
+                        <td><%= row.outletname %></td>  <!--? variable from outlets table -->
+                        <td><%= row.name_firstname %></td>
+                        <td><%= row.name_middlename %></td>
+                        <td><%= row.name_lastname %></td>
+                        <td><%= row.workschedule %></td>
+                        <td><%= row.salary %></td>
+                        <td><%= row.manager_firstname %> <%= row.manager_lastname %></td>
+                        
+                        <td>
+                            <div class="btn-edit-delete">
+                                <button class="button edit-button"> Edit </button>
+                                <button class="button delete-button" > Delete </button>
+                            </div>
+                            
+
+                            <dialog class="modal" id="edit-modal">
+                                <form action="/mod_employee/edit" method="post"> 
+                                    <input type="hidden" name="id_edit" value="<%= row.employeeid %>"> 
+
+                                    <div class="field input-field">
+                                        <label for="email_employee_edit">Employee Email: </label>
+                                        <input id="email_employee_edit" type="email" name="editemail" class="input" value="<%= row.employee_email %>" required>
+                                    </div>
+                        
+                                    <div class="field input-field">
+                                        <label for="password_employee_edit">Employee Password: </label>
+                                        <input id="password_employee_edit" type="text" name="editpassword" class="input" value="<%= row.password %>" required>
+                                    </div>
+                        
+                                    <div class="field input-field">
+                                        <label for="position_employee_edit">Employee Position: </label>
+                                        <input id="position_employee_edit" type="text" name="editposition" class="input" value="<%= row.position %>" required>
+                                    </div>
+                        
+                                    <div class="field input-field">
+                                        <label for="hire_date_edit">Hire Date: </label>
+                                        <input id="hire_date_edit" type="date" name="edithiredate" class="input" value="<%= row.hiredate %>" required>
+                                    </div>
+                        
+                                    <div class="field input-field">
+                                        <label for="works_at_edit">Works At: </label>
+                                        <select id="works_at_edit"  name="editworksat" required>
+                                            <% outletResults.forEach(outlet => { %>
+                                                <option value="<%= outlet.outletid %>"><%= outlet.outletname %></option> 
+                                            <% }); %>
+                                        </select>
+                                    </div>
+                        
+                                    <div class="field input-field">
+                                        <label for="fname_employee_edit">Employee First Name: </label>
+                                        <input id="fname_employee_edit" type="text" name="editfname" class="input" value="<%= row.name_firstname %>" required>
+                                    </div>
+                        
+                                    <div class="field input-field">
+                                        <label for="mname_employee_edit">Employee Middle Name: </label>
+                                        <input id="mname_employee_edit" type="text" name="editmname" class="input" value="<%= row.name_middlename %>" >
+                                    </div>
+                        
+                                    <div class="field input-field">
+                                        <label for="lname_employee_edit">Employee Last Name: </label>
+                                        <input id="lname_employee_edit" type="text" name="editlname" class="input" value="<%= row.name_lastname %>" required>
+                                    </div>
+                        
+                                    <div class="field input-field">
+                                        <label for="schedule_edit">Schedule: </label>
+                                        <select id="schedule_edit"  name="editschedule" required>
+                                            <option value="MON-FRI" <%= row.workschedule === 'MON-FRI' ? 'selected' : '' %> >MON-FRI</option>
+                                            <option value="THU-TUE" <%= row.workschedule === 'THU-TUE' ? 'selected' : '' %> >THU-TUE</option>
+                                            <option value="TUE-THU" <%= row.workschedule === 'TUE-THU' ? 'selected' : '' %> >TUE-THU</option>
+                                            <option value="SUN-SAT" <%= row.workschedule === 'SUN-SAT' ? 'selected' : '' %> >SUN-SAT</option>
+                                            <option value="FRI-TUE" <%= row.workschedule === 'FRI-TUE' ? 'selected' : '' %> >FRI-TUE</option>
+                                            <option value="SAT-MON" <%= row.workschedule === 'SAT-MON' ? 'selected' : '' %> >SAT-MON</option>
+                                            <option value="MON-THU" <%= row.workschedule === 'MON-THU' ? 'selected' : '' %> >MON-THU</option>
+                                            <option value="TUE-FRI" <%= row.workschedule === 'TUE-FRI' ? 'selected' : '' %> >TUE-FRI</option>
+                                            <option value="SUN-THU" <%= row.workschedule === 'SUN-THU' ? 'selected' : '' %> >SUN-THU</option>
+                                            <option value="MON-THU" <%= row.workschedule === 'MON-THU' ? 'selected' : '' %> >MON-THU</option>
+                                            <option value="THU-MON" <%= row.workschedule === 'THU-MON' ? 'selected' : '' %> >THU-MON</option>
+                                            <option value="FRI-SUN" <%= row.workschedule === 'FRI-SUN' ? 'selected' : '' %> >FRI-SUN</option>
+                                            <option value="FRI-TUE" <%= row.workschedule === 'FRI-TUE' ? 'selected' : '' %> >FRI-TUE</option>
+                                            <option value="TUE-SAT" <%= row.workschedule === 'TUE-SAT' ? 'selected' : '' %> >TUE-SAT</option>
+                                            <option value="WED-SUN" <%= row.workschedule === 'WED-SUN' ? 'selected' : '' %> >WED-SUN</option>
+                                        </select>
+                                    </div>
+                        
+                                    <div class="field input-field">
+                                        <label for="salary_employee_edit">Employee Salary: </label>
+                                        <input id="salary_employee_edit" type="number" name="editsalary" class="input" value="<%= row.salary %>" required>
+                                    </div>
+
+                                    <div class="field button-field">
+                                        <button type="submit">Edit</button>
+                                    </div>
+                                </form>
+                            </dialog>
+
+                            <dialog class="modal" id="delete-modal">
+                                <form action="/mod_employee/delete" method="post"> 
+                                    <input type="hidden" name="id_delete" value="<%= row.employeeid %>"> 
+
+                                    <input type="text" name="deleteemail" value= "<%= row.employee_email %>" readonly>
+                                    <input type="text" name="deletepassword" value= "<%= row.password %>" readonly>
+                                    <input type="text" name="deleteposition" value= "<%= row.position %>" readonly>
+                                    <input type="text" name="deletehiredate" value= "<%= row.hirdeate %>" readonly>
+                                    <input type="text" name="deleteworksat" value= "<%= row.worksat %>" readonly>
+                                    <input type="text" name="deletefname" value= "<%= row.name_firstname %>" readonly>
+                                    <input type="text" name="deletemname" value= "<%= row.name_middlename %>" readonly>
+                                    <input type="text" name="deletelname" value= "<%= row.name_lastname %>" readonly>
+                                    <input type="text" name="deleteschedule" value= "<%= row.workschedule %>" readonly>
+                                    <input type="text" name="deletesalary" value= "<%= row.salary %>" readonly>
+                                    <input type="text" name="deleteempmanager" value= "<%= row.manager_firstname %> <%= row.manager_lastname %>" readonly>
+                        
+                                    <div class="field button-field">
+                                        <button type="submit">Delete</button>
+                                        <!-- <button id="exit-button">Exit</button> -->
+                                    </div>
+                                </form>
+                            </dialog>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <!--! add modal starts here -->
+    <dialog class="modal" id="add-modal">
+        <form action="/mod_employee/add" method="post"> 
+            <div class="field input-field">
+                <label for="email_employee">Employee Email: </label>
+                <input id="email_employee" type="email" placeholder="Email" name="addemail" class="input" required>
+            </div>
+
+            <div class="field input-field">
+                <label for="password_employee">Employee Password: </label>
+                <input id="password_employee" type="text" placeholder="Password" name="addpassword" class="input" required>
+            </div>
+
+            <div class="field input-field">
+                <label for="position_employee">Employee Position: </label>
+                <input id="position_employee" type="text" placeholder="Position" name="addposition" class="input" required>
+            </div>
+
+            <div class="field input-field">
+                <label for="hire_date">Hire Date: </label>
+                <input id="hire_date" type="date" placeholder="Hire Date" name="addhiredate" class="input" required>
+            </div>
+
+            <!--! WORKS AT FIELD IMPLEMENT DROP DOWN OF OUTLETS -->
+            <div class="field input-field">
+                <label for="works_at">Works At: </label>
+                <select id="works_at"  name="addworksat" required>
+                    <!-- Iterate over the unique enclosure names directly -->
+                    <% uniqueOutletNames.forEach(outletName => { %>
+                        <option value="<%= outletResults.find(row => row.outletname === outletName).outletid %>">
+                            <%= outletName %>
+                        </option>
+                    <% }); %>
+                </select>
+            </div>
+
+            <div class="field input-field">
+                <label for="fname_employee">Employee First Name: </label>
+                <input id="fname_employee" type="text" placeholder="First Name" name="addfname" class="input" required>
+            </div>
+
+            <div class="field input-field">
+                <label for="mname_employee">Employee Middle Name: </label>
+                <input id="mname_employee" type="text" placeholder="Middle Name" name="addmname" class="input" >
+            </div>
+
+            <div class="field input-field">
+                <label for="lname_employee">Employee Last Name: </label>
+                <input id="lname_employee" type="text" placeholder="Last Name" name="addlname" class="input" required>
+            </div>
+
+            <div class="field input-field">
+                <label for="schedule">Schedule: </label>
+                <select id="schedule"  name="addschedule" required>
+                    <option value="MON-FRI">MON-FRI</option>
+                    <option value="TUE-THU">TUE-THU</option>
+                    <option value="SUN-SAT">SUN-SAT</option>
+                    <option value="FRI-TUE">FRI-TUE</option>
+                    <option value="SAT-MON">SAT-MON</option>
+                    <option value="MON-THU">MON-THU</option>
+                    <option value="TUE-FRI">TUE-FRI</option>
+                    <option value="SUN-THU">SUN-THU</option>
+                    <option value="MON-THU">MON-THU</option>
+                    <option value="THU-MON">THU-MON</option>
+                    <option value="FRI-SUN">FRI-SUN</option>
+                    <option value="FRI-TUE">FRI-TUE</option>
+                    <option value="TUE-SAT">TUE-SAT</option>
+                    <option value="WED-SUN">WED-SUN</option>
+                </select>
+            </div>
+
+            <div class="field input-field">
+                <label for="salary_employee">Employee Salary: </label>
+                <input id="salary_employee" type="number" placeholder="$" name="addsalary" class="input" required>
+            </div>
+
+            <div class="field button-field">
+                <button type="submit">Add</button>
+            </div>
+        </form>
+    </dialog>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // ADD EXIT BUTTON FEATURE IN MODALS
+            
+            var addButton = document.querySelector('.add-button');
+            var editButtons = document.querySelectorAll('.edit-button');
+            var deleteButtons =  document.querySelectorAll('.delete-button');
+
+            var addModal = document.querySelector('#add-modal')
+            var editModals = document.querySelectorAll('#edit-modal');
+            var deleteModals = document.querySelectorAll('#delete-modal');
+
+            addButton.addEventListener('click', function () {
+                addModal.showModal();
+            })
+            editButtons.forEach(function (button, index) {
+                button.addEventListener('click', function () {
+                    editModals[index].showModal();
+                });
+            });
+            deleteButtons.forEach(function (button, index) {
+                button.addEventListener('click', function () {
+                    deleteModals[index].showModal();
+                });
+            });
+
+        });
+    </script>
+
+</body>
+</html>
