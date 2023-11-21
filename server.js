@@ -356,44 +356,49 @@ const server = http.createServer(function(req, res){
     }
     else if (req.url === "/emplogin" && req.method === 'POST'){
         collectinput(req,parsedata=>{
-            const employeeid = parsedata.employeeid
+            const employee_email = parsedata.employee_email
             const password = parsedata.password
-            db_con.query('SELECT * FROM employees WHERE employeeid = ?',[employeeid],(err,result)=>{
+            db_con.query('SELECT * FROM employees WHERE employee_email = ?',[employee_email],(err,result)=>{
                 if (err) throw err;
                 else if (result.length === 0){
+                    console.log(result)
                     console.log("ID Not Found")
                 }
                 else{
-                    console.log(result[0].employeeid)
                     console.log(result)
                     if (password ===result[0].password){
                         // ! declaring employee info
                         userId = result[0].guestid
                         userFirstName = result[0].name_firstname;
                         if (result[0].position === "manager"){
-                            const token = generatetoken({employeeid})
+                            const token = generatetoken({employee_email})
                             storeJWTcookie(res,token)
                             res.writeHead(302, {Location: './manager'})
                             res.end('Check login')
                         }
                         else if (result[0].position === "admin"){
-                            const token = generatetoken({employeeid})
+                            const token = generatetoken({employee_email})
                             storeJWTcookie(res,token)
                             res.writeHead(302, {Location: './admin'})
                             res.end('Check login')
                         }
                         else if (result[0].position === "veterinarian"){
-                            const token = generatetoken({employeeid})
+                            const token = generatetoken({employee_email})
                             storeJWTcookie(res,token)
                             res.writeHead(302, {Location: './vet'})
                             res.end('Check login')
-                        }
-                        else{
-                            res.writeHead(302, {Location: './emplogin'});
-                            res.end('User Not Logged In')   
-                        }
-                        
+                        }   
                     } 
+                    else{
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end(`<!DOCTYPE html>
+                    <html>
+                    <body>
+
+                    <script>alert("Wrong password! Please enter your password again"); window.location.href="/emplogin";</script>
+                    </body>
+                    </html>`);
+                    }
                 }
             })
             })
@@ -877,6 +882,7 @@ const server = http.createServer(function(req, res){
     // ADMIN mod animal
     else if(req.url === "/mod_animal" && req.method === 'GET') {
         //! ALL QUERIES OF THIS KIND MUST INCLUDE "WHERE deleted = 0"
+        
         db_con.query(`SELECT * FROM animals AS a
                     LEFT JOIN enclosures AS e ON a.enclosureid = e.enclosureid
                     WHERE a.deleted = 0 AND e.deleted = 0
@@ -929,49 +935,43 @@ const server = http.createServer(function(req, res){
             if(enclosure === '') enclosure = null;
 
             const insert_animal = db_con.query('INSERT into animals(class,species,name,birthdate,arrivaldate,sex,enclosureid) VALUES (?,?,?,?,?,?,?)',[animal_class,species,name,birthdate,arrival,sex,enclosure], (err, result) => {
-                if(err) {
-                    if (err == "Error: Animal and enclosure species does not match.") {
+                if(err){
+                    if(err == "Error: Animal and enclosure species does not match."){
                         res.writeHead(200, { 'Content-Type': 'text/html' });
                         res.end(`<!DOCTYPE html>
-                            <html>
-                            <body>
-                            <h1> The ${species} species doesn't belong to the ${enclosure} enclosure, please try again.</h1>
-                            <p>Go back to add animal <a href="/mod_animal">Back</a>.</p>
-                            </body>
-                            </html>`);
-                    }   
-                    else if (err == "Error: Cannot insert into that enclosure.") {
-                        res.writeHead(200, { 'Content-Type': 'text/html' });
-                        res.end(`<!DOCTYPE html>
-                            <html>
-                            <body>
-                            <h1> The ${enclosure} enclosure is full, please delete an animal to continue inserting.</h1>
-                            <p>Go back to add animal <a href="/mod_animal">Back</a>.</p>
-                            </body>
-                            </html>`);
+                        <html>
+                        <body>
+                        <script>alert("Animal insertion failed. The ${species} species doesn't belong to the ${enclosure} enclosure. Please try again."); window.location.href="/mod_animal";</script>
+                        </body>
+                        </html>`);
                     }
-                    else {
+                    else if(err == "Error: Cannot insert into that enclosure."){
                         res.writeHead(200, { 'Content-Type': 'text/html' });
                         res.end(`<!DOCTYPE html>
-                            <html>
-                            <body>
-                            <h1> ${err}</h1>
-                            <p>Go back to add animal <a href="/mod_animal">Back</a>.</p>
-                            </body>
-                            </html>`);  
+                        <html>
+                        <body>
+                        <script>alert("Animal insertion failed. The ${enclosure} enclosure is full. Please remove animal or increase the capacity and try again."); window.location.href="/mod_animal";</script>
+                        </body>
+                        </html>`);
                     }
                 }
+
+                //if no error, then animal is inserted
                 else {
-                    //console.log('Last animal insert ID:', result.insertId);
-                    
-                    //res.writeHead(302, {Location: '/mod_animal'});
-                    //res.end('<script>alert("Animal Added!")</script>');
-                    
+                    console.log('Last animal insert ID:', result.insertId);
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <h1>Your animal is succesfully added!</h1>
+                        <script>alert("Animal insertion is sucessful."); window.location.href="/mod_animal";</script>
+                        </body>
+                        </html>`);
                 }
                 
             });
-            res.writeHead(302, {Location: '/mod_animal'});
-            res.end('Animal added')
+            //res.writeHead(302, {Location: '/mod_animal'});
+            //res.end('Animal added')
         }) 
     }
     else if(req.url === "/mod_animal/edit" && req.method === 'POST') {
@@ -998,8 +998,14 @@ const server = http.createServer(function(req, res){
             db_con.query(`UPDATE animals SET class = ?, species = ?, name = ?, birthdate = ?, arrivaldate = ?, sex = ?, enclosureid = ? WHERE animalid = ?`, [animalclass, species, name, birthday, arrival, sex, enclosure, animalid], (err, result) => {
                 if (err) throw err;
                 else {
-                    res.writeHead(302, {Location: '/mod_animal'});
-                    res.end('Animal edited')
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Your animal is updated."); window.location.href="/mod_animal";</script>
+                        </body>
+                        </html>`);
+                    
                 }
             })
         })
@@ -1007,12 +1013,17 @@ const server = http.createServer(function(req, res){
     else if(req.url === "/mod_animal/delete" && req.method === 'POST') {
         collectinput(req, parsedata => {
             const animalid = parsedata.id_delete;
-
+            
             db_con.query(`UPDATE animals SET deleted = 1 WHERE animalid = ?`, [animalid], (err, result) => {
                 if (err) throw err;
                 else {
-                    res.writeHead(302, {Location: '/mod_animal'});
-                    res.end('Animal deleted')
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Your animal is deleted."); window.location.href="/mod_animal";</script>
+                        </body>
+                        </html>`);
                 }
             })
         })
