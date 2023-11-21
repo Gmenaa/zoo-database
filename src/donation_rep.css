@@ -84,9 +84,12 @@ tr:not(:nth-child(2)) td:nth-child(4) {
     flex-direction: column;
 }
 
-.subtotal {
+.results {
     display: flex;
+    flex-direction: column;
     align-self: flex-end;
+    gap: 10px;
+    font-size: 18px;
 }   
 
 

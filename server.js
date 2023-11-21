@@ -696,13 +696,47 @@ const server = http.createServer(function(req, res){
                 <html>
                     <head>
                         <link rel="stylesheet" href="../donation_rep.css">
+
+                        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
                     </head>
                     <body>
                         <header>
                             <a href="/admin">Home</a>
                         </header>
                         ${responseHtml}
-                        <div class="total-sum"><strong>Total Donations: $${totalSum}</strong></div>
+                        <div class="total-sum"><strong>Total Donations Pool: $${totalSum}</strong></div>
+
+                        
+                        <div id="pieChartContainer" style="width: 650px; height: 650px; margin: 0 auto; text-align: center;"">
+                            <canvas id="donationPieChart" ></canvas>
+                        </div>
+
+
+                        <script>
+                            function renderPieChart(donations, subtotals) {
+                                var ctx = document.getElementById('donationPieChart').getContext('2d');
+                                var pieChart = new Chart(ctx, {
+                                    type: 'pie',
+                                    data: {
+                                        labels: donations,
+                                        datasets: [{
+                                            data: subtotals,
+                                            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50'],
+                                        }]
+                                    },
+                                    options: {
+                                        title: {
+                                            display: true,
+                                            text: 'Donation Distribution'
+                                        }
+                                    }
+                                });
+                            }
+
+                            renderPieChart(${JSON.stringify(donations)}, ${JSON.stringify(subtotals)});
+                        </script>
+
+
                     </body>
                 </html>
                 `);
@@ -724,7 +758,7 @@ const server = http.createServer(function(req, res){
                     }
                     else {
                         console.log(result); 
-                        db_con.query(`SELECT SUM(donationamount) AS subtotal FROM donation_report WHERE donationpurpose = ? AND donationdate BETWEEN ? AND ?`, [donationType, startDate, endDate], (err, sumResult) => {
+                        db_con.query(`SELECT COUNT(DISTINCT guestid) AS uniqueDonors, SUM(donationamount) AS subtotal FROM donation_report WHERE donationpurpose = ? AND donationdate BETWEEN ? AND ?`, [donationType, startDate, endDate], (err, sumResult) => {
                             if (err) throw err;
                             else if (sumResult.length === 0) {
                                 console.log("Subtotal Not Found");
@@ -754,8 +788,16 @@ const server = http.createServer(function(req, res){
                                             <td class="">${row.donationpurpose}</td>
                                             <td class="">${yyyymmdd(row.donationdate)}</td>
                                             <td class="">$${row.donationamount}</td>
-                                        </tr>`).join('') + `</table> <div class="subtotal"><strong>Donations Subtotal: $${sumResult[0].subtotal}</strong></div>
-                                        </div>`;
+                                        </tr>`).join('') 
+                                    + `</table> 
+                                    <div class = "results">
+                                        <div class="subtotal"><strong>Total Donations:  ${result.length}</strong></div>
+                                        <div class="subtotal"><strong>Total Unique Donations:  ${sumResult[0].uniqueDonors}</strong></div>
+                                        <div class="subtotal"><strong>Donations Subtotal:  $${sumResult[0].subtotal}</strong></div>
+                                        
+                                        </div>
+                                    </div>`;
+                                    
 
                                 htmlTables.push(tableHtml);
 
