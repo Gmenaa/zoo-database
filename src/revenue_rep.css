@@ -85,9 +85,12 @@ tr:not(:nth-child(2)) td:nth-child(-n+3) {
     flex-direction: column;
  }
 
- .subtotal {
+ .results {
     display: flex;
+    flex-direction: column;
     align-self: flex-end;
+    gap: 10px;
+    font-size: 18px;
 }   
 
 .outletid-col {

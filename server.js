@@ -811,11 +811,11 @@ const server = http.createServer(function(req, res){
                             <a href="/admin">Home</a>
                         </header>
                         ${responseHtml}
-                        <div class="total-sum"><strong>Total Revenue: $${totalSum}</strong></div>
+                        <div class="total-sum"><strong> <span style="text-decoration: underline;">Total Generated Revenue</span>: $${totalSum}</strong></div> 
                     </body>
                 </html>
                 `);
-                res.end();
+                res.end(); 
             };
 
             if(safari !== undefined) outlets.push(safari);
@@ -831,13 +831,23 @@ const server = http.createServer(function(req, res){
                     else if (result.length === 0) {
                         htmlTables.push(`<p>No data found for Outlet ${outletId}</p>`);
                     } else {
-                        db_con.query(`SELECT SUM(revenueamount) AS subtotal FROM revenue_report WHERE outletid = ? AND revenuedate BETWEEN ? AND ?`, [outletId, startDate, endDate], (err, sumResult) => {
+                        db_con.query(`SELECT SUM(revenueamount) AS subtotal, MIN(revenueamount) AS minProfit, MAX(revenueamount) AS maxProfit FROM revenue_report WHERE outletid = ? AND revenuedate BETWEEN ? AND ?`, [outletId, startDate, endDate], (err, sumResult) => {
                             if (err) throw err;
                             else if (sumResult.length === 0) {
                                 console.log("Subtotal Not Found");
                             } else {
                                 let subtotalValue = sumResult[0].subtotal;
                                 subtotals.push(subtotalValue);
+
+                                const minProfit = sumResult[0].minProfit;
+                                const maxProfit = sumResult[0].maxProfit;
+
+                                // Find the dates corresponding to the least and most profit
+                                const leastProfitableDateRow = result.find(row => row.revenueamount === minProfit);
+                                const mostProfitableDateRow = result.find(row => row.revenueamount === maxProfit);
+
+                                const leastProfitableDate = leastProfitableDateRow ? yyyymmdd(leastProfitableDateRow.revenuedate) : 'N/A';
+                                const mostProfitableDate = mostProfitableDateRow ? yyyymmdd(mostProfitableDateRow.revenuedate) : 'N/A';
 
                                 const tableHtml = 
                                     `
@@ -858,8 +868,23 @@ const server = http.createServer(function(req, res){
                                             <td class="outlettype-col">${row.outlettype}</td>
                                             <td class="revenuedate-col">${yyyymmdd(row.revenuedate)}</td>
                                             <td class="revenueamount-col">$${row.revenueamount}</td>
-                                        </tr>`).join('') + `</table> <div class="subtotal"><strong>Revenue Subtotal: $${sumResult[0].subtotal}</strong></div>
-                                        </div>`;
+                                        </tr>`).join('') 
+                                    + `</table> 
+                                    <div class = "results">
+                                        <div class="subtotal">
+                                            <strong> <span style="text-decoration: underline;">Revenue Subtotal</span>: $${sumResult[0].subtotal}</strong>
+                                        </div>
+                                        <div class="most-profitable">
+                                            <strong> <span style="text-decoration: underline;">Most Profitable Date</span>: ${mostProfitableDate}:  ($${maxProfit}) </strong>
+                                        </div>
+                                        <div class="least-profitable">
+                                            <strong> <span style="text-decoration: underline;">Least Profitable Date</span>: ${leastProfitableDate}:  ($${minProfit}) </strong>
+                                        </div>
+                                        <div class="avg-daily">
+                                            <strong> <span style="text-decoration: underline;">Average Daily Revenue</span>: $${(sumResult[0].subtotal / result.length).toFixed(2)} </strong>
+                                        </div>
+                                        </div>
+                                    </div>`;
 
                                 htmlTables.push(tableHtml);
 
