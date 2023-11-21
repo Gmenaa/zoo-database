@@ -19,6 +19,7 @@ const { alerting } = require('./utils');
 const { col } = require('sequelize');
 
 let userId = "";
+let empWorksAt;
 let userFirstName = "";
 
 const server = http.createServer(function(req, res){
@@ -368,7 +369,8 @@ const server = http.createServer(function(req, res){
                     console.log(result)
                     if (password ===result[0].password){
                         // ! declaring employee info
-                        userId = result[0].guestid
+                        userId = result[0].employeeid
+                        empWorksAt = result[0].worksat;
                         userFirstName = result[0].name_firstname;
                         if (result[0].position === "manager"){
                             const token = generatetoken({employee_email})
@@ -486,7 +488,101 @@ const server = http.createServer(function(req, res){
         displayPage("./public/manager_revenue_rep.html",res)
     }
     else if(req.url ==="/man_rev_rep" && req.method === 'POST'){
-        // ! Managers should only be able to see the revenue for their specific outlet, consider global var to track managers outlet
+        console.log(userId);
+        collectinput(req, parsedata => {
+            const htmlTables = [];
+
+            const startDate = parsedata.revenuestartdate;
+            const endDate = parsedata.revenueenddate;
+
+            const renderHtml = () => {
+                const responseHtml = htmlTables.join('');
+                
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.write(`
+                <html>
+                    <head>
+                        <link rel="stylesheet" href="../revenue_rep.css">
+                    </head>
+                    <body>
+                        <header>
+                            <a href="/manager">Home</a>
+                        </header>
+                        ${responseHtml}
+                    </body>
+                </html>
+                `);
+                res.end(); 
+            };
+
+
+            db_con.query(`SELECT * FROM revenue_report WHERE outletid = ? AND revenuedate BETWEEN ? AND ?`, [empWorksAt, startDate, endDate], (err, result) => {
+                if (err) throw err;
+                else if (result.length === 0) {
+                    htmlTables.push(`<p>No data found for Outlet ${empWorksAt}</p>`);
+                }
+                else {
+                    db_con.query(`SELECT SUM(revenueamount) AS subtotal, MIN(revenueamount) AS minProfit, MAX(revenueamount) AS maxProfit FROM revenue_report WHERE outletid = ? AND revenuedate BETWEEN ? AND ?`, [empWorksAt, startDate, endDate], (err, sumResult) => {
+                        if (err) throw err;
+                        else if (sumResult.length === 0) {
+                            console.log("Subtotal Not Found");
+                        } else {
+                            let subtotalValue = sumResult[0].subtotal;
+
+                            const minProfit = sumResult[0].minProfit;
+                            const maxProfit = sumResult[0].maxProfit;
+
+                            // Find the dates corresponding to the least and most profit
+                            const leastProfitableDateRow = result.find(row => row.revenueamount === minProfit);
+                            const mostProfitableDateRow = result.find(row => row.revenueamount === maxProfit);
+
+                            const leastProfitableDate = leastProfitableDateRow ? yyyymmdd(leastProfitableDateRow.revenuedate) : 'N/A';
+                            const mostProfitableDate = mostProfitableDateRow ? yyyymmdd(mostProfitableDateRow.revenuedate) : 'N/A';
+
+                            const tableHtml = 
+                                `
+                                <div class="container">
+                                <table border="1">
+                                <tr>
+                                    <th class="outletid-col">Outlet ID</th>
+                                    <th class="outletname-col">Outlet Name</th>
+                                    <th class="outlettype-col">Outlet Type</th>
+                                    <th class="revenuedate-col">Date of Sales</th>
+                                    <th class="revenueamount-col">Sales Amount</th>
+                                </tr>` +
+                                    result.map (
+                                    row => 
+                                    `<tr>
+                                        <td class="outletid-col">${row.outletid}</td>
+                                        <td class="outletname-col">${row.outletname}</td>
+                                        <td class="outlettype-col">${row.outlettype}</td>
+                                        <td class="revenuedate-col">${yyyymmdd(row.revenuedate)}</td>
+                                        <td class="revenueamount-col">$${row.revenueamount}</td>
+                                    </tr>`).join('') 
+                                + `</table> 
+                                <div class = "results">
+                                    <div class="subtotal">
+                                        <strong> <span style="text-decoration: underline;">Revenue Subtotal</span>: $${sumResult[0].subtotal}</strong>
+                                    </div>
+                                    <div class="most-profitable">
+                                        <strong> <span style="text-decoration: underline;">Most Profitable Date</span>: ${mostProfitableDate}:  ($${maxProfit}) </strong>
+                                    </div>
+                                    <div class="least-profitable">
+                                        <strong> <span style="text-decoration: underline;">Least Profitable Date</span>: ${leastProfitableDate}:  ($${minProfit}) </strong>
+                                    </div>
+                                    <div class="avg-daily">
+                                        <strong> <span style="text-decoration: underline;">Average Daily Revenue</span>: $${(sumResult[0].subtotal / result.length).toFixed(2)} </strong>
+                                    </div>
+                                    </div>
+                                </div>`;
+
+                            htmlTables.push(tableHtml);      
+                            renderHtml(); 
+                        }
+                    });
+                }
+            });
+        })
     }
 
 
