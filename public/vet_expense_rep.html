@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vet • Vet Expense Report</title>
+    <link rel="stylesheet" href="../expense.css">
+</head>
+<body>
+    <header>
+        <div class="links header-links">
+            <a href="../vet" class="vet-portal">Veterinarian Portal</a>
+            <a href="../vet_expense_rep">Veterinary Expenses Reports</a>
+            <a href="../mod_health">Modify Health Records</a>
+        </div>
+    </header>
+    <section class="wrapper-main">
+        <form action="/vet_expense_rep" method="post" id="expense-report-form" class="report-form">
+            <h2>Veterinary Expense Report Form</h2>
+            <div class="field input-field" id="checkbox-field">
+                <h4>Animal Information</h4>
+
+                
+            </div>
+
+            <div class="field input-field" id="date-field">
+                <h4>Visit Date Range</h4>
+
+                <div class="date-field-container">
+                    <label for="visit-start-date">Visit Start Date</label>
+                    <input type="date" id="visit-start-date" name="visitstartdate" value="startdate">
+                </div>
+                
+
+                <div class="date-field-container">
+                    <label for="visit-end-date">Visit End Date</label>
+                    <input type="date" id="visit-end-date" name="visitenddate" value="enddate">
+                </div>
+            </div>
+
+            <div class="field input-field" id="button-field">
+                <h4>Generate Report</h4>
+                <div class="button-field-container">
+                    <button type="submit" value="submit">Generate</button>
+                </div>
+            </div>
+        </form>
+    </section>
+</body>
+</html>

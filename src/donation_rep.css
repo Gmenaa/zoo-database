@@ -18,23 +18,53 @@
     font-family: 'Montserrat', sans-serif;
 }
 
-body {
-    background-color: var(--bg);
+.links {
+    text-decoration: none;
 }
 
 header {
-    padding-top: 20px;
-    padding-left: 75px;
+    display: flex;
+    background-color: #232b2b;
+    justify-content: center;
+    padding: 0px 32px;
 }
 
-a {
+header > span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.header-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5rem;
+    
+    height:  8vh;
+}
+
+.header-links > a {
     text-decoration: none;
-    color: var(--text-primary);
-
+    color: var(--text-secondary);
+    font-size: 16px;
+    
 }
 
-a:hover {
+.header-links > a:hover {
     text-decoration: underline;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    background-color: var(--bg);
+   
 }
 
 table {

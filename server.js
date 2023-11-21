@@ -506,7 +506,11 @@ const server = http.createServer(function(req, res){
                     </head>
                     <body>
                         <header>
-                            <a href="/manager">Home</a>
+                            <div class="links header-links">
+                                <a href="../manager" class="manager-portal">Manager Portal</a>
+                                <a href="../man_rev_rep">Revenue Reports</a>
+                                <a href="../mod_inventory">Modify Inventory</a>
+                            </div>
                         </header>
                         ${responseHtml}
                     </body>
@@ -632,7 +636,7 @@ const server = http.createServer(function(req, res){
                     <h1 class="sidebar-header">Reports</h1>
                     <div class="subsection reports-subsection">
                         <div class="sidebar-link"> 
-                            <a href=''>Veterinary Expenses Reports</a>  
+                            <a href='../vet_expense_rep'>Veterinary Expenses Reports</a>  
                         </div> 
                     </div>
 
@@ -640,7 +644,7 @@ const server = http.createServer(function(req, res){
                     <h1 class="sidebar-header">Veterinary</h1>
                     <div class="subsection admin-subsection">
                         <div class="sidebar-link"> 
-                            <a href=''>Modify Health Records</a>  
+                            <a href='../mod_health'>Modify Health Records</a>  
                         </div> 
                     </div>
                 </section>
@@ -662,11 +666,11 @@ const server = http.createServer(function(req, res){
         }
         displayPage("./public/vet.html",res)
     }
-    else if(req.url ==="/vet_health_rep" && req.method === 'GET'){
-        displayPage("./public/vet_health_rep.html",res)
+    else if(req.url ==="/vet_expense_rep" && req.method === 'GET'){
+        displayPage("./public/vet_expense_rep.html",res)
     }
-    else if(req.url ==="/vet_mod_health" && req.method === 'GET'){
-        displayPage("./public/vet_mod_healthrecord.html",res)
+    else if(req.url ==="/mod_health" && req.method === 'GET'){
+        console.log("health recods mods")
     }
     
 
@@ -722,7 +726,7 @@ const server = http.createServer(function(req, res){
                         </div> 
                         
                         <div class="sidebar-link"> 
-                            <a href='./admin_health_rep'>Veterinary Expenses Reports</a>  
+                            <a href='./admin_expense_rep'>Veterinary Expenses Reports</a>  
                         </div> 
                         <div class="sidebar-link"> 
                             <a href='./admin_donor_rep'>Donation Reports</a> 
@@ -797,7 +801,15 @@ const server = http.createServer(function(req, res){
                     </head>
                     <body>
                         <header>
-                            <a href="/admin">Home</a>
+                            <div class="links header-links">
+                                <a href="../admin" class="admin-portal">Admin Portal</a>
+                                <a href="../admin_rev_rep">Revenue Reports</a>
+                                <a href="../admin_expense_rep">Veterinary Expenses Reports</a>
+                                <a href="../admin_donor_rep">Donation Reports</a>
+                                <a href="../mod_animal">Modify Animals</a>
+                                <a href="../mod_enclosure">Modify Enclosures</a>
+                                <a href="../mod_employee">Modify Employees</a>
+                            </div>
                         </header>
                         ${responseHtml}
                         <div class="total-sum"><strong>Total Donations Pool: $${totalSum}</strong></div>
@@ -912,10 +924,10 @@ const server = http.createServer(function(req, res){
             processDonation(0);
         });
     }
-    else if(req.url ==="/admin_health_rep" && req.method === 'GET'){
-        displayPage("./public/admin_health_rep.html",res)
+    else if(req.url ==="/admin_expense_rep" && req.method === 'GET'){
+        displayPage("./public/admin_expense_rep.html",res)
     }
-    else if(req.url ==="/admin_health_rep" && req.method === 'POST'){
+    else if(req.url ==="/admin_expense_rep" && req.method === 'POST'){
         
     }
     else if(req.url ==="/admin_rev_rep"&& req.method === 'GET'){
@@ -946,7 +958,15 @@ const server = http.createServer(function(req, res){
                     </head>
                     <body>
                         <header>
-                            <a href="/admin">Home</a>
+                            <div class="links header-links">
+                                <a href="../admin" class="admin-portal">Admin Portal</a>
+                                <a href="../admin_rev_rep">Revenue Reports</a>
+                                <a href="../admin_expense_rep">Veterinary Expenses Reports</a>
+                                <a href="../admin_donor_rep">Donation Reports</a>
+                                <a href="../mod_animal">Modify Animals</a>
+                                <a href="../mod_enclosure">Modify Enclosures</a>
+                                <a href="../mod_employee">Modify Employees</a>
+                            </div>
                         </header>
                         ${responseHtml}
                         <div class="total-sum"><strong> <span style="text-decoration: underline;">Total Generated Revenue</span>: $${totalSum}</strong></div> 

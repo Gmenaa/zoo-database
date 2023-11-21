@@ -3,12 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./mod_animal.css">
+    <link rel="stylesheet" href="./mod_forms.css">
     <title>Modify Employees</title>
 </head>
 <body>
     <header>
-        <a href="/admin">Home</a>
+        <div class="links header-links">
+            <a href="../admin" class="admin-portal">Admin Portal</a>
+            <a href="../admin_rev_rep">Revenue Reports</a>
+            <a href="../admin_expense_rep">Veterinary Expenses Reports</a>
+            <a href="../admin_donor_rep">Donation Reports</a>
+            <a href="../mod_animal">Modify Animals</a>
+            <a href="../mod_enclosure">Modify Enclosures</a>
+            <a href="../mod_employee">Modify Employees</a>
+        </div>
     </header>
     <div class="container">
         <% const uniqueOutletNames = Array.from(new Set(outletResults.map(row => row.outletname))); %>
