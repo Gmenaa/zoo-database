@@ -18,8 +18,27 @@
         <form action="/vet_expense_rep" method="post" id="expense-report-form" class="report-form">
             <h2>Veterinary Expense Report Form</h2>
             <div class="field input-field" id="checkbox-field">
-                <h4>Animal Information</h4>
+                <h4>Visit Reason</h4>
 
+                <div class="checkbox-field-container">
+                    <input type="checkbox" id="reason-surgery" name="surgery" value="Surgery">
+                    <label for="reason-surgery">Surgery</label>
+                </div>
+
+                <div class="checkbox-field-container">
+                    <input type="checkbox" id="reason-injury" name="injury" value="Injury">
+                    <label for="reason-injury">Injury</label>
+                </div>
+
+                <div class="checkbox-field-container">
+                    <input type="checkbox" id="reason-routine" name="routine" value="Routine Checkup">
+                    <label for="reason-surgery">Routine Checkup</label>
+                </div>
+
+                <div class="checkbox-field-container">
+                    <input type="checkbox" id="reason-infectiondisease" name="infectiondisease" value="Infection/Disease">
+                    <label for="reason-infectiondisease">Infection/Disease</label>
+                </div>
                 
             </div>
 

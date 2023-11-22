@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./mod_forms.css">
+    <title>Modify Health Records</title>
+</head>
+<body>
+    <header>
+        <div class="links header-links">
+            <a href="../vet" class="vet-portal">Veterinarian Portal</a>
+            <a href="../vet_expense_rep">Veterinary Expenses Reports</a>
+            <a href="../mod_health">Modify Health Records</a>
+        </div>
+    </header>
+    <div class="container">
+        <button class="button add-button"> Add </button>
+        <table>
+            <thead>
+                <tr>
+                    <th>Animal Name</th> <!-- foreign key from aninmals -->
+                    <th>Veterinarian</th> <!--? foreign key from employees, input current users name, maybe fk relation is not needed -->
+                    <th>Visit Reason</th>
+                    <th>Visit Date</th>
+                    <th>Diagnosis</th>
+                    <th>Treatment</th>
+                    <th>Notes</th>
+                    <th>Cost</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% result.forEach(function(row) { %>
+                    <tr>
+                        
+                        <td><%= row.animal_name %></td> <!-- from animals -->
+                        <td><%= row.vet_fname %>  <%= row.vet_lname %> </td>
+                        <td><%= row.visitreason %></td>
+                        <td><%= row.visitdate %></td>
+                        <td><%= row.diagnosis %></td>
+                        <td><%= row.treatment %></td>
+                        <td><%= row.notes %></td>
+                        <td><%= row.cost %></td>
+                        <td>
+                            <div class="btn-edit-delete">
+                                <button class="button edit-button"> Edit </button>
+                                <button class="button delete-button" > Delete </button>
+                            </div>
+                            
+
+                            <dialog class="modal" id="edit-modal">
+                                <form action="/mod_health/edit" method="post"> 
+                                    <input type="hidden" name="id_edit" value="<%= row.recordid %>"> 
+
+                                    <div class="field input-field">
+                                        
+                                    </div>
+
+                                    <div class="field input-field">
+                                        
+                                    </div>
+
+                                    <div class="field input-field">
+                                        
+                                    </div>
+
+                                    <div class="field input-field">
+                                        
+                                    </div>
+
+                                    <div class="field input-field"> 
+                                        
+                                    </div>
+
+                                    <div class="field input-field">
+                                        
+                                    </div>
+
+                                    <div class="field button-field">
+                                        <button type="submit">Edit</button>
+                                        <!-- <button id="exit-button">Exit</button> -->
+                                    </div>
+                                </form>
+                            </dialog>
+
+                            <dialog class="modal" id="delete-modal">
+                                <form action="/mod_health/delete" method="post"> 
+                                    <!--? to relay id to server, hidden  -->
+                                    <input type="hidden" name="id_delete" value="<%= row.recordid %>"> 
+
+                        
+                                    <div class="field button-field">
+                                        <button type="submit">Delete</button>
+                                        <!-- <button id="exit-button">Exit</button> -->
+                                    </div>
+                                </form>
+                            </dialog>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <!--! add modal starts here -->
+    <dialog class="modal" id="add-modal">
+        <form action="/mod_health/add" method="post"> 
+            <div class="field input-field">
+
+            </div>
+
+            <div class="field input-field">
+
+            </div>
+
+            <div class="field input-field">
+
+            </div>
+            
+            <div class="field input-field">
+
+            </div>
+
+            <div class="field input-field">
+
+            </div>
+
+            <div class="field input-field">
+
+            </div>
+
+            <div class="field button-field">
+                <button type="submit">Add</button>
+                <!-- <button id="exit-button">Exit</button> -->
+            </div>
+        </form>
+    </dialog>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // ADD EXIT BUTTON FEATURE IN MODALS
+            
+            var addButton = document.querySelector('.add-button');
+            var editButtons = document.querySelectorAll('.edit-button');
+            var deleteButtons =  document.querySelectorAll('.delete-button');
+
+            var addModal = document.querySelector('#add-modal')
+            var editModals = document.querySelectorAll('#edit-modal');
+            var deleteModals = document.querySelectorAll('#delete-modal');
+
+            addButton.addEventListener('click', function () {
+                addModal.showModal();
+            })
+            editButtons.forEach(function (button, index) {
+                button.addEventListener('click', function () {
+                    editModals[index].showModal();
+                });
+            });
+            deleteButtons.forEach(function (button, index) {
+                button.addEventListener('click', function () {
+                    deleteModals[index].showModal();
+                });
+            });
+
+        });
+    </script>
+
+</body>
+</html>

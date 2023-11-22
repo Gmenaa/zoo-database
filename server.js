@@ -669,8 +669,179 @@ const server = http.createServer(function(req, res){
     else if(req.url ==="/vet_expense_rep" && req.method === 'GET'){
         displayPage("./public/vet_expense_rep.html",res)
     }
+    else if(req.url ==="/vet_expense_rep" && req.method === 'POST'){
+        collectinput(req, parsedata => {
+            const reasons = [];
+            const htmlTables = []
+            let subtotals = [];
+
+            const surgery = parsedata.surgery;
+            const injury = parsedata.injury;
+            const routine = parsedata.routine;
+            const infectiondisease = parsedata.infectiondisease;
+
+            const startDate = parsedata.visitstartdate;
+            const endDate = parsedata.visitenddate;
+
+            const renderHtml = () => {
+                const responseHtml = htmlTables.join('');
+                const totalSum = subtotals.reduce((acc, subtotal) => acc + subtotal, 0);
+
+
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.write(`
+                <html>
+                    <head>
+                        <link rel="stylesheet" href="../expense_rep.css">
+                    </head>
+                    <body>
+                        <header>
+                            <div class="links header-links">
+                                <a href="../vet" class="vet-portal">Veterinarian Portal</a>
+                                <a href="../vet_expense_rep">Veterinary Expenses Reports</a>
+                                <a href="../mod_health">Modify Health Records</a>
+                            </div>
+                        </header>
+                        ${responseHtml}
+                        <div class="total-sum"><strong> <span style="text-decoration: underline;">Total Veterinary Expenses</span>: $${totalSum}</strong></div> 
+                    </body>
+                </html>
+                `);
+                res.end(); 
+            };
+
+            if(surgery !== undefined) reasons.push(surgery);
+            if(injury !== undefined) reasons.push(injury);
+            if(routine !== undefined) reasons.push(routine);
+            if(infectiondisease !== undefined) reasons.push(infectiondisease);
+
+
+            const processReason = (reasonIndex) => {
+                const reason = reasons[reasonIndex]; // "Injury", "Surgery", "..."
+                let maxTreatmentCost = 0;
+                let mostExpensiveTreatment = '';
+
+                db_con.query(`SELECT * FROM vetexpense_report WHERE visitreason = ? AND visit_date BETWEEN ? AND ? ORDER BY visit_date DESC`, [reason, startDate, endDate], (err, result) => {
+                    if (err) throw err;
+                    else if (result.length === 0) {
+                        console.log("ERROR IN EXPENSE REPORT")
+                    }
+                    else {
+                        console.log(result); 
+                        db_con.query(`SELECT SUM(cost) AS subtotal FROM vetexpense_report WHERE visitreason = ? AND visit_date BETWEEN ? AND ?`, [reason, startDate, endDate], (err, sumResult) => {
+                            if (err) throw err;
+                            else if (sumResult.length === 0) {
+                                console.log("Subtotal Not Found");
+                            }
+                            else {
+                                let subtotalValue = sumResult[0].subtotal;
+
+
+                                result.forEach(row => {
+                                    subtotalValue += row.cost;
+                    
+                                    // Check if the current treatment is more expensive
+                                    if (row.cost > maxTreatmentCost) {
+                                        maxTreatmentCost = row.cost;
+                                        mostExpensiveTreatment = row.treatment;
+                                    }
+                                });
+                    
+
+
+                                subtotals.push(subtotalValue);
+
+                                const tableHtml = 
+                                    `
+                                    <div class="container">
+                                    <table border="1">
+                                    <tr>
+                                        <th class="animalname">Animal Name</th>
+                                        <th class="species">Species</th>
+                                        <th class="visitdate">Visit Date</th>
+                                        <th class="reason">Visit Reason</th>
+                                        <th class="diagnosis">Diagnosis</th>
+                                        <th class="treatment">Treatment</th>
+                                        <th class="notes">Notes</th>
+                                        <th class="cost">Cost</th>
+                                    </tr>` +
+                                        result.map (
+                                            
+                                        row => 
+                                        
+                                        `<tr>
+                                            <td class="">${row.animal_name}</td>
+                                            <td class="">${row.animal_species}</td>
+                                            <td class="">${yyyymmdd(row.visit_date)}</td>
+                                            <td class="">${row.visitreason}</td>
+                                            <td class="">${row.diagnosis}</td>
+                                            <td class="">${row.treatment}</td>
+                                            <td class="">${row.notes !== null ? row.notes : ''}</td>
+                                            <td class="">$${row.cost}</td>
+                                        </tr>`).join('') 
+                                    + `</table> 
+                                    <div class = "results">
+                                        
+                                        <div class="subtotal"><strong>Zoo Veterinary Expense:  -$${sumResult[0].subtotal}</strong></div>
+                                        <div class="subtotal"><strong>Most expensive treatment: $${maxTreatmentCost} - ${mostExpensiveTreatment}</strong></div>
+                                        
+                                        </div>
+                                    </div>`;
+                                    
+
+                                htmlTables.push(tableHtml);
+
+                                if(reasonIndex + 1 < reasons.length) {
+                                    processReason(reasonIndex + 1);
+                                } 
+                                else {
+                                    renderHtml();
+                                }
+                            }
+                        }); 
+                    }
+                });
+            }
+
+            processReason(0);
+        })
+    }
     else if(req.url ==="/mod_health" && req.method === 'GET'){
-        console.log("health recods mods")
+        db_con.query(`SELECT h.*, a.name AS animal_name, e.name_firstname AS vet_fname, e.name_lastname AS vet_lname
+        FROM health_records AS h
+        LEFT JOIN animals AS a ON h.animalid = a.animalid
+        LEFT JOIN employees AS e ON h.veterinarianid = e.employeeid
+        WHERE h.deleted = 0
+        ORDER BY h.visitdate DESC;`, (err, result) => {
+            if (err) throw err;
+            else {
+                
+                result.forEach(row => {
+                    row.visitdate = yyyymmdd(row.visitdate)
+
+                });
+
+                displayView("./views/mod_health.ejs", res, { result });
+
+                /*
+                db_con.query(`SELECT * FROM employees WHERE employeeid IN (?) AND position = 'Veterinarian'`, [vetIds], (err, vetResults) => {
+                    if(err) throw err;
+                    //console.log(vetResults);
+                    
+                })
+                */
+                
+            }
+        })
+    }
+    else if(req.url ==="/mod_health/add" && req.method === 'POST'){
+        
+    }
+    else if(req.url ==="/mod_health/edit" && req.method === 'POST'){
+        
+    }
+    else if(req.url ==="/mod_health/delete" && req.method === 'POST'){
+        
     }
     
 
@@ -928,7 +1099,145 @@ const server = http.createServer(function(req, res){
         displayPage("./public/admin_expense_rep.html",res)
     }
     else if(req.url ==="/admin_expense_rep" && req.method === 'POST'){
-        
+        collectinput(req, parsedata => {
+            const reasons = [];
+            const htmlTables = []
+            let subtotals = [];
+
+            const surgery = parsedata.surgery;
+            const injury = parsedata.injury;
+            const routine = parsedata.routine;
+            const infectiondisease = parsedata.infectiondisease;
+
+            const startDate = parsedata.visitstartdate;
+            const endDate = parsedata.visitenddate;
+
+            const renderHtml = () => {
+                const responseHtml = htmlTables.join('');
+                const totalSum = subtotals.reduce((acc, subtotal) => acc + subtotal, 0);
+
+
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.write(`
+                <html>
+                    <head>
+                        <link rel="stylesheet" href="../expense_rep.css">
+                    </head>
+                    <body>
+                        <header>
+                            <div class="links header-links">
+                                <a href="../admin" class="admin-portal">Admin Portal</a>
+                                <a href="../admin_rev_rep">Revenue Reports</a>
+                                <a href="../admin_expense_rep">Veterinary Expenses Reports</a>
+                                <a href="../admin_donor_rep">Donation Reports</a>
+                                <a href="../mod_animal">Modify Animals</a>
+                                <a href="../mod_enclosure">Modify Enclosures</a>
+                                <a href="../mod_employee">Modify Employees</a>
+                            </div>
+                        </header>
+                        ${responseHtml}
+                        <div class="total-sum"><strong> <span style="text-decoration: underline;">Total Veterinary Expenses</span>: $${totalSum}</strong></div> 
+                    </body>
+                </html>
+                `);
+                res.end(); 
+            };
+
+            if(surgery !== undefined) reasons.push(surgery);
+            if(injury !== undefined) reasons.push(injury);
+            if(routine !== undefined) reasons.push(routine);
+            if(infectiondisease !== undefined) reasons.push(infectiondisease);
+
+
+            const processReason = (reasonIndex) => {
+                const reason = reasons[reasonIndex]; // "Injury", "Surgery", "..."
+                let maxTreatmentCost = 0;
+                let mostExpensiveTreatment = '';
+
+                db_con.query(`SELECT * FROM vetexpense_report WHERE visitreason = ? AND visit_date BETWEEN ? AND ? ORDER BY visit_date DESC`, [reason, startDate, endDate], (err, result) => {
+                    if (err) throw err;
+                    else if (result.length === 0) {
+                        console.log("ERROR IN EXPENSE REPORT")
+                    }
+                    else {
+                        console.log(result); 
+                        db_con.query(`SELECT SUM(cost) AS subtotal FROM vetexpense_report WHERE visitreason = ? AND visit_date BETWEEN ? AND ?`, [reason, startDate, endDate], (err, sumResult) => {
+                            if (err) throw err;
+                            else if (sumResult.length === 0) {
+                                console.log("Subtotal Not Found");
+                            }
+                            else {
+                                let subtotalValue = sumResult[0].subtotal;
+
+
+                                result.forEach(row => {
+                                    subtotalValue += row.cost;
+                    
+                                    // Check if the current treatment is more expensive
+                                    if (row.cost > maxTreatmentCost) {
+                                        maxTreatmentCost = row.cost;
+                                        mostExpensiveTreatment = row.treatment;
+                                    }
+                                });
+                    
+
+
+                                subtotals.push(subtotalValue);
+
+                                const tableHtml = 
+                                    `
+                                    <div class="container">
+                                    <table border="1">
+                                    <tr>
+                                        <th class="animalname">Animal Name</th>
+                                        <th class="species">Species</th>
+                                        <th class="visitdate">Visit Date</th>
+                                        <th class="reason">Visit Reason</th>
+                                        <th class="diagnosis">Diagnosis</th>
+                                        <th class="treatment">Treatment</th>
+                                        <th class="notes">Notes</th>
+                                        <th class="cost">Cost</th>
+                                    </tr>` +
+                                        result.map (
+                                            
+                                        row => 
+                                        
+                                        `<tr>
+                                            <td class="">${row.animal_name}</td>
+                                            <td class="">${row.animal_species}</td>
+                                            <td class="">${yyyymmdd(row.visit_date)}</td>
+                                            <td class="">${row.visitreason}</td>
+                                            <td class="">${row.diagnosis}</td>
+                                            <td class="">${row.treatment}</td>
+                                            <td class="">${row.notes !== null ? row.notes : ''}</td>
+                                            <td class="">$${row.cost}</td>
+                                        </tr>`).join('') 
+                                    + `</table> 
+                                    <div class = "results">
+                                        
+                                        <div class="subtotal"><strong>Zoo Veterinary Expense:  -$${sumResult[0].subtotal}</strong></div>
+                                        <div class="subtotal"><strong>Most expensive treatment: $${maxTreatmentCost} - ${mostExpensiveTreatment}</strong></div>
+                                        
+                                        </div>
+                                    </div>`;
+                                    
+
+                                htmlTables.push(tableHtml);
+
+                                if(reasonIndex + 1 < reasons.length) {
+                                    processReason(reasonIndex + 1);
+                                } 
+                                else {
+                                    renderHtml();
+                                }
+                            }
+                        }); 
+                    }
+                });
+            }
+
+            processReason(0);
+        })
     }
     else if(req.url ==="/admin_rev_rep"&& req.method === 'GET'){
         displayPage("./public/admin_revenue_rep.html",res)
