@@ -460,19 +460,19 @@ const server = http.createServer(function(req, res){
                     <h1 class="sidebar-header">Management</h1>
                     <div class="subsection admin-subsection">
                         <div class="sidebar-link"> 
-                            <a href=''>Modify Inventory</a>  
+                            <a href='./man_notif'>Notifications Center</a>  
                         </div> 
                     </div>
                 </section>
 
                 <!--? maybe display news, notifs, anything here idk, not priority -->
                 <main class="main">
-                    
+                            
                 </main>
-                
+                        
             </body>
             </html>
-            
+                    
             `)
             //displayPage("./public/manager.html",res)
         }
@@ -480,9 +480,6 @@ const server = http.createServer(function(req, res){
             res.writeHead(302, {Location: './emplogin'});
             res.end('Unauthorised')
         }
-    }
-    else if(req.url === "/man_mod_emp" && req.method === 'GET'){
-        displayPage("./public/manager_mod_employee.html",res)
     }
     else if(req.url ==="/man_rev_rep" && req.method === 'GET'){
         displayPage("./public/manager_revenue_rep.html",res)
@@ -509,7 +506,7 @@ const server = http.createServer(function(req, res){
                             <div class="links header-links">
                                 <a href="../manager" class="manager-portal">Manager Portal</a>
                                 <a href="../man_rev_rep">Revenue Reports</a>
-                                <a href="../mod_inventory">Modify Inventory</a>
+                                <a href="./man_notif">Notifications Center</a>
                             </div>
                         </header>
                         ${responseHtml}
@@ -586,6 +583,49 @@ const server = http.createServer(function(req, res){
                     });
                 }
             });
+        })
+    }
+
+    else if(req.url ==="/man_notif" && req.method === 'GET') {
+        db_con.query(`SELECT * FROM notifications WHERE employeeid = ? AND to_notify = 1 `, [userId], (err, result) => {
+            if (err) {
+                console.error(err);
+                res.writeHead(500, { 'Content-Type': 'text/plain' });
+                res.end('Internal Server Error');
+                return;
+            }
+    
+            //! the manager has no notifications
+            if (result.length === 0) {
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.end(`<!DOCTYPE html>
+                    <html>
+                    <body>
+                    <script>alert("You have no notifications"); window.location.href="/manager";</script>
+                    </body>
+                    </html>`);
+            } 
+            //! the manager HAS notifications
+            else {
+                console.log(result);
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+
+                for (const notification of result) {
+                    res.write(`<script>alert("${notification.notificationcontent}");</script>`);
+                }
+
+                db_con.query('DELETE FROM notifications WHERE employeeid = ? AND to_notify = 1', [userId], (deleteErr, deleteResult) => {
+                    if (deleteErr) {
+                        console.error(deleteErr);
+                        res.write('<script>alert("Error deleting notifications");</script>');
+                    } else {
+                        res.write('<script>alert("Clearing all notifications...");</script>');
+                    }
+
+                    res.write('<script>window.location.href="/manager";</script>');
+                    res.end('</body></html>');
+                });
+            }
         })
     }
 
