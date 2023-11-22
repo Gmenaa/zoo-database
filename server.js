@@ -703,7 +703,7 @@ const server = http.createServer(function(req, res){
                             </div>
                         </header>
                         ${responseHtml}
-                        <div class="total-sum"><strong> <span style="text-decoration: underline;">Total Veterinary Expenses</span>: $${totalSum}</strong></div> 
+                        <div class="total-sum"><strong> <span style="text-decoration: underline;">Total Veterinary Expenses</span>: $${(totalSum).toFixed(2)}</strong></div> 
                     </body>
                 </html>
                 `);
@@ -1051,7 +1051,7 @@ const server = http.createServer(function(req, res){
                             </div>
                         </header>
                         ${responseHtml}
-                        <div class="total-sum"><strong>Total Donations Pool: $${totalSum}</strong></div>
+                        <div class="total-sum"><strong>Total Donations Pool: $${totalSum.toFixed(2)}</strong></div>
 
                         
                         <div id="pieChartContainer" style="width: 650px; height: 650px; margin: 0 auto; text-align: center;"">
@@ -1204,7 +1204,7 @@ const server = http.createServer(function(req, res){
                             </div>
                         </header>
                         ${responseHtml}
-                        <div class="total-sum"><strong> <span style="text-decoration: underline;">Total Veterinary Expenses</span>: $${totalSum}</strong></div> 
+                        <div class="total-sum"><strong> <span style="text-decoration: underline;">Total Veterinary Expenses</span>: $${(totalSum).toFixed(2)}</strong></div> 
                     </body>
                 </html>
                 `);
@@ -1346,7 +1346,7 @@ const server = http.createServer(function(req, res){
                             </div>
                         </header>
                         ${responseHtml}
-                        <div class="total-sum"><strong> <span style="text-decoration: underline;">Total Generated Revenue</span>: $${totalSum}</strong></div> 
+                        <div class="total-sum"><strong> <span style="text-decoration: underline;">Total Generated Revenue</span>: $${(totalSum).toFixed(2)}</strong></div> 
                     </body>
                 </html>
                 `);
