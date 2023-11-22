@@ -199,7 +199,10 @@ const server = http.createServer(function(req, res){
                     [outletid, none, date],
                     (err, result) => {
                         if (err) throw err;
-                        console.log(`Inserted revenue for outlet ${outletid}`);
+                        else{
+                        console.log(`Inserted revenue for outlet ${outletid}`)
+                        
+                        }
                     }
                 );
             };
@@ -211,7 +214,9 @@ const server = http.createServer(function(req, res){
                     [totalAmount, outletid, date],
                     (err, result) => {
                         if (err) throw err;
-                        console.log(`Updated revenue for outlet ${outletid}`);
+                        else{
+                        console.log(`Updated revenue for outlet ${outletid}`)
+                        }
                     }
                 );
             };
@@ -254,8 +259,13 @@ const server = http.createServer(function(req, res){
             processOutlet(3, creature, creatureprice);
             processOutlet(4, lions, lionsprice);
 
-            res.writeHead(302, {Location: './stores'});
-            res.end('profit');
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Your purchase is sucessfully made. Thank you!"); window.location.href="/stores";</script>
+                        </body>
+                        </html>`)
 
         });
     }
@@ -320,9 +330,25 @@ const server = http.createServer(function(req, res){
             const email =parsedata.email
             const plainpassword = parsedata.password
             db_con.query('SELECT * FROM guests WHERE email = ?',[email],(err,result)=>{
-                if (err) throw err;
+                if (err){
+                    console.log(err)
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Something went wrong, please go back."); window.location.href="/login";</script>
+                        </body>
+                        </html>`);
+                }
                 else if (res.length === 0){
                     console.log("Email Not Found")
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("No email found. Please go back."); window.location.href="/login";</script>
+                        </body>
+                        </html>`);
                 }
                 else{
                     const match =bcrypt.compareSync(plainpassword,result[0].password)
@@ -338,8 +364,13 @@ const server = http.createServer(function(req, res){
                             res.end('User Logged In')
                         }
                         else{
-                            res.writeHead(302, {Location: './login'});
-                            res.end('User Not Logged In')
+                            res.writeHead(200, { 'Content-Type': 'text/html' });
+                            res.end(`<!DOCTYPE html>
+                            <html>
+                            <body>
+                            <script>alert("Your password is incorrect"); window.location.href="/login";</script>
+                            </body>
+                            </html>`);
                         }
                         
                     } 
@@ -460,7 +491,7 @@ const server = http.createServer(function(req, res){
                     <h1 class="sidebar-header">Management</h1>
                     <div class="subsection admin-subsection">
                         <div class="sidebar-link"> 
-                            <a href=''>Modify Inventory</a>  
+                            <a href='./man_mod_inv'>Modify Inventory</a>  
                         </div> 
                     </div>
                 </section>
@@ -916,7 +947,7 @@ const server = http.createServer(function(req, res){
 
                         
                         <div class="sidebar-link"> 
-                            <a href=''>Modify Enclosures</a>  
+                            <a href='./mod_enclosure'>Modify Enclosures</a>  
                         </div> 
 
 
@@ -1466,6 +1497,25 @@ const server = http.createServer(function(req, res){
             //res.end('Animal added')
         }) 
     }
+    else if (req.url === "/mod_enclosure" && req.method ==='GET'){
+        db_con.query(`SELECT * FROM enclosures AS e
+                        WHERE e.deleted =0;`, (err, result) => {
+            if (err) throw err;
+            else {
+                displayView("./views/mod_enclosure.ejs", res, { result });
+
+                /*
+                db_con.query(`SELECT * FROM employees WHERE employeeid IN (?) AND position = 'Veterinarian'`, [vetIds], (err, vetResults) => {
+                    if(err) throw err;
+                    //console.log(vetResults);
+                    
+                })
+                */
+                
+            }
+        })
+    }
+    
     else if(req.url === "/mod_animal/edit" && req.method === 'POST') {
         collectinput(req, parsedata => {
             const animalid = parsedata.id_edit;
