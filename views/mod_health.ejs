@@ -15,8 +15,10 @@
         </div>
     </header>
     <div class="container">
+        <% const uniqueAnimalNames = Array.from(new Set(animalsResult.map(animal => animal.name))); %> 
+        
         <button class="button add-button"> Add </button>
-        <table>
+        <table> 
             <thead>
                 <tr>
                     <th>Animal Name</th> <!-- foreign key from aninmals -->
@@ -51,30 +53,52 @@
 
                             <dialog class="modal" id="edit-modal">
                                 <form action="/mod_health/edit" method="post"> 
-                                    <input type="hidden" name="id_edit" value="<%= row.recordid %>"> 
+                                    <input type="hidden" name="recordid_edit" value="<%= row.recordid %>"> 
+                                    <input type="hidden" name="vetid_edit" value="<%= row.veterinarianid %>"> 
 
                                     <div class="field input-field">
-                                        
+                                        <label for="animalname_edit">Animal Name: </label>
+                                        <select id="animalname_edit"  name="editanimalname" required>
+                                            <% animalsResult.forEach(animal => { %>
+                                                <option value="<%= animal.animalid %>" <%= row.animal_name === animal.name ? 'selected' : '' %> ><%= animal.name %></option> 
+                                            <% }); %>
+                                        </select>
                                     </div>
 
                                     <div class="field input-field">
-                                        
+                                        <label for="visitreason_edit">Visit reason: </label>
+                                        <select id="visitreason_edit"  name="editvisitreason" required>
+                                            <option value="Initial Checkup" <%= row.visitreason === 'Initial Checkup' ? 'selected' : '' %> >Initial Checkup</option>
+                                            <option value="Routine Checkup" <%= row.visitreason === 'Routine Checkup' ? 'selected' : '' %> >Routine Checkup</option>
+                                            <option value="Surgery" <%= row.visitreason === 'Surgery' ? 'selected' : '' %> >Surgery</option>
+                                            <option value="Injury" <%= row.visitreason === 'Injury' ? 'selected' : '' %> >Injury</option>
+                                            <option value="Infection/Disease" <%= row.visitreason === 'Infection/Disease' ? 'selected' : '' %> >Infection/Disease</option>
+                                        </select>
                                     </div>
 
                                     <div class="field input-field">
-                                        
+                                        <label for="visitdate_edit">Visit Date: </label>
+                                        <input id="visitdate_edit" type="date" name="editvisitdate" class="input" value="<%= row.visitdate %>" required>
                                     </div>
 
                                     <div class="field input-field">
-                                        
+                                        <label for="diagnosis_edit">Diagnosis: </label>
+                                        <input id="diagnosis_edit" type="text" name="editdiagnosis" class="input" value="<%= row.diagnosis %>" required>
                                     </div>
 
                                     <div class="field input-field"> 
-                                        
+                                        <label for="treatment_edit">Treatment: </label>
+                                        <input id="treatment_edit" type="text" name="edittreatment" class="input" value="<%= row.treatment %>" required>
                                     </div>
 
                                     <div class="field input-field">
-                                        
+                                        <label for="notes_edit">Notes: </label>
+                                        <input id="notes_edit" type="text" name="editnotes" class="input" value="<%= row.notes %>">
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="cost_edit">Care Cost: </label>
+                                        <input id="cost_edit" type="number" name="editcost" class="input" value="<%= row.cost %>" required>
                                     </div>
 
                                     <div class="field button-field">
@@ -88,8 +112,16 @@
                                 <form action="/mod_health/delete" method="post"> 
                                     <!--? to relay id to server, hidden  -->
                                     <input type="hidden" name="id_delete" value="<%= row.recordid %>"> 
+                                    
+                                    <input type="text" name="deleteanimalname" value= "<%= row.animal_name %>" readonly>
+                                    <input type="text" name="deletefname" value="<%= row.vet_fname %>  <%= row.vet_lname %>" readonly>
+                                    <input type="text" name="deletereason" value="<%= row.visitreason %>" readonly>
+                                    <input type="text" name="deletevisitdate" value="<%= row.visitdate %>" readonly>
+                                    <input type="text" name="deletediagnosis" value="<%= row.diagnosis %>" readonly>
+                                    <input type="text" name="deletetreatment" value="<%= row.treatment %>" readonly>
+                                    <input type="text" name="deletenotes" value="<%= row.notes %>" readonly>    
+                                    <input type="text" name="deletecost" value="<%= row.cost %>" readonly>
 
-                        
                                     <div class="field button-field">
                                         <button type="submit">Delete</button>
                                         <!-- <button id="exit-button">Exit</button> -->
@@ -105,31 +137,60 @@
 
     <!--! add modal starts here -->
     <dialog class="modal" id="add-modal">
+        
         <form action="/mod_health/add" method="post"> 
-            <div class="field input-field">
 
+            <div class="field input-field">
+                <label for="animalname_add">Animal Name: </label>
+                <select id="animalname_add"  name="addanimalname" required>
+                    
+                    <!--? different from modanimals  -->
+                    <% uniqueAnimalNames.forEach(animalName => { %>
+                        <option value="<%= animalsResult.find(animal => animal.name === animalName)?.animalid %>">
+                            <%= animalName %>
+                        </option>
+                    <% }); %>
+
+                </select>
             </div>
 
             <div class="field input-field">
-
+                <label for="visitreason_add">Visit reason: </label>
+                <select id="visitreason_add"  name="addvisitreason" required>
+                    <option value="Initial Checkup"> Initial Checkup</option>
+                    <option value="Routine Checkup"> Routine Checkup</option>
+                    <option value="Surgery">Surgery</option>
+                    <option value="Injury">Injury</option>
+                    <option value="Infection/Disease">Infection/Disease</option>
+                </select>
             </div>
 
             <div class="field input-field">
+                <label for="visitdate_add">Visit Date: </label>
+                <input id="visitdate_add" type="date" name="addvisitdate" class="input" required>
+            </div>
 
+            <div class="field input-field">
+                <label for="diagnosis_add">Diagnosis: </label>
+                <input id="diagnosis_add" type="text" name="adddiagnosis" class="input" required>
+            </div>
+
+            <div class="field input-field">
+                <label for="treatment_add">Treatment: </label>
+                <input id="treatment_add" type="text" name="addtreatment" class="input" required>
+            </div>
+
+            <div class="field input-field">
+                <label for="notes_add">Notes: </label>
+                <input id="notes_add" type="text" name="addnotes" class="input">
+            </div>
+
+            <div class="field input-field">
+                <label for="cost_add">Care Cost: </label>
+                <input id="cost_add" type="number" name="addcost" class="input" required>
             </div>
             
-            <div class="field input-field">
-
-            </div>
-
-            <div class="field input-field">
-
-            </div>
-
-            <div class="field input-field">
-
-            </div>
-
+            
             <div class="field button-field">
                 <button type="submit">Add</button>
                 <!-- <button id="exit-button">Exit</button> -->

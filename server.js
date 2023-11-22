@@ -369,7 +369,7 @@ const server = http.createServer(function(req, res){
                     console.log(result)
                     if (password ===result[0].password){
                         // ! declaring employee info
-                        userId = result[0].employeeid
+                        userId = result[0].employeeid;
                         empWorksAt = result[0].worksat;
                         userFirstName = result[0].name_firstname;
                         if (result[0].position === "manager"){
@@ -807,6 +807,8 @@ const server = http.createServer(function(req, res){
         })
     }
     else if(req.url ==="/mod_health" && req.method === 'GET'){
+        console.log(userId);
+
         db_con.query(`SELECT h.*, a.name AS animal_name, e.name_firstname AS vet_fname, e.name_lastname AS vet_lname
         FROM health_records AS h
         LEFT JOIN animals AS a ON h.animalid = a.animalid
@@ -818,31 +820,97 @@ const server = http.createServer(function(req, res){
                 
                 result.forEach(row => {
                     row.visitdate = yyyymmdd(row.visitdate)
-
                 });
 
-                displayView("./views/mod_health.ejs", res, { result });
-
-                /*
-                db_con.query(`SELECT * FROM employees WHERE employeeid IN (?) AND position = 'Veterinarian'`, [vetIds], (err, vetResults) => {
-                    if(err) throw err;
-                    //console.log(vetResults);
-                    
+                db_con.query(`SELECT * FROM animals WHERE deleted = 0`, [], (err, animalsResult) => {
+                    if (err) throw err;
+                    displayView("./views/mod_health.ejs", res, { result, animalsResult });
                 })
-                */
+
+                
+
                 
             }
         })
     }
     else if(req.url ==="/mod_health/add" && req.method === 'POST'){
         
+
+        collectinput(req, parsedata => {
+            console.log("from post: " + userId);
+            
+            const animal = parsedata.addanimalname;
+            const visitreason = parsedata.addvisitreason;
+            const visitdate = parsedata.addvisitdate
+            const diagnosis = parsedata.adddiagnosis;
+            const treatment = parsedata.addtreatment;
+            let notes = parsedata.addnotes;
+            const cost = parsedata.addcost;
+
+            if(notes === '') notes = null;
+
+            db_con.query(`INSERT INTO health_records (animalid, veterinarianid, visitreason, visitdate, diagnosis, treatment, notes, cost) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [animal, userId, visitreason, visitdate, diagnosis, treatment, notes, cost], (err, result) => {
+                if (err) throw err;
+                else {
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("The record has been inserted."); window.location.href="/mod_health";</script>
+                        </body>
+                        </html>`);
+                }
+            })
+        })
     }
     else if(req.url ==="/mod_health/edit" && req.method === 'POST'){
-        
+        collectinput(req, parsedata => {
+            const recordid = parsedata.recordid_edit;
+            const vetid = parsedata.vetid_edit;
+            
+            const animal = parsedata.editanimalname;
+            const visitreason = parsedata.editvisitreason;
+            const visitdate = parsedata.editvisitdate
+            const diagnosis = parsedata.editdiagnosis;
+            const treatment = parsedata.edittreatment;
+            let notes = parsedata.editnotes;
+            const cost = parsedata.editcost;
+
+            if(notes === '') notes = null;
+
+            db_con.query(`UPDATE health_records SET animalid = ?, veterinarianid = ?, visitreason = ?, visitdate = ?, diagnosis = ?, treatment = ?, notes = ?, cost = ? WHERE recordid = ?`, [animal, vetid, visitreason, visitdate, diagnosis, treatment, notes, cost, recordid], (err, result) => {
+                if (err) throw err;
+                else {
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("The record has been updated."); window.location.href="/mod_health";</script>
+                        </body>
+                        </html>`);
+                }
+            })
+        })
     }
     else if(req.url ==="/mod_health/delete" && req.method === 'POST'){
-        
+        collectinput(req, parsedata => {
+            const recordid = parsedata.id_delete;
+            
+            db_con.query(`UPDATE health_records SET deleted = 1 WHERE recordid = ?`, [recordid], (err, result) => {
+                if (err) throw err;
+                else {
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Your record is deleted."); window.location.href="/mod_health";</script>
+                        </body>
+                        </html>`);
+                }
+            })
+        })
     }
+    
     
 
 
