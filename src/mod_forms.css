@@ -156,18 +156,134 @@ table tbody tr:nth-of-type(even) {
 }
 
 .modal {
-    width: 40%;
+    width: 35%;
 }
 
+
+
 dialog {
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-  }
-
-/*
-#add-modal {
-
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
 }
-*/
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+}
+
+label, span {
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 16px;
+
+    text-align: left;
+}
+
+input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.button-field {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    margin-top: 20px;
+}
+
+
+/*? radio fields  */
+/*?whhyy  */
+.radio-field {
+    align-self: flex-start;
+}
+
+.radio-field label {
+    margin-right: 9px;;
+}
+.radio-field input {
+    margin-right: 4.5px;;
+}
+
+#add-modal label,
+#edit-modal label,
+#delete-modal label {
+    text-align: left; 
+}
+
+/*! ADD modals  */
+#add-modal 
+input[type="text"],
+input[type="date"] {
+    text-align: center;
+    font-size: 16px;
+}
+
+#add-modal 
+select {
+    text-align: center;
+    font-size: 16px;
+    height: 33px;
+}
+
+/*! EDIT modals  */
+
+#edit-modal 
+input[type="text"],
+input[type="date"] {
+    text-align: center;
+    font-size: 16px;
+}
+
+#edit-modal 
+select {
+    text-align: center;
+    font-size: 16px;
+    height: 33px;
+}
+
+
+/*! delete modals  */
+#delete-modal
+input[type="text"] {
+    text-align: center;
+    font-size: 16px;
+}
+
+/*? modal buttons  */
+.modal-delete-button,
+.modal-edit-btn,
+.modal-add-btn {
+    width: 33.3%;
+    height: 33px;
+    cursor: pointer;
+}
+
+.modal-edit-btn:hover, .modal-delete-button:hover, .modal-add-btn:hover {
+    transform: scale(1.05);
+}
+
+/*? exit img/button  */
+.close-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+dialog img:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}

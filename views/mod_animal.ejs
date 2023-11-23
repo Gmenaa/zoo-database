@@ -53,6 +53,10 @@
                             
 
                             <dialog class="modal" id="edit-modal">
+                                <div class="close-container">
+                                    <img src="../close.jpeg" alt="">
+                                </div>
+
                                 <form action="/mod_animal/edit" method="post"> 
                                     <!--? to relay id to server, hidden  -->
                                     <input type="hidden" name="id_edit" value="<%= row.animalid %>"> 
@@ -89,12 +93,17 @@
                                         <input id="arrival_animal_edit" type="date" name="editarrival" value="<%= row.arrivaldate %>" required>
                                     </div>
 
+                                    <!--? this is a radio field  -->
                                     <div class="field input-field">
                                         <span class="sex_animal">Sex: </span>
-                                        <label for="male_radio_edit">M: </label>
-                                        <input id="male_radio_edit" type="radio" name="editsex" value="M" <%= row.sex === 'M' ? 'checked' : '' %> required>
-                                        <label for="female_radio_edit">F: </label>
-                                        <input id="female_radio_edit" type="radio" name="editsex" value="F" <%= row.sex === 'F' ? 'checked' : '' %> required>
+
+                                        <div class="radio-field">
+                                            <label for="male_radio_edit">M: </label>
+                                            <input id="male_radio_edit" type="radio" name="editsex" value="M" <%= row.sex === 'M' ? 'checked' : '' %> required>
+                                            <label for="female_radio_edit">F: </label>
+                                            <input id="female_radio_edit" type="radio" name="editsex" value="F" <%= row.sex === 'F' ? 'checked' : '' %> required>
+                                        </div>
+                                        
                                     </div>
 
                                     <div class="field input-field">
@@ -113,28 +122,61 @@
 
                                     </div>
                                     
-                                    <div class="field button-field">
-                                        <button type="submit">Edit</button>
+                                    <div class="button-field">
+                                        <button class="modal-edit-btn" type="submit">Edit</button>
                                         <!-- <button id="exit-button">Exit</button> -->
                                     </div>
                                 </form>
                             </dialog>
 
                             <dialog class="modal" id="delete-modal">
+                                <div class="close-container">
+                                    <img src="../close.jpeg" alt="">
+                                </div>
+
                                 <form action="/mod_animal/delete" method="post"> 
                                     <!--? to relay id to server, hidden  -->
+
                                     <input type="hidden" name="id_delete" value="<%= row.animalid %>"> 
 
-                                    <input type="text" name="deleteclass" value= "<%= row.class %>" readonly>
-                                    <input type="text" name="deletespecies" value="<%= row.species %>" readonly>
-                                    <input type="text" name="deletename" value="<%= row.name %>" readonly>
-                                    <input type="text" name="deletebirth" value="<%= row.birthdate %>" readonly>
-                                    <input type="text" name="deletearrival" value="<%= row.arrivaldate %>" readonly>
-                                    <input type="text" name="deletesex" value="<%= row.sex %>" readonly>
-                                    <input type="text" name="deleteenclosure" value="<%= row.enclosurename %>" readonly>
-                        
-                                    <div class="field button-field">
-                                        <button type="submit">Delete</button>
+                                    <div class="field input-field">
+                                        <label for="class_animal_delete">Animal Class: </label>
+                                        <input id="class_animal_delete" type="text" name="deleteclass" value= "<%= row.class %>" readonly>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="species_animal_delete">Animal Species: </label>
+                                        <input id="species_animal_delete" type="text" name="deletespecies" value="<%= row.species %>" readonly>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="name_animal_delete">Animal Name: </label>
+                                        <input id="name_animal_delete" type="text" name="deletename" value="<%= row.name %>" readonly>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="birthdate_animal_delete">Birthdate: </label>
+                                        <input id="birthdate_animal_delete" type="text" name="deletebirth" value="<%= row.birthdate %>" readonly>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="arrival_animal_delete">Arrival Date: </label>
+                                        <input id="arrival_animal_delete" type="text" name="deletearrival" value="<%= row.arrivaldate %>" readonly>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="sex_animal_delete">Sex: </label>
+                                        <input id="sex_animal_delete" type="text" name="deletesex" value="<%= row.sex %>" readonly>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="enclosure_animal_delete">Enclosure: </label>
+                                        <input id="enclosure_animal_delete" type="text" name="deleteenclosure" value="<%= row.enclosurename %>" readonly>
+                                    </div>
+
+
+                                    <div class="button-field">
+                                        <button class="modal-delete-button" type="submit">Delete</button>
                                         <!-- <button id="exit-button">Exit</button> -->
                                     </div>
                                 </form>
@@ -148,9 +190,12 @@
 
     <!--! add modal starts here -->
     <dialog class="modal" id="add-modal">
+        <div class="close-container">
+            <img src="../close.jpeg" alt="">
+        </div>
+
         <form action="/mod_animal/add" method="post"> 
             <div class="field input-field">
-                <!-- <input id="class_animal" type="text" placeholder="Class" name ="addclass" class="input" required><br /> -->
                 <label for="class_animal">Animal Class: </label>
                 <select name="addclass" id="class_animal">
                     <option value="mammal">Mammal</option>
@@ -182,16 +227,18 @@
             </div>
 
             <div class="field input-field">
-                <!-- <input id="sex_animal" type="text" placeholder="Sex" name="addsex" class="input" required> -->
                 <span class="sex_animal">Sex: </span>
-                <label for="male_radio">M: </label>
-                <input id="male_radio" type="radio" name="addsex" value="M" required>
-                <label for="female_radio">F: </label>
-                <input id="female_radio" type="radio" name="addsex" value="F" required>
+
+                <div class="radio-field">
+                    <label for="male_radio">M: </label>
+                    <input id="male_radio" type="radio" name="addsex" value="M" required>
+                    <label for="female_radio">F: </label>
+                    <input id="female_radio" type="radio" name="addsex" value="F" required>
+                </div>
+                
             </div>
 
             <div class="field input-field">
-                <!-- <input id="Enclosure_animal" type="text" placeholder="Enclosure ID" name="addenclosure" class="input" required> -->
                 <label for="enclosure_animal_add">Enclosure: </label>
                 <select name="addenclosure" id="enclosure_animal_add" required>
                     <!-- Iterate over the unique enclosure names directly -->
@@ -204,9 +251,8 @@
                 
             </div>
 
-            <div class="field button-field">
-                <button type="submit">Add</button>
-                <!-- <button id="exit-button">Exit</button> -->
+            <div class="button-field">
+                <button class="modal-add-btn" type="submit">Add</button>
             </div>
         </form>
     </dialog>
@@ -214,6 +260,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // ADD EXIT BUTTON FEATURE IN MODALS
+            var closeButtons = document.querySelectorAll('.modal img');
             
             var addButton = document.querySelector('.add-button');
             var editButtons = document.querySelectorAll('.edit-button');
@@ -222,6 +269,16 @@
             var addModal = document.querySelector('#add-modal')
             var editModals = document.querySelectorAll('#edit-modal');
             var deleteModals = document.querySelectorAll('#delete-modal');
+
+            closeButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    // Find the closest modal and close it
+                    var modal = button.closest('.modal');
+                    if (modal) {
+                        modal.close();
+                    }
+                });
+            });
 
             addButton.addEventListener('click', function () {
                 addModal.showModal();
