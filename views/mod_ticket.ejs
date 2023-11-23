@@ -10,11 +10,12 @@
     <header>
         <span>Central Houston Zoo</span>
         <div class="links header-links">
-            <a href="../tickets">Order Ticket</a>
-            <a href="../guest">Home</a>
-            <a href="../animals">Our Animals</a>
-            <a href="../stores">Stores</a>
-            <a href="../donations">Donate</a>
+            <a href="/guest">Home</a>
+            <a href="/tickets">Order Tickets</a>
+            <a href="/view_ticket">My Tickets</a>
+            <a href="/animals">Our Animals</a>
+            <a href="/stores">Stores</a>
+            <a href="/donations">Donate</a>
         </div>
     </header>
     <div class="container">
@@ -49,61 +50,96 @@
                                 <button class="button edit-button"> Edit </button>
                                 <button class="button delete-button" > Delete </button>
                             </div>
-                            
+                                
 
                             <dialog class="modal" id="edit-modal">
+                                <div class="close-container">
+                                    <img src="../close.jpeg" alt="">
+                                </div>
+                                
                                 <form action="/view_ticket/edit" method="post"> 
                                     <input type="hidden" name="id_edit" value="<%= row.ticketid %>">
 
-                                    <div class="field input-field">
+                                    <div class="input input-field">
                                         <label for="no_regular_edit">Regular Ticket: </label>
                                         <input id="no_regular_edit" type="text" name="editregular" class="input" value="<%= row.no_regular %>" required>
                                     </div>
                         
-                                    <div class="field input-field">
+                                    <div class="input input-field">
                                         <label for="no_child_edit">Child Ticket: </label>
                                         <input id="no_child_edit" type="text" name="editchild" class="input" value="<%= row.no_child %>" required>
                                     </div>
                         
-                                    <div class="field input-field">
+                                    <div class="input input-field">
                                         <label for="no_elder_edit">Elder Ticket: </label>
                                         <input id="no_elder_edit" type="text" name="editelder" class="input" value="<%= row.no_elder %>" required>
                                     </div>
                         
-                                    <div class="field input-field">
+                                    <div class="input input-field">
                                         <label for="no_infant_edit">Infant Ticket: </label>
                                         <input id="no_infant_edit" type="text" name="editinfant" class="input" value="<%= row.no_infant %>" required>
                                     </div>
-                                    <div class="field input-field">
+                                    <div class="input input-field">
                                         <label for="no_student_edit">Student Ticket: </label>
                                         <input id="no_student_edit" type="text" name="editstudent" class="input" value="<%= row.no_student %>" required>
                                     </div>
-                                    <div class="field input-field">
+                                    <div class="input input-field">
                                         <label for="visitdate_ticket_edit">Visit Date: </label>
                                         <input id="visitdate_ticket_edit" type="date" name="editvisit" value="<%= row.visitdate %>" >
                                     </div>
                                     
                                     <div class="field button-field">
-                                        <button type="submit">Edit</button>
+                                        <button class="modal-edit-btn" type="submit">Edit</button>
                                     </div>
                                 </form>
                             </dialog>
 
                             <dialog class="modal" id="delete-modal">
-                                <form action="/view_ticket/delete" method="post"> 
+                                <div class="close-container">
+                                    <img src="../close.jpeg" alt="">
+                                </div>
+                                
+                                <form action="/view_ticket/delete" method="post">                           
                                     <input type="hidden" name="id_delete" value="<%= row.ticketid %>"> 
 
-                                    <input type="text" name="deleteregular" value= "<%= row.no_regular  %>" readonly>
-                                    <input type="text" name="deletechild" value= "<%= row.no_child %>" readonly>
-                                    <input type="text" name="deleteelder" value= "<%= row.no_elder %>" readonly>
-                                    <input type="text" name="deleteinfant" value= "<%= row.no_infant%>" readonly>
-                                    <input type="text" name="deletestudent" value= "<%= row.no_student %>" readonly>
-                                    <input type="text" name="deletetotalprice" value= "<%= row.totalprice %>" readonly>
-                                    <input type="text" name="deletevisit" value= "<%= row.visitdate %>" readonly>
+                                    <div class="input input-field">
+                                        <label for="no_regular_delete">Regular Tickets: </label>
+                                        <input id="no_regular_delete" type="text" name="deleteregular" value= "<%= row.no_regular  %>" readonly>
+                                    </div>
 
-        
+                                    <div class="input input-field">
+                                        <label for="no_child_delete">Child Tickets: </label>
+                                        <input for="no_child_delete" type="text" name="deletechild" value= "<%= row.no_child %>" readonly>
+                                    </div>
+
+                                    <div class="input input-field">
+                                        <label for="no_elder_delete">Elder Tickets: </label>
+                                        <input id="no_elder_delete" type="text" name="deleteelder" value= "<%= row.no_elder %>" readonly>
+                                    </div>
+
+                                    <div class="input input-field">
+                                        <label for="no_infant_delete">Infant Tickets: </label>
+                                        <input id="no_infant_delete" type="text" name="deleteinfant" value= "<%= row.no_infant%>" readonly>
+                                    </div>
+
+                                    <div class="input input-field">
+                                        <label for="no_student_delete">Student Tickets: </label>
+                                        <input id="no_student_delete" type="text" name="deletestudent" value= "<%= row.no_student %>" readonly>
+                                    </div>
+
+                                    <div class="input input-field">
+                                        <label for="totalprice_delete">Total Price: </label>
+                                        <input id="totalprice_delete" type="text" name="deletetotalprice" value= "$<%= row.totalprice.toFixed(2) %>" readonly>
+                                    </div>
+
+                                    <div class="input input-field">
+                                        <label for="visitdate_ticket_delete">Visit Date: </label>
+                                        <input id="visitdate_ticket_delete" type="text" name="deletevisit" value= "<%= row.visitdate %>" readonly>
+                                    </div>
+
+
                                     <div class="field button-field">
-                                        <button type="submit">Delete</button>
+                                        <button class="modal-delete-button" type="submit">Delete</button>
                                         <!-- <button id="exit-button">Exit</button> -->
                                     </div>
                                 </form>
@@ -118,12 +154,23 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // ADD EXIT BUTTON FEATURE IN MODALS
+            var closeButtons = document.querySelectorAll('.modal img');
             
             var editButtons = document.querySelectorAll('.edit-button');
             var deleteButtons =  document.querySelectorAll('.delete-button');
 
             var editModals = document.querySelectorAll('#edit-modal');
             var deleteModals = document.querySelectorAll('#delete-modal');
+
+            closeButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    // Find the closest modal and close it
+                    var modal = button.closest('.modal');
+                    if (modal) {
+                        modal.close();
+                    }
+                });
+            });
 
             editButtons.forEach(function (button, index) {
                 button.addEventListener('click', function () {

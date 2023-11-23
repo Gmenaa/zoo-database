@@ -64,6 +64,7 @@ const server = http.createServer(function(req, res){
                 <header>
                     <span>Central Houston Zoo</span>
                     <div class="links header-links">
+                        <a href="/guest">Home</a>
                         <a href="/tickets">Order Tickets</a>
                         <a href="/view_ticket">My Tickets</a>
                         <a href="/animals">Our Animals</a>
