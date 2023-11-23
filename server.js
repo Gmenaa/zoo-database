@@ -66,7 +66,7 @@ const server = http.createServer(function(req, res){
                     <div class="links header-links">
                         <a href="/tickets">Order Tickets</a>
                         <a href="">My Tickets</a>
-                        <a href="">Our Animals</a>
+                        <a href="/animals">Our Animals</a>
                         <a href="/stores">Stores</a>
                         <a href="/donations">Donate</a>
                     </div>
@@ -140,6 +140,11 @@ const server = http.createServer(function(req, res){
             });
 
         })
+    }
+
+    // ? Guest animals page
+    else if(req.url==='/animals' && req.method === 'GET') {
+        displayPage("./public/animals.html",res)
     }
 
     // ? Guest stores Page
