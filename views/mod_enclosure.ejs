@@ -46,6 +46,10 @@
                             
 
                             <dialog class="modal" id="edit-modal">
+                                <div class="close-container">
+                                    <img src="../close.jpeg" alt="">
+                                </div>
+                                
                                 <form action="/mod_enclosure/edit" method="post"> 
                                     <input type="hidden" name="id_edit" value="<%= row.enclosureid %>">
 
@@ -65,31 +69,57 @@
                                     </div>
                         
                                     <div class="field input-field">
-                                        <div class="status_enclosure">
-                                            <span class="enclosure_status">Status: </span>
+                                       
+                                        <span class="enclosure_status">Status: </span>
+
+                                        <div class="radio-field">
                                             <label for="open_radio_edit">OPEN: </label>
                                             <input id="open_radio_edit" type="radio" name="editstatus" value="open" <%= row.status === 'open' ? 'checked' : '' %> required>
                                             <label for="full_radio_edit">CLOSED: </label>
                                             <input id="full_radio_edit" type="radio" name="editstatus" value="full" <%= row.status === 'full' ? 'checked' : '' %> required>
                                         </div>
+                                            
+                                        
                                     </div>
-                                    <div class="field button-field">
-                                        <button type="submit">Edit</button>
+
+
+                                    <div class="button-field">
+                                        <button class="modal-edit-btn" type="submit">Edit</button>
                                     </div>
                                 </form>
                             </dialog>
 
                             <dialog class="modal" id="delete-modal">
+                                <div class="close-container">
+                                    <img src="../close.jpeg" alt="">
+                                </div>
+
                                 <form action="/mod_enclosure/delete" method="post"> 
                                     <input type="hidden" name="id_delete" value="<%= row.enclosureid %>"> 
 
-                                    <input type="text" name="deletename" value= "<%= row.enclosurename  %>" readonly>
-                                    <input type="text" name="deletetype" value= "<%= row.enclosuretype %>" readonly>
-                                    <input type="text" name="deletecapacity" value= "<%= row.capacity %>" readonly>
-                                    <input type="text" name="deletestatus" value= "<%= row.status %>" readonly>
-        
-                                    <div class="field button-field">
-                                        <button type="submit">Delete</button>
+                                    <div class="field input-field">
+                                        <label for="enclosure_name_delete">Enclosure Name: </label>
+                                        <input id="enclosure_name_delete"  type="text" name="deletename" value= "<%= row.enclosurename  %>" readonly>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="enclosure_type_delete">Enclosure Type: </label>
+                                        <input id="enclosure_type_delete" type="text" name="deletetype" value= "<%= row.enclosuretype %>" readonly>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="enclosure_capacity_delete">Enclosure Capacity: </label>
+                                        <input id="enclosure_capacity_delete" type="text" name="deletecapacity" value= "<%= row.capacity %>" readonly>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="status_enclosure_delete">Status: </label>
+                                        <input id="status_enclosure_delete" type="text" name="deletestatus" value= "<%= row.status %>" readonly>
+                                    </div>
+
+
+                                    <div class="button-field">
+                                        <button class="modal-delete-button" type="submit">Delete</button>
                                         <!-- <button id="exit-button">Exit</button> -->
                                     </div>
                                 </form>
@@ -103,6 +133,10 @@
 
     <!--! add modal starts here -->
     <dialog class="modal" id="add-modal">
+        <div class="close-container">
+            <img src="../close.jpeg" alt="">
+        </div>
+
         <form action="/mod_enclosure/add" method="post"> 
             <div class="field input-field">
                 <label for="enclosure_name">Enclosure Name: </label>
@@ -122,14 +156,18 @@
             <div class="field input-field">
                 <!-- <input id="sex_animal" type="text" placeholder="Sex" name="addsex" class="input" required> -->
                 <span class="status_enclosure">Status: </span>
-                <label for="open_radio">OPEN: </label>
-                <input id="open_radio" type="radio" name="addstatus" value="open" required>
-                <label for="full_radio">CLOSED: </label>
-                <input id="full_radio" type="radio" name="addstatus" value="full" required>
+
+                <div class="radio-field">
+                    <label for="open_radio">OPEN: </label>
+                    <input id="open_radio" type="radio" name="addstatus" value="open" required>
+                    <label for="full_radio">CLOSED: </label>
+                    <input id="full_radio" type="radio" name="addstatus" value="full" required>
+                </div>
+                
             </div>
 
-            <div class="field button-field">
-                <button type="submit">Add</button>
+            <div class="button-field">
+                <button class="modal-add-btn" type="submit">Add</button>
             </div>
         </form>
     </dialog>
@@ -137,6 +175,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // ADD EXIT BUTTON FEATURE IN MODALS
+            var closeButtons = document.querySelectorAll('.modal img');
             
             var addButton = document.querySelector('.add-button');
             var editButtons = document.querySelectorAll('.edit-button');
@@ -145,6 +184,16 @@
             var addModal = document.querySelector('#add-modal')
             var editModals = document.querySelectorAll('#edit-modal');
             var deleteModals = document.querySelectorAll('#delete-modal');
+
+            closeButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    // Find the closest modal and close it
+                    var modal = button.closest('.modal');
+                    if (modal) {
+                        modal.close();
+                    }
+                });
+            });
 
             addButton.addEventListener('click', function () {
                 addModal.showModal();

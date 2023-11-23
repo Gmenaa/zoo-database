@@ -1581,10 +1581,10 @@ const server = http.createServer(function(req, res){
             if (err) throw err;
             else {
                 // Extracting all unique enclosureids from the result set
-                const enclosureIds = result.map(row => row.enclosureid);
+                //? const enclosureIds = result.map(row => row.enclosureid);
         
                 // Fetching enclosure names for all unique enclosureids
-                db_con.query(`SELECT * FROM enclosures WHERE enclosureid IN (?) AND deleted = 0`, [enclosureIds], (err, enclosureResults) => {
+                db_con.query(`SELECT * FROM enclosures WHERE deleted = 0`, [], (err, enclosureResults) => {
                     if (err) throw err;
         
                     // Creating a map for quick lookup of enclosure names based on enclosureid

@@ -283,6 +283,11 @@ input[type="text"] {
     justify-content: flex-end;
 }
 
+dialog img {
+    height: 38px;
+    width: 38px;
+}
+
 dialog img:hover {
     transform: scale(1.05);
     cursor: pointer;
