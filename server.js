@@ -65,7 +65,7 @@ const server = http.createServer(function(req, res){
                     <span>Central Houston Zoo</span>
                     <div class="links header-links">
                         <a href="/tickets">Order Tickets</a>
-                        <a href="">My Tickets</a>
+                        <a href="/view_ticket">My Tickets</a>
                         <a href="">Our Animals</a>
                         <a href="/stores">Stores</a>
                         <a href="/donations">Donate</a>
@@ -141,7 +141,84 @@ const server = http.createServer(function(req, res){
 
         })
     }
+    else if(req.url==='/view_ticket'&& req.method === 'GET'){
+        console.log(userId);
+        db_con.query(`SELECT * FROM tickets WHERE guestid = ? AND deleted =0;`, [userId], (err, result) => {
+            if (err){
+                console.log(err)
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.end(`<!DOCTYPE html>
+                    <html>
+                    <body>
+                    <script>alert("Something went wrong, please go back."); window.location.href="/tickets/view";</script>
+                    </body>
+                    </html>`);
+            }
+            displayView("./views/mod_ticket.ejs", res, { result });
+    })
+}
+    else if(req.url === "/view_ticket/edit" && req.method === 'POST'){
+        collectinput(req, parsedata => {
+            const ticketid = parsedata.id_edit;
+            const regular_ticket = parsedata.editregular;
+            const child_ticket = parsedata.editchild;
+            const elder_ticket = parsedata.editelder;
+            const infant_ticket = parsedata.editinfant;
+            const student_ticket = parsedata.editstudent;
+            const visit_date= parsedata.editvisit;
+            const pricetotal = (regular_ticket*18+child_ticket*14+elder_ticket*11.50)
+            if (regular_ticket=='') regular_ticket = null;
+            if (child_ticket=='') child_ticket = null;
+            if (elder_ticket=='') elder_ticket = null;
+            if (infant_ticket=='') infant_ticket = null;
+            if (student_ticket=='') student_ticket = null;
+            if (visit_date=='') visit_date = null;
 
+            const edit_ticket = db_con.query('UPDATE tickets SET no_regular = ?, no_child = ?, no_elder = ?, no_infant = ?, no_student = ?, totalprice = ?, visitdate = ? WHERE ticketid = ?', [regular_ticket, child_ticket, elder_ticket, infant_ticket, student_ticket, pricetotal, visit_date, ticketid], (err, result) => {
+                if (err){
+                    console.log(err)
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Something went wrong, please go back."); window.location.href="/view_ticket";</script>
+                        </body>
+                        </html>`);
+                }
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Your ticket is succesfully updated"); window.location.href="/view_ticket";</script>
+                        </body>
+                        </html>`); 
+    })
+})
+    }
+    else if (req.url === "/view_ticket/delete" && req.method === 'POST'){
+        collectinput(req, parsedata => {
+            const ticketid = parsedata.id_delete;
+            const delete_ticket = db_con.query('UPDATE tickets SET deleted = 1 WHERE ticketid = ?', [ticketid], (err, result) => {
+                if (err){
+                    console.log(err)
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Something went wrong, please go back."); window.location.href="/view_ticket";</script>
+                        </body>
+                        </html>`);
+                }
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Your ticket is succesfully deleted"); window.location.href="/view_ticket";</script>
+                        </body>
+                        </html>`); 
+    })
+        })
+    }
     // ? Guest stores Page
     else if(req.url==='/stores' && req.method === 'GET'){
         displayPage("./public/stores.html",res)
@@ -1502,20 +1579,101 @@ const server = http.createServer(function(req, res){
                         WHERE e.deleted =0;`, (err, result) => {
             if (err) throw err;
             else {
-                displayView("./views/mod_enclosure.ejs", res, { result });
-
-                /*
-                db_con.query(`SELECT * FROM employees WHERE employeeid IN (?) AND position = 'Veterinarian'`, [vetIds], (err, vetResults) => {
-                    if(err) throw err;
-                    //console.log(vetResults);
-                    
-                })
-                */
-                
+                displayView("./views/mod_enclosure.ejs", res, { result });     
             }
         })
     }
-    
+    else if (req.url ==="/mod_enclosure/add" && req.method === 'POST'){
+        collectinput(req, parsedata => {
+            const enclosurename = parsedata.addname;
+            const enclosuretype = parsedata.addtype;
+            const enclosurecapacity = parsedata.addcapacity;
+            const enclosurestatus = parsedata.addstatus;
+
+            if (enclosurename === '') enclosurename = null;
+            if (enclosuretype === '') enclosuretype = null; 
+            if (enclosurecapacity === '') enclosurecapacity = null;
+            if (enclosurestatus === '') enclosurestatus = null;
+
+            const insert_enclosure = db_con.query('INSERT into enclosures(enclosurename,enclosuretype,capacity,status) VALUES (?,?,?,?)',[enclosurename,enclosuretype,enclosurecapacity,enclosurestatus], (err, result) => {
+                if(err){
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Something went wrong. Please try again."); window.location.href="/mod_enclosure";</script>
+                        </body>
+                        </html>`);
+                }
+                console.log('Last enclosure insert ID:', result.insertId);
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Your enclosure is sucessfully inserted!!"); window.location.href="/mod_enclosure";</script>
+                        </body>
+                        </html>`);
+            });
+        })
+    }
+    else if (req.url ==="/mod_enclosure/edit" && req.method === 'POST'){
+        collectinput(req,parsedata =>{
+            const enclosureid = parsedata.id_edit;
+            const enclosurename = parsedata.editname;
+            const enclosuretype = parsedata.edittype;
+            const enclosurecapacity = parsedata.editcapacity;
+            const enclosurestatus = parsedata.editstatus;
+            if (enclosurename === '') enclosurename = null;
+            if (enclosuretype === '') enclosuretype = null; 
+            if (enclosurecapacity === '') enclosurecapacity = null;
+            if (enclosurestatus === '') enclosurestatus = null;
+            const update_enclosure = db_con.query('UPDATE enclosures SET enclosurename = ?, enclosuretype = ?, capacity = ? ,status = ? WHERE enclosureid = ?', [enclosurename,enclosuretype,enclosurecapacity,enclosurestatus,enclosureid], (err, result) => {
+            if (err){
+                console.log(err);
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Something went wrong. Please try again."); window.location.href="/mod_enclosure";</script>
+                        </body>
+                        </html>`);
+                }
+            else{
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Your enclosure is sucessfully updated!!"); window.location.href="/mod_enclosure";</script>
+                        </body>
+                        </html>`);
+            }
+            })
+        })
+    }
+    else if (req.url ==="/mod_enclosure/delete" && req.method === 'POST'){
+        collectinput(req,parsedata =>{
+            const enclosureid = parsedata.id_delete;
+            const delete_enclosure = db_con.query('UPDATE enclosures SET deleted = 1 WHERE enclosureid = ?', [enclosureid],(err,result)=>{
+                if(err){
+                    console.log(err)
+                    res.writeHead(200, {'Content-Type': 'text/html'});
+                    res.end(`<!DOCTYPE html>
+                    <html>
+                    <body>
+                    <script>alert("Something went wrong. Please try again."); window.location.href="/mod_enclosure";</script>
+                    </body>
+                    </html>`)
+                }
+                res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Your enclosure is sucessfully deleted!!"); window.location.href="/mod_enclosure";</script>
+                        </body>
+                        </html>`)
+            })
+    })
+}
+
     else if(req.url === "/mod_animal/edit" && req.method === 'POST') {
         collectinput(req, parsedata => {
             const animalid = parsedata.id_edit;
@@ -1547,7 +1705,6 @@ const server = http.createServer(function(req, res){
                         <script>alert("Your animal is updated."); window.location.href="/mod_animal";</script>
                         </body>
                         </html>`);
-                    
                 }
             })
         })
@@ -1556,14 +1713,14 @@ const server = http.createServer(function(req, res){
         collectinput(req, parsedata => {
             const animalid = parsedata.id_delete;
             
-            db_con.query(`UPDATE animals SET deleted = 1 WHERE animalid = ?`, [animalid], (err, result) => {
+            db_con.query(`UPDATE tickets SET deleted = 1 WHERE ticketid = ?`, [animalid], (err, result) => {
                 if (err) throw err;
                 else {
                     res.writeHead(200, { 'Content-Type': 'text/html' });
                     res.end(`<!DOCTYPE html>
                         <html>
                         <body>
-                        <script>alert("Your animal is deleted."); window.location.href="/mod_animal";</script>
+                        <script>alert("Your ticket is deleted."); window.location.href="/view_ticket";</script>
                         </body>
                         </html>`);
                 }

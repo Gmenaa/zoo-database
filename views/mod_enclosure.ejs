@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./mod_forms.css">
-    <title>Modify Employees</title>
+    <title>Modify Enclosures</title>
 </head>
 <body>
     <header>
@@ -23,7 +23,6 @@
         <table>
             <thead>
                 <tr>
-                    <th>Enclosure ID</th>
                     <th>Enclosure Name</th>
                     <th>Enclosure Type</th>
                     <th>Capacity</th>
@@ -35,8 +34,6 @@
                 
                 <% result.forEach(function(row) { %>
                     <tr>
-                        <!--?<td>< %= row.enclosureid %></td>-->
-                        <td><%= row.enclosureid %></td>
                         <td><%= row.enclosurename %></td>
                         <td><%= row.enclosuretype %></td>
                         <td><%= row.capacity %></td>
@@ -50,25 +47,16 @@
 
                             <dialog class="modal" id="edit-modal">
                                 <form action="/mod_enclosure/edit" method="post"> 
-                                    <label for="enclosure_id_edit">Enclosure ID: </label>
-                                    
-                                    <input id = "enclosure_id_edit=" type ="text" name="editid" value="<%= row.enclosureid %>"> 
+                                    <input type="hidden" name="id_edit" value="<%= row.enclosureid %>">
 
                                     <div class="field input-field">
                                         <label for="enclosure_name_edit">Enclosure Name: </label>
-                                        <input id="enclosure_name_edit" type="text" name="editname" class="input" value="<%= row.enclosure_name %>" required>
+                                        <input id="enclosure_name_edit" type="text" name="editname" class="input" value="<%= row.enclosurename %>" required>
                                     </div>
                         
                                     <div class="field input-field">
                                         <label for="enclosure_type_edit">Enclosure Type: </label>
-                                        <select name="edittype" id="class_animal_edit">
-                                            <option value="penguin" <%= row.enclosuretype === 'penguin' ? 'selected' : '' %>>Penguin</option>
-                                            <option value="lion" <%= row.enclosuretype ==='lion' ? 'selected' : '' %>>Lion</option>
-                                            <option value="giraffe" <%= row.enclosuretype === 'giraffe' ? 'selected' : '' %>>Giraffe</option>
-                                            <option value="elephant" <%= row.enclosuretype === 'elephant' ? 'selected' : '' %>>Elephant</option>
-                                            <option value="gorilla" <%= row.enclosuretype === 'gorilla' ? 'selected' : '' %>>Gorilla</option>
-                                            <option value="panda" <%= row.enclosuretype === 'panda' ? 'selected' : '' %>>Panda</option>
-                                        </select>
+                                        <input id="enclosure_type_edit" type="text" name="edittype" class="input" value="<%= row.enclosuretype %>" required>
                                     </div>
                         
                                     <div class="field input-field">
@@ -93,9 +81,9 @@
 
                             <dialog class="modal" id="delete-modal">
                                 <form action="/mod_enclosure/delete" method="post"> 
-                                    <input type="text" name="id_delete" value="<%= row.enclosureid %>"> 
+                                    <input type="hidden" name="id_delete" value="<%= row.enclosureid %>"> 
 
-                                    <input type="text" name="deletename" value= "<%= row.enclosure_name  %>" readonly>
+                                    <input type="text" name="deletename" value= "<%= row.enclosurename  %>" readonly>
                                     <input type="text" name="deletetype" value= "<%= row.enclosuretype %>" readonly>
                                     <input type="text" name="deletecapacity" value= "<%= row.capacity %>" readonly>
                                     <input type="text" name="deletestatus" value= "<%= row.status %>" readonly>
@@ -115,26 +103,15 @@
 
     <!--! add modal starts here -->
     <dialog class="modal" id="add-modal">
-        <form action="/mod_employee/add" method="post"> 
-            <div class="field input-field">
-                <label for="enclosure_id">Enclosure ID: </label>
-                <input id="enclosure_id" type="text" placeholder="ID" name="addid" class="input" required>
-            </div>
+        <form action="/mod_enclosure/add" method="post"> 
             <div class="field input-field">
                 <label for="enclosure_name">Enclosure Name: </label>
                 <input id="enclosure_name" type="text" placeholder="Name" name="addname" class="input" required>
             </div>
 
             <div class="field input-field">
-                <label for="enclosure_type">Animal Class: </label>
-                <select name="addtype" id="enclosure_type">
-                    <option value="penguin">Penguin</option>
-                    <option value="lion">Lion</option>
-                    <option value="giraffe">Giraffe</option>
-                    <option value="elephant">Elephant</option>
-                    <option value="gorilla">Gorilla</option>
-                    <option value="panda">Panda</option>
-                </select>
+                <label for="enclosure_type">Enclosure Type: </label>
+                <input id="enclosure_type" type="text" placeholder="Type" name="addtype" class="input" required>
             </div>
 
             <div class="field input-field">

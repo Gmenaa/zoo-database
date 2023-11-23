@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modify Tickets</title>
+</head>
+<body>
+    <header>
+        <div class="links header-links">
+            <a href="../tickets">Order Ticket</a>
+            <a href="../guest">Home</a>
+            <a href="../">Our Animals</a>
+            <a href="../stores">Stores</a>
+            <a href="../donations">Donate</a>
+        </div>
+    </header>
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Ticket ID</th>
+                    <th>Regular Tickets</th>
+                    <th>Child Tickets</th>
+                    <th>Elder Tickets</th>
+                    <th>Infant Tickets</th>
+                    <th>Student Tickets</th>
+                    <th>Total Price</th>
+                    <th>Visit Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                <% result.forEach(function(row) { %>
+                    <tr>
+                        <td><%= row.ticketid %></td>
+                        <td><%= row.no_regular %></td>
+                        <td><%= row.no_child %></td>
+                        <td><%= row.no_elder %></td>
+                        <td><%= row.no_infant %></td>
+                        <td><%= row.no_student %></td>
+                        <td><%= row.totalprice %></td>
+                        <td><%= row.visitdate%></td>        
+                        <td>
+                            <div class="btn-edit-delete">
+                                <button class="button edit-button"> Edit </button>
+                                <button class="button delete-button" > Delete </button>
+                            </div>
+                            
+
+                            <dialog class="modal" id="edit-modal">
+                                <form action="/view_ticket/edit" method="post"> 
+                                    <input type="hidden" name="id_edit" value="<%= row.ticketid %>">
+
+                                    <div class="field input-field">
+                                        <label for="no_regular_edit">Regular Ticket: </label>
+                                        <input id="no_regular_edit" type="text" name="editregular" class="input" value="<%= row.no_regular %>" required>
+                                    </div>
+                        
+                                    <div class="field input-field">
+                                        <label for="no_child_edit">Child Ticket: </label>
+                                        <input id="no_child_edit" type="text" name="editchild" class="input" value="<%= row.no_child %>" required>
+                                    </div>
+                        
+                                    <div class="field input-field">
+                                        <label for="no_elder_edit">Elder Ticket: </label>
+                                        <input id="no_elder_edit" type="text" name="editelder" class="input" value="<%= row.no_elder %>" required>
+                                    </div>
+                        
+                                    <div class="field input-field">
+                                        <label for="no_infant_edit">Infant Ticket: </label>
+                                        <input id="no_infant_edit" type="text" name="editinfant" class="input" value="<%= row.no_infant %>" required>
+                                    </div>
+                                    <div class="field input-field">
+                                        <label for="no_student_edit">Student Ticket: </label>
+                                        <input id="no_student_edit" type="text" name="editstudent" class="input" value="<%= row.no_student %>" required>
+                                    </div>
+                                    <div class="field input-field">
+                                        <label for="visitdate_ticket_edit">Visit Date: </label>
+                                        <input id="visitdate_ticket_edit" type="date" name="editvisit" value="<%= row.visitdate %>" >
+                                    </div>
+                                    
+                                    <div class="field button-field">
+                                        <button type="submit">Edit</button>
+                                    </div>
+                                </form>
+                            </dialog>
+
+                            <dialog class="modal" id="delete-modal">
+                                <form action="/view_ticket/delete" method="post"> 
+                                    <input type="hidden" name="id_delete" value="<%= row.ticketid %>"> 
+
+                                    <input type="text" name="deleteregular" value= "<%= row.no_regular  %>" readonly>
+                                    <input type="text" name="deletechild" value= "<%= row.no_child %>" readonly>
+                                    <input type="text" name="deleteelder" value= "<%= row.no_elder %>" readonly>
+                                    <input type="text" name="deleteinfant" value= "<%= row.no_infant%>" readonly>
+                                    <input type="text" name="deletestudent" value= "<%= row.no_student %>" readonly>
+                                    <input type="text" name="deletetotalprice" value= "<%= row.totalprice %>" readonly>
+                                    <input type="text" name="deletevisit" value= "<%= row.visitdate %>" readonly>
+
+        
+                                    <div class="field button-field">
+                                        <button type="submit">Delete</button>
+                                        <!-- <button id="exit-button">Exit</button> -->
+                                    </div>
+                                </form>
+                            </dialog>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <!--! add modal starts here -->
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // ADD EXIT BUTTON FEATURE IN MODALS
+            
+
+            var editButtons = document.querySelectorAll('.edit-button');
+            var deleteButtons =  document.querySelectorAll('.delete-button');
+
+            var editModals = document.querySelectorAll('#edit-modal');
+            var deleteModals = document.querySelectorAll('#delete-modal');
+
+            editButtons.forEach(function (button, index) {
+                button.addEventListener('click', function () {
+                    editModals[index].showModal();
+                });
+            });
+            deleteButtons.forEach(function (button, index) {
+                button.addEventListener('click', function () {
+                    deleteModals[index].showModal();
+                });
+            });
+
+        });
+    </script>
+
+</body>
+</html>
