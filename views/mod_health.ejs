@@ -43,7 +43,7 @@
                         <td><%= row.diagnosis %></td>
                         <td><%= row.treatment %></td>
                         <td><%= row.notes %></td>
-                        <td><%= row.cost %></td>
+                        <td>$<%= row.cost %></td>
                         <td>
                             <div class="btn-edit-delete">
                                 <button class="button edit-button"> Edit </button>
@@ -52,6 +52,10 @@
                             
 
                             <dialog class="modal" id="edit-modal">
+                                <div class="close-container">
+                                    <img src="../close.jpeg" alt="">
+                                </div>
+                                
                                 <form action="/mod_health/edit" method="post"> 
                                     <input type="hidden" name="recordid_edit" value="<%= row.recordid %>"> 
                                     <input type="hidden" name="vetid_edit" value="<%= row.veterinarianid %>"> 
@@ -101,29 +105,59 @@
                                         <input id="cost_edit" type="number" name="editcost" class="input" value="<%= row.cost %>" required>
                                     </div>
 
-                                    <div class="field button-field">
-                                        <button type="submit">Edit</button>
+                                    <div class="button-field">
+                                        <button class="modal-edit-btn"  type="submit">Edit</button>
                                         <!-- <button id="exit-button">Exit</button> -->
                                     </div>
                                 </form>
                             </dialog>
 
                             <dialog class="modal" id="delete-modal">
+                                <div class="close-container">
+                                    <img src="../close.jpeg" alt="">
+                                </div>
+
                                 <form action="/mod_health/delete" method="post"> 
                                     <!--? to relay id to server, hidden  -->
                                     <input type="hidden" name="id_delete" value="<%= row.recordid %>"> 
-                                    
-                                    <input type="text" name="deleteanimalname" value= "<%= row.animal_name %>" readonly>
-                                    <input type="text" name="deletefname" value="<%= row.vet_fname %>  <%= row.vet_lname %>" readonly>
-                                    <input type="text" name="deletereason" value="<%= row.visitreason %>" readonly>
-                                    <input type="text" name="deletevisitdate" value="<%= row.visitdate %>" readonly>
-                                    <input type="text" name="deletediagnosis" value="<%= row.diagnosis %>" readonly>
-                                    <input type="text" name="deletetreatment" value="<%= row.treatment %>" readonly>
-                                    <input type="text" name="deletenotes" value="<%= row.notes %>" readonly>    
-                                    <input type="text" name="deletecost" value="<%= row.cost %>" readonly>
 
-                                    <div class="field button-field">
-                                        <button type="submit">Delete</button>
+
+                                    <div class="field input-field">
+                                        <label for="animalname_delete">Animal Name: </label>
+                                        <input id="animalname_delete" type="text" name="deleteanimalname" value= "<%= row.animal_name %>" readonly>
+                                    </div>
+                                    <div class="field input-field">
+                                        <label for="vetname_delete">Veterinarian Name</label>
+                                        <input id="vetname_delete" type="text" name="deletefname" value="<%= row.vet_fname %>  <%= row.vet_lname %>" readonly>
+                                    </div>
+                                    <div class="field input-field">
+                                        <label for="visitreason_delete">Visit Reason: </label>
+                                        <input id="visitreason_delete" type="text" name="deletereason" value="<%= row.visitreason %>" readonly>
+                                    </div>
+                                    <div class="field input-field">
+                                        <label for="visitdate_delete">Visit Date: </label>
+                                        <input id="visitdate_delete" type="text" name="deletevisitdate" value="<%= row.visitdate %>" readonly>
+                                    </div>
+                                    <div class="field input-field">
+                                        <label for="diagnosis_delete">Diagnosis: </label>
+                                        <input id="diagnosis_delete" type="text" name="deletediagnosis" value="<%= row.diagnosis %>" readonly>
+                                    </div>
+                                    <div class="field input-field">
+                                        <label for="treatment_delete">Treatment: </label>
+                                        <input id="treatment_delete" type="text" name="deletetreatment" value="<%= row.treatment %>" readonly>
+                                    </div>
+                                    <div class="field input-field">
+                                        <label for="notes_delete">Notes: </label>
+                                        <input id="notes_delete" type="text" name="deletenotes" value="<%= row.notes %>" readonly>   
+                                    </div>
+                                    <div class="field input-field">
+                                        <label for="cost_delete">Care Cost: </label>
+                                        <input id="cost_delete" type="text" name="deletecost" value="<%= row.cost %>" readonly>
+                                    </div>
+
+
+                                    <div class="button-field">
+                                        <button class="modal-delete-button" type="submit">Delete</button>
                                         <!-- <button id="exit-button">Exit</button> -->
                                     </div>
                                 </form>
@@ -137,6 +171,9 @@
 
     <!--! add modal starts here -->
     <dialog class="modal" id="add-modal">
+        <div class="close-container">
+            <img src="../close.jpeg" alt="">
+        </div>
         
         <form action="/mod_health/add" method="post"> 
 
@@ -191,8 +228,8 @@
             </div>
             
             
-            <div class="field button-field">
-                <button type="submit">Add</button>
+            <div class="button-field">
+                <button class="modal-add-btn type="submit">Add</button>
                 <!-- <button id="exit-button">Exit</button> -->
             </div>
         </form>
@@ -201,6 +238,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // ADD EXIT BUTTON FEATURE IN MODALS
+            var closeButtons = document.querySelectorAll('.modal img');
             
             var addButton = document.querySelector('.add-button');
             var editButtons = document.querySelectorAll('.edit-button');
@@ -209,6 +247,16 @@
             var addModal = document.querySelector('#add-modal')
             var editModals = document.querySelectorAll('#edit-modal');
             var deleteModals = document.querySelectorAll('#delete-modal');
+
+            closeButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    // Find the closest modal and close it
+                    var modal = button.closest('.modal');
+                    if (modal) {
+                        modal.close();
+                    }
+                });
+            });
 
             addButton.addEventListener('click', function () {
                 addModal.showModal();

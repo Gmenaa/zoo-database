@@ -229,7 +229,8 @@ input {
 #add-modal 
 input[type="text"],
 input[type="date"],
-input[type="email"] {
+input[type="email"],
+input[type="number"] {
     text-align: center;
     font-size: 16px;
 }
@@ -246,7 +247,8 @@ select {
 #edit-modal 
 input[type="text"],
 input[type="date"],
-input[type="email"] {
+input[type="email"],
+input[type="number"] {
     text-align: center;
     font-size: 16px;
 }
