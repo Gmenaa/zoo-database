@@ -63,6 +63,10 @@
                             
 
                             <dialog class="modal" id="edit-modal">
+                                <div class="close-container">
+                                    <img src="../close.jpeg" alt="">
+                                </div>
+
                                 <form action="/mod_employee/edit" method="post"> 
                                     <input type="hidden" name="id_edit" value="<%= row.employeeid %>"> 
 
@@ -136,30 +140,77 @@
                                         <input id="salary_employee_edit" type="number" name="editsalary" class="input" value="<%= row.salary %>" required>
                                     </div>
 
-                                    <div class="field button-field">
-                                        <button type="submit">Edit</button>
+                                    <div class="button-field">
+                                        <button class="modal-edit-btn" type="submit">Edit</button>
                                     </div>
                                 </form>
                             </dialog>
 
                             <dialog class="modal" id="delete-modal">
+                                <div class="close-container">
+                                    <img src="../close.jpeg" alt="">
+                                </div>
+
                                 <form action="/mod_employee/delete" method="post"> 
                                     <input type="hidden" name="id_delete" value="<%= row.employeeid %>"> 
 
-                                    <input type="text" name="deleteemail" value= "<%= row.employee_email %>" readonly>
-                                    <input type="text" name="deletepassword" value= "<%= row.password %>" readonly>
-                                    <input type="text" name="deleteposition" value= "<%= row.position %>" readonly>
-                                    <input type="text" name="deletehiredate" value= "<%= row.hirdeate %>" readonly>
-                                    <input type="text" name="deleteworksat" value= "<%= row.worksat %>" readonly>
-                                    <input type="text" name="deletefname" value= "<%= row.name_firstname %>" readonly>
-                                    <input type="text" name="deletemname" value= "<%= row.name_middlename %>" readonly>
-                                    <input type="text" name="deletelname" value= "<%= row.name_lastname %>" readonly>
-                                    <input type="text" name="deleteschedule" value= "<%= row.workschedule %>" readonly>
-                                    <input type="text" name="deletesalary" value= "<%= row.salary %>" readonly>
-                                    <input type="text" name="deleteempmanager" value= "<%= row.manager_firstname %> <%= row.manager_lastname %>" readonly>
+                                    <div class="field input-field">
+                                        <label for="email_employee_delete">Employee Email: </label>
+                                        <input id="email_employee_delete" type="text" name="deleteemail" value= "<%= row.employee_email %>" readonly>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="password_employee_delete">Employee Password: </label>
+                                        <input id="password_employee_delete" type="text" name="deletepassword" value= "<%= row.password %>" readonly>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="position_employee_delete">Employee Position: </label>
+                                        <input id="position_employee_delete" type="text" name="deleteposition" value= "<%= row.position %>" readonly>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="hire_date_delete">Hire Date: </label>
+                                        <input id="hire_date_delete" type="text" name="deletehiredate" value= "<%= row.hiredate %>" readonly>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="works_at_delete">Works At: </label>
+                                        <input id="works_at_delete" type="text" name="deleteworksat" value= "<%= row.worksat %>" readonly>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="fname_employee_delete">Employee First Name: </label>
+                                        <input id="fname_employee_delete" type="text" name="deletefname" value= "<%= row.name_firstname %>" readonly>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="mname_employee_delete">Employee Middle Name: </label>
+                                        <input id="mname_employee_delete" type="text" name="deletemname" value= "<%= row.name_middlename %>" readonly>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="lname_employee_delete">Employee Last Name: </label>
+                                        <input id="lname_employee_delete" type="text" name="deletelname" value= "<%= row.name_lastname %>" readonly>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="schedule_delete">Schedule</label>
+                                        <input id="schedule_delete" type="text" name="deleteschedule" value= "<%= row.workschedule %>" readonly>
+                                    </div>
+                                    <div class="field input-field">
+                                        <label for="salary_employee_delete">Employee Salary: </label>
+                                        <input id="salary_employee_delete" type="text" name="deletesalary" value= "<%= row.salary %>" readonly>
+                                    </div>
+
+                                    <div class="field input-field">
+                                        <label for="emp_manager_delete">Employee Manager: </label>
+                                        <input id="emp_manager_delete" type="text" name="deleteempmanager" value= "<%= row.manager_firstname %> <%= row.manager_lastname %>" readonly>
+                                    </div>
                         
-                                    <div class="field button-field">
-                                        <button type="submit">Delete</button>
+
+                                    <div class="button-field">
+                                        <button class="modal-delete-button" type="submit">Delete</button>
                                         <!-- <button id="exit-button">Exit</button> -->
                                     </div>
                                 </form>
@@ -173,6 +224,10 @@
 
     <!--! add modal starts here -->
     <dialog class="modal" id="add-modal">
+        <div class="close-container">
+            <img src="../close.jpeg" alt="">
+        </div>
+
         <form action="/mod_employee/add" method="post"> 
             <div class="field input-field">
                 <label for="email_employee">Employee Email: </label>
@@ -247,8 +302,8 @@
                 <input id="salary_employee" type="number" placeholder="$" name="addsalary" class="input" required>
             </div>
 
-            <div class="field button-field">
-                <button type="submit">Add</button>
+            <div class="button-field">
+                <button class="modal-add-btn" type="submit">Add</button>
             </div>
         </form>
     </dialog>
@@ -256,6 +311,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // ADD EXIT BUTTON FEATURE IN MODALS
+            var closeButtons = document.querySelectorAll('.modal img');
             
             var addButton = document.querySelector('.add-button');
             var editButtons = document.querySelectorAll('.edit-button');
@@ -264,6 +320,16 @@
             var addModal = document.querySelector('#add-modal')
             var editModals = document.querySelectorAll('#edit-modal');
             var deleteModals = document.querySelectorAll('#delete-modal');
+
+            closeButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    // Find the closest modal and close it
+                    var modal = button.closest('.modal');
+                    if (modal) {
+                        modal.close();
+                    }
+                });
+            });
 
             addButton.addEventListener('click', function () {
                 addModal.showModal();
