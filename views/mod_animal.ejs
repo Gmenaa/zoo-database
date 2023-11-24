@@ -18,6 +18,18 @@
             <a href="../mod_employee">Modify Employees</a>
         </div>
     </header>
+
+    <% const uniqueSpecies = [...new Set(result.map(row => row.species))]; %>
+    <div class="filter-options">
+        <label for="filter">Filter by Species:</label>
+        <select id="filter">
+            <option value="">All Species</option>
+            <% uniqueSpecies.forEach(species => { %>
+                <option value="<%= species %>" ><%= species %></option>
+            <% }); %>
+        </select>
+    </div>
+
     <div class="container">
         <% const uniqueEnclosureNames = Array.from(new Set(enclosureResults.map(row => row.enclosurename))); %>
         <button class="button add-button"> Add </button>
@@ -291,6 +303,23 @@
             deleteButtons.forEach(function (button, index) {
                 button.addEventListener('click', function () {
                     deleteModals[index].showModal();
+                });
+            });
+
+            var speciesFilterDropdown = document.getElementById('filter');
+            speciesFilterDropdown.addEventListener('change', function () {
+                var selectedSpecies = speciesFilterDropdown.value.toLowerCase();
+
+                var tableRows = document.querySelectorAll('tbody tr');
+
+                tableRows.forEach(function (row) {
+                    var species = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+
+                    if (selectedSpecies === '' || species === selectedSpecies) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
                 });
             });
 
