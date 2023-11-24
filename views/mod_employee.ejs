@@ -64,7 +64,7 @@
                         <td><%= row.name_middlename %></td>
                         <td><%= row.name_lastname %></td>
                         <td><%= row.workschedule %></td>
-                        <td><%= row.salary %></td>
+                        <td>$<%= row.salary %></td>
                         <td><%= row.manager_firstname %> <%= row.manager_lastname %></td>
                         
                         <td>
@@ -94,7 +94,12 @@
                         
                                     <div class="field input-field">
                                         <label for="position_employee_edit">Employee Position: </label>
-                                        <input id="position_employee_edit" type="text" name="editposition" class="input" value="<%= row.position %>" required>
+                                        <select id="position_employee_edit" name="editposition" required>
+                                            <option value="cashier" <%= row.position === 'cashier' ? 'selected' : '' %> >cashier</option>
+                                            <option value="veterinarian" <%= row.position === 'veterinarian' ? 'selected' : '' %> >veterinarian</option>
+                                            <option value="zookeeper" <%= row.position === 'zookeeper' ? 'selected' : '' %> >zookeeper</option>
+                                            <option value="manager" <%= row.position === 'manager' ? 'selected' : '' %> >manager</option>
+                                        </select>
                                     </div>
                         
                                     <div class="field input-field">
@@ -165,6 +170,8 @@
 
                                 <form action="/mod_employee/delete" method="post"> 
                                     <input type="hidden" name="id_delete" value="<%= row.employeeid %>"> 
+                                    <input type="hidden" name="id_workat_delete" value="<%= row.worksat %>"> 
+                                    <input type="hidden" name="id_positon_delete" value="<%= row.position %>"> 
 
                                     <div class="field input-field">
                                         <label for="email_employee_delete">Employee Email: </label>
@@ -253,7 +260,12 @@
 
             <div class="field input-field">
                 <label for="position_employee">Employee Position: </label>
-                <input id="position_employee" type="text" placeholder="Position" name="addposition" class="input" required>
+                <select id="position_employee" name="addposition" required>
+                    <option value="cashier">cashier</option>
+                    <option value="veterinarian">veterinarian</option>
+                    <option value="zookeeper" >zookeeper</option>
+                    <option value="manager">manager</option>
+                </select>
             </div>
 
             <div class="field input-field">

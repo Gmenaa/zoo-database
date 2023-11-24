@@ -1823,12 +1823,13 @@ const server = http.createServer(function(req, res){
     
     // ADMIN mod employee
     else if(req.url === "/mod_employee" && req.method === 'GET') {
+
         db_con.query(`SELECT e.*, o.outletname, m.name_firstname AS manager_firstname, m.name_lastname AS manager_lastname
                     FROM employees AS e
                     LEFT JOIN outlets AS o ON e.worksat = o.outletid
-                    LEFT JOIN employees AS m ON e.managerid = m.employeeid
+                    LEFT JOIN employees AS m ON e.managerid = m.employeeid AND m.deleted = 0
                     WHERE e.deleted = 0 AND o.deleted = 0
-                    ORDER BY e.managerid` , (err, result) => {
+                    ORDER BY e.worksat` , (err, result) => {
             if(err) throw err;
 
             const outletIds = result.map(row => row.worksat);
@@ -1840,7 +1841,7 @@ const server = http.createServer(function(req, res){
                     row.hiredate = yyyymmdd(row.hiredate)
 
                     row.managerid = row.managerid || ""; //? Handle the case where there may not be a manager
-                    row.manager_name = `${row.manager_firstname} ${row.manager_lastname}`;
+                    row.manager_name = `${row.manager_firstname} ${row.manager_lastname}` || "";
                 });
     
                 displayView("./views/mod_employee.ejs",res, {result, outletResults});
@@ -1850,48 +1851,105 @@ const server = http.createServer(function(req, res){
     }
     else if(req.url === "/mod_employee/add" && req.method === 'POST') {
         collectinput(req, parsedata => {
-            const empid = parsedata.id_add;
-
             const email = parsedata.addemail;
-            const password = parsedata.addpassword;
-            const position = parsedata.addposition;
-            const hiredate = parsedata.addhiredate;
             const worksat = parsedata.addworksat;  // 1, 2, 3, 4, 5, 6
             const fname = parsedata.addfname;
             let mname = parsedata.addmname;
             const lname = parsedata.addlname;
-            const schedule = parsedata.addschedule; // "MON-THU"...
-            const salary = parsedata.addsalary;
-
-            console.log(email);
-            console.log(password);
-            console.log(position);
-            console.log(hiredate);
-            console.log(worksat);  
-            console.log(fname);
-            console.log(mname);
-            console.log(lname);
-            console.log(schedule);
-            console.log(salary);
-
-            if(mname === '') mname = null;
-
-            db_con.query(`SELECT * FROM employees WHERE managerid IS NULL AND worksat = ?`, [worksat], (err, result) => {
-                if(err) throw err;
-
-                const manager = result[0].employeeid;
-
-                db_con.query(`INSERT INTO employees(employee_email, password, position, hiredate, worksat, name_firstname, name_middlename, name_lastname, workschedule, salary, managerid) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [email, password, position, hiredate, worksat, fname, mname, lname, schedule, salary, manager], (err, result) => {
-                    if (err) throw err;
+            const position = parsedata.addposition;
+    
+            // Check if there is already a manager for the specified outlet
+            if (position === 'manager') {
+                db_con.query(`SELECT * FROM employees WHERE worksat = ? AND position = 'manager' AND deleted = 0`, [worksat], (err, managerResult) => {
+                    if (err) {
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end(`<!DOCTYPE html>
+                            <html>
+                            <body>
+                            <script>alert("An error has occured."); window.location.href="/mod_employee";</script>
+                            </body>
+                            </html>`);
+                    }
+    
+                    if(managerResult.length > 0) {
+                        // There is already a manager for the outlet
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end(`<!DOCTYPE html>
+                            <html>
+                            <body>
+                            <script>alert("A manager already exists for this outlet!"); window.location.href="/mod_employee";</script>
+                            </body>
+                            </html>`);
+                    }
                     else {
-                        res.writeHead(302, {Location: '/mod_employee'});
-                        res.end('Employee Added')
+                        // No manager exists for the outlet, proceed with adding the manager
+                        const password = parsedata.addpassword;
+                        const hiredate = parsedata.addhiredate;
+                        const schedule = parsedata.addschedule; // "MON-THU"...
+                        const salary = parsedata.addsalary;
+
+                        // const manager = managerResult[0].employeeid;
+    
+                        if(mname === '') mname = null;
+    
+                        //! UPDATE OTHER EMPLOYEES MANAGERID TO NEW MANAFER
+
+                        db_con.query(`INSERT INTO employees(employee_email, password, position, hiredate, worksat, name_firstname, name_middlename, name_lastname, workschedule, salary, managerid) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [email, password, position, hiredate, worksat, fname, mname, lname, schedule, salary, null], (err, result) => {
+                            if (err) {
+                                res.writeHead(200, { 'Content-Type': 'text/html' });
+                                res.end(`<!DOCTYPE html>
+                                    <html>
+                                    <body>
+                                    <script>alert("An error has occured."); window.location.href="/mod_employee";</script>
+                                    </body>
+                                    </html>`);
+                            }
+                            res.end(`<!DOCTYPE html>
+                            <html>
+                            <body>
+                            <script>alert("A manager was added"); window.location.href="/mod_employee";</script>
+                            </body>
+                            </html>`);
+                        });
+                    }
+                });
+            } 
+            // If the position is not 'Manager', proceed with adding the employee
+            else {
+                const password = parsedata.addpassword;
+                const hiredate = parsedata.addhiredate;
+                const schedule = parsedata.addschedule; // "MON-THU"...
+                const salary = parsedata.addsalary;
+    
+                if(mname === '') mname = null;
+
+                db_con.query(`SELECT * FROM employees WHERE worksat = ? AND position = 'manager' AND deleted = 0`, [worksat], (err, managerResult) => {
+                    if(err) throw err;
+                    else {
+                        db_con.query(`UPDATE employees SET managerid = ? WHERE worksat = ? AND position <> 'manager'`, [managerResult[0].employeeid, worksat], (err, result) => {
+                            if(err) throw err;
+        
+                            else {
+                                const manager = managerResult[0].employeeid;
+                                db_con.query(`INSERT INTO employees(employee_email, password, position, hiredate, worksat, name_firstname, name_middlename, name_lastname, workschedule, salary, managerid) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [email, password, position, hiredate, worksat, fname, mname, lname, schedule, salary, manager], (err, result) => {
+                                    if (err) throw err;
+                                    else {
+                                        res.writeHead(302, {Location: '/mod_employee'});
+                                        res.end('Employee Added');
+                                    }
+                                });
+                            }   
+                            
+                        })
                     }
                 })
-                
-            })
 
-        })
+
+                
+    
+                
+            }
+        });
     }
     else if(req.url === "/mod_employee/edit" && req.method === 'POST') {
         collectinput(req, parsedata => {
@@ -1957,14 +2015,36 @@ const server = http.createServer(function(req, res){
     else if(req.url === "/mod_employee/delete" && req.method === 'POST') {
         collectinput(req, parsedata => {
             const employeeid = parsedata.id_delete;
+            const worksat = parsedata.id_workat_delete;
+            const position = parsedata.id_positon_delete;
 
-            db_con.query(`UPDATE employees SET deleted = 1 WHERE employeeid = ?`, [employeeid], (err, result) => {
-                if (err) throw err;
-                else {
-                    res.writeHead(302, {Location: '/mod_employee'});
-                    res.end('Employee deleted')
-                }
-            })
+            if(position === 'manager') {
+                db_con.query(`UPDATE employees SET managerid = null WHERE worksat = ?`, [worksat], (err, manaresult) => {
+                    if(err) throw err;
+                    else {
+                        db_con.query(`UPDATE employees SET deleted = 1 WHERE employeeid = ?`, [employeeid], (err, result) => {
+                            if (err) throw err;
+                            else {
+                                res.writeHead(302, {Location: '/mod_employee'});
+                                res.end('Employee deleted')
+                            }
+                        })
+                    }
+                })
+            }
+            else {
+                db_con.query(`UPDATE employees SET deleted = 1 WHERE employeeid = ?`, [employeeid], (err, result) => {
+                    if (err) throw err;
+                    else {
+                        res.writeHead(302, {Location: '/mod_employee'});
+                        res.end('Employee deleted')
+                    }
+                })
+            }
+
+            
+
+            
         })
 
         
