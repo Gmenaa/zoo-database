@@ -1829,7 +1829,7 @@ const server = http.createServer(function(req, res){
                     LEFT JOIN outlets AS o ON e.worksat = o.outletid
                     LEFT JOIN employees AS m ON e.managerid = m.employeeid AND m.deleted = 0
                     WHERE e.deleted = 0 AND o.deleted = 0
-                    ORDER BY e.worksat` , (err, result) => {
+                    ORDER BY FIELD(e.position, 'manager', 'cashier', 'veterinarian', 'zookeeper');` , (err, result) => {
             if(err) throw err;
 
             const outletIds = result.map(row => row.worksat);
@@ -1893,6 +1893,7 @@ const server = http.createServer(function(req, res){
                         if(mname === '') mname = null;
     
                         //! UPDATE OTHER EMPLOYEES MANAGERID TO NEW MANAFER
+                        
 
                         db_con.query(`INSERT INTO employees(employee_email, password, position, hiredate, worksat, name_firstname, name_middlename, name_lastname, workschedule, salary, managerid) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [email, password, position, hiredate, worksat, fname, mname, lname, schedule, salary, null], (err, result) => {
                             if (err) {
@@ -1904,12 +1905,36 @@ const server = http.createServer(function(req, res){
                                     </body>
                                     </html>`);
                             }
-                            res.end(`<!DOCTYPE html>
-                            <html>
-                            <body>
-                            <script>alert("A manager was added"); window.location.href="/mod_employee";</script>
-                            </body>
-                            </html>`);
+                            else {
+                                db_con.query(`SELECT * FROM employees WHERE worksat = ? AND position = 'manager' AND deleted = 0`, [worksat], (err, managerresult) => {
+                                    if(err) throw err;
+
+                                    db_con.query(`UPDATE employees SET managerid = ? WHERE worksat = ? AND position <> 'manager'`, [managerresult[0].employeeid, worksat], (err, result) =>{
+                                        if(err) {
+                                            res.writeHead(200, { 'Content-Type': 'text/html' });
+                                            res.end(`<!DOCTYPE html>
+                                            <html>
+                                            <body>
+                                            <script>alert("An error has occured."); window.location.href="/mod_employee";</script>
+                                            </body>
+                                            </html>`);
+                                        }
+                                        else {
+                                            res.end(`<!DOCTYPE html>
+                                            <html>
+                                            <body>
+                                            <script>alert("A manager was added"); window.location.href="/mod_employee";</script>
+                                            </body>
+                                            </html>`);
+                                        }
+                                    })
+                                })
+
+
+                                
+                                
+                            }
+                            
                         });
                     }
                 });
@@ -1979,11 +2004,12 @@ const server = http.createServer(function(req, res){
 
             if(mname === '') mname = null;
 
-            db_con.query(`SELECT * FROM employees WHERE managerid IS NULL AND worksat = ?`, [worksat], (err, result) => {
+            db_con.query(`SELECT * FROM employees WHERE managerid IS NULL AND worksat = ? AND deleted = 0`, [worksat], (err, result) => {
                 if(err) throw err;
 
-                const manager = result[0].employeeid;
+                
 
+                const manager = result.employeeid;
                 // updating a manager
                 if(manager == empid) {
                     db_con.query(`UPDATE employees SET employee_email = ?, password = ?, position = ?, hiredate = ?, worksat = ?, name_firstname = ?, name_middlename = ?, name_lastname = ?, workschedule = ?, salary = ?, managerid = null WHERE employeeid = ?`, [email, password, position, hiredate, worksat, fname, mname, lname, schedule, salary, empid], (err, result) => {
@@ -1997,6 +2023,7 @@ const server = http.createServer(function(req, res){
 
                 // updating everyone else
                 else {
+                    
                     db_con.query(`UPDATE employees SET employee_email = ?, password = ?, position = ?, hiredate = ?, worksat = ?, name_firstname = ?, name_middlename = ?, name_lastname = ?, workschedule = ?, salary = ?, managerid = ? WHERE employeeid = ?`, [email, password, position, hiredate, worksat, fname, mname, lname, schedule, salary, manager, empid], (err, result) => {
                         if (err) throw err;
                         else {

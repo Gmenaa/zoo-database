@@ -94,7 +94,9 @@
                         
                                     <div class="field input-field">
                                         <label for="position_employee_edit">Employee Position: </label>
-                                        <select id="position_employee_edit" name="editposition" required>
+
+                                        <input type="hidden" name="editposition" value="<%= row.position %>">
+                                        <select id="position_employee_edit" name="editposition" <% if (row.position === 'manager') { %> disabled <% } %> required>
                                             <option value="cashier" <%= row.position === 'cashier' ? 'selected' : '' %> >cashier</option>
                                             <option value="veterinarian" <%= row.position === 'veterinarian' ? 'selected' : '' %> >veterinarian</option>
                                             <option value="zookeeper" <%= row.position === 'zookeeper' ? 'selected' : '' %> >zookeeper</option>
@@ -109,7 +111,9 @@
                         
                                     <div class="field input-field">
                                         <label for="works_at_edit">Works At: </label>
-                                        <select id="works_at_edit"  name="editworksat" required>
+
+                                        <!-- <input type="hidden" name="editworksat" value="<%= row.outletid %>"> -->
+                                        <select id="works_at_edit"  name="editworksat"  required>
                                             <% outletResults.forEach(outlet => { %>
                                                 <option value="<%= outlet.outletid %>"><%= outlet.outletname %></option> 
                                             <% }); %>
