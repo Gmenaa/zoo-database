@@ -16,12 +16,18 @@
     font-family: 'Poppins', sans-serif;
 }
 
+body {
+    background-color: #354201;
+}
+
 .hero {
     position: relative;
     background: url(../landing-hero.jpeg) no-repeat center;  /*! backgorund img could change, not final */
     background-size: cover;
     height: 600px;
     overflow: hidden;
+
+    
 }
 
 .links {
@@ -102,3 +108,4 @@ header > span {
     cursor: pointer;
     transform: scale(1.05)
 }
+
