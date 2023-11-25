@@ -15,7 +15,6 @@ const {storeJWTcookie} = require('./auth')
 const cookie = require('cookie');
 const { parseArgs } = require('util');
 const { start } = require('repl');
-const { alerting } = require('./utils');
 const { col } = require('sequelize');
 
 let userId = "";
@@ -28,12 +27,6 @@ const server = http.createServer(function(req, res){
         displayPage("./public/index.html",res)
     }
     else if(req.url==='/login'&& req.method === 'GET'){
-        const referer = req.headers.referer || '';
-        const cameFromRegister = referer.endsWith('/register');   
-        if (cameFromRegister){
-            res.write('<script>alert("Registration Successful!");</script>');
-        }
-
         displayPage("./public/login.html",res)
     }
     else if(req.url==='/guest'&& req.method === 'GET'){
@@ -134,7 +127,18 @@ const server = http.createServer(function(req, res){
             console.log(student);
 
             const query = db_con.query('INSERT INTO tickets(guestid,no_regular,no_child,no_elder,no_infant,no_student,totalprice,visitdate) VALUES (?,?,?,?,?,?,?,?)', [userId,regular,child,elder,infant,student,pricetotal,visitdate], (err, result) => {
-                if(err) throw err;
+                if(err) {
+                    console.log(err)
+
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                    <html>
+                    <body>
+                    <script>alert("An error has occured."); window.location.href="/tickets";</script>
+                    </body>
+                    </html>`);
+
+                }
                 console.log('Last ticket insert ID:', result.insertId);
                 res.writeHead(302, {Location: './tickets'});
                 res.end('Tickets Booked')
@@ -153,7 +157,7 @@ const server = http.createServer(function(req, res){
                 res.end(`<!DOCTYPE html>
                     <html>
                     <body>
-                    <script>alert("Something went wrong, please go back."); window.location.href="/tickets/view";</script>
+                    <script>alert("Something went wrong, please go back."); window.location.href="/view_ticket";</script>
                     </body>
                     </html>`);
             }
@@ -289,7 +293,16 @@ const server = http.createServer(function(req, res){
                     `INSERT INTO revenue (outletid, revenueamount, revenuedate) VALUES (?, ?, ?)`,
                     [outletid, none, date],
                     (err, result) => {
-                        if (err) throw err;
+                        if (err){
+                            console.log(err)
+                            res.writeHead(200, { 'Content-Type': 'text/html' });
+                            res.end(`<!DOCTYPE html>
+                                <html>
+                                <body>
+                                <script>alert("Something went wrong, please go back."); window.location.href="/stores;</script>
+                                </body>
+                                </html>`);
+                        }
                         console.log(`Inserted revenue for outlet ${outletid}`);
                     }
                 );
@@ -301,7 +314,17 @@ const server = http.createServer(function(req, res){
                     `UPDATE revenue SET revenueamount = revenueamount + ? WHERE outletid = ? AND revenuedate = ?`,
                     [totalAmount, outletid, date],
                     (err, result) => {
-                        if (err) throw err;
+                        if (err) {
+                            console.log(err)
+                            res.writeHead(200, { 'Content-Type': 'text/html' });
+                            res.end(`<!DOCTYPE html>
+                                <html>
+                                <body>
+                                <script>alert("Something went wrong, please go back."); window.location.href="/stores";</script>
+                                </body>
+                                </html>`);
+                        }
+
                         console.log(`Updated revenue for outlet ${outletid}`);
                     }
                 );
@@ -312,7 +335,16 @@ const server = http.createServer(function(req, res){
                     'SELECT * FROM revenue WHERE outletid = ? AND revenuedate = ?',
                     [outletid, date],
                     (err, result) => {
-                        if (err) throw err;
+                        if (err){
+                            console.log(err)
+                            res.writeHead(200, { 'Content-Type': 'text/html' });
+                            res.end(`<!DOCTYPE html>
+                                <html>
+                                <body>
+                                <script>alert("Something went wrong, please go back."); window.location.href="/stores";</script>
+                                </body>
+                                </html>`);
+                        }
                         callback(result.length > 0); // true if record exists, false otherwise
                     }
                 );
@@ -345,8 +377,13 @@ const server = http.createServer(function(req, res){
             processOutlet(3, creature, creatureprice);
             processOutlet(4, lions, lionsprice);
 
-            res.writeHead(302, {Location: './stores'});
-            res.end('profit');
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(`<!DOCTYPE html>
+                                <html>
+                                <body>
+                                <script>alert("Your purchase was sucessful and your items will be ready for pickup."); window.location.href="/stores";</script>
+                                </body>
+                                </html>`);
 
         });
     }
@@ -371,7 +408,16 @@ const server = http.createServer(function(req, res){
             console.log(purpose);
             console.log(amount);
             const query = db_con.query('INSERT INTO donations(donorid,donationamount,donationpurpose,donationdate) VALUES (?,?,?,?)', [userId,amount,purpose,date], (err, result) => {
-                if(err) throw err;
+                if (err){
+                    console.log(err)
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Something went wrong, please go back."); window.location.href="/donations";</script>
+                        </body>
+                        </html>`);
+                }
                 console.log('Last donation insert ID:', result.insertId);
                 //alert(`Your Donation of $${donationamount} towards ${donationpurpose} was a success! Thank You! :)`)
                 res.writeHead(302, {Location: './donations'});
@@ -392,6 +438,13 @@ const server = http.createServer(function(req, res){
             bcrypt.hash(plainpassword,5,function(err,hash){
                 if (err){
                     console.log(err)
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Something went wrong, please go back."); window.location.href="/register";</script>
+                        </body>
+                        </html>`);
                 }
                 else{
                     const query = db_con.query('INSERT INTO guests(password,email,phonenumber,name_firstname,name_middlename,name_lastname) VALUES (?,?,?,?,?,?)', [hash,email,phonenumber,firstname,middlename,lastname], (err, res) => {
@@ -401,8 +454,13 @@ const server = http.createServer(function(req, res){
                     })
                 }
             })
-            res.writeHead(302, {Location: './login'});
-            res.end('<script>alert("Registration Successful!")</script>');
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("You have been registered! "); window.location.href="/login";</script>
+                        </body>
+                        </html>`);
         })
     }
     else if (req.url === "/login" && req.method === 'POST'){
@@ -411,9 +469,25 @@ const server = http.createServer(function(req, res){
             const email =parsedata.email
             const plainpassword = parsedata.password
             db_con.query('SELECT * FROM guests WHERE email = ?',[email],(err,result)=>{
-                if (err) throw err;
-                else if (res.length === 0){
+                if (err){
+                    console.log(err)
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Something went wrong, please go back."); window.location.href="/login";</script>
+                        </body>
+                        </html>`);
+                }
+                else if (result.length === 0){
                     console.log("Email Not Found")
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("No email found"); window.location.href="/login";</script>
+                        </body>
+                        </html>`);
                 }
                 else{
                     const match =bcrypt.compareSync(plainpassword,result[0].password)
@@ -429,8 +503,13 @@ const server = http.createServer(function(req, res){
                             res.end('User Logged In')
                         }
                         else{
-                            res.writeHead(302, {Location: './login'});
-                            res.end('User Not Logged In')
+                            res.writeHead(200, { 'Content-Type': 'text/html' });
+                            res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Wrong password"); window.location.href="/login";</script>
+                        </body>
+                        </html>`);
                         }
                         
                     } 
@@ -451,10 +530,26 @@ const server = http.createServer(function(req, res){
             const employee_email = parsedata.employee_email
             const password = parsedata.password
             db_con.query('SELECT * FROM employees WHERE employee_email = ?',[employee_email],(err,result)=>{
-                if (err) throw err;
+                if (err){
+                    console.log(err)
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Something went wrong, please go back."); window.location.href="/emplogin";</script>
+                        </body>
+                        </html>`);
+                }
                 else if (result.length === 0){
                     console.log(result)
                     console.log("ID Not Found")
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("ID Not Found"); window.location.href="/emplogin";</script>
+                        </body>
+                        </html>`)
                 }
                 else{
                     console.log(result)
@@ -609,13 +704,31 @@ const server = http.createServer(function(req, res){
 
 
             db_con.query(`SELECT * FROM revenue_report WHERE outletid = ? AND revenuedate BETWEEN ? AND ?`, [empWorksAt, startDate, endDate], (err, result) => {
-                if (err) throw err;
+                if (err) {
+                    console.log(err)
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Something went wrong, please go back."); window.location.href="/man_rev_rep";</script>
+                        </body>
+                        </html>`);
+                }
                 else if (result.length === 0) {
                     htmlTables.push(`<p>No data found for Outlet ${empWorksAt}</p>`);
                 }
                 else {
                     db_con.query(`SELECT SUM(revenueamount) AS subtotal, MIN(revenueamount) AS minProfit, MAX(revenueamount) AS maxProfit FROM revenue_report WHERE outletid = ? AND revenuedate BETWEEN ? AND ?`, [empWorksAt, startDate, endDate], (err, sumResult) => {
-                        if (err) throw err;
+                        if (err){
+                            console.log(err)
+                            res.writeHead(200, { 'Content-Type': 'text/html' });
+                            res.end(`<!DOCTYPE html>
+                                <html>
+                                <body>
+                                <script>alert("Something went wrong, please go back."); window.location.href="/man_rev_rep";</script>
+                                </body>
+                                </html>`);
+                        }
                         else if (sumResult.length === 0) {
                             console.log("Subtotal Not Found");
                         } else {
@@ -853,14 +966,39 @@ const server = http.createServer(function(req, res){
                 let mostExpensiveTreatment = '';
 
                 db_con.query(`SELECT * FROM vetexpense_report WHERE visitreason = ? AND visit_date BETWEEN ? AND ? ORDER BY visit_date DESC`, [reason, startDate, endDate], (err, result) => {
-                    if (err) throw err;
+                    if (err){
+                        console.log(err)
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end(`<!DOCTYPE html>
+                            <html>
+                            <body>
+                            <script>alert("Something went wrong, please go back."); window.location.href="/vet_expense_rep";</script>
+                            </body>
+                            </html>`);
+                    }
                     else if (result.length === 0) {
                         console.log("ERROR IN EXPENSE REPORT")
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end(`<!DOCTYPE html>
+                            <html>
+                            <body>
+                            <script>alert("ERROR IN EXPENSE REPORT"); window.location.href="/vet_expense_rep";</script>
+                            </body>
+                            </html>`);
                     }
                     else {
                         console.log(result); 
                         db_con.query(`SELECT SUM(cost) AS subtotal FROM vetexpense_report WHERE visitreason = ? AND visit_date BETWEEN ? AND ?`, [reason, startDate, endDate], (err, sumResult) => {
-                            if (err) throw err;
+                            if (err){
+                                console.log(err)
+                                res.writeHead(200, { 'Content-Type': 'text/html' });
+                                res.end(`<!DOCTYPE html>
+                                    <html>
+                                    <body>
+                                    <script>alert("Something went wrong, please go back."); window.location.href="/vet_expense_rep";</script>
+                                    </body>
+                                    </html>`);
+                            }
                             else if (sumResult.length === 0) {
                                 console.log("Subtotal Not Found");
                             }
@@ -946,7 +1084,16 @@ const server = http.createServer(function(req, res){
         LEFT JOIN employees AS e ON h.veterinarianid = e.employeeid
         WHERE h.deleted = 0
         ORDER BY h.visitdate DESC;`, (err, result) => {
-            if (err) throw err;
+            if (err){
+                console.log(err)
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.end(`<!DOCTYPE html>
+                    <html>
+                    <body>
+                    <script>alert("Something went wrong, please go back."); window.location.href="/mod_health";</script>
+                    </body>
+                    </html>`);
+            }
             else {
                 
                 result.forEach(row => {
@@ -954,7 +1101,16 @@ const server = http.createServer(function(req, res){
                 });
 
                 db_con.query(`SELECT * FROM animals WHERE deleted = 0`, [], (err, animalsResult) => {
-                    if (err) throw err;
+                    if (err){
+                        console.log(err)
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end(`<!DOCTYPE html>
+                            <html>
+                            <body>
+                            <script>alert("Something went wrong, please go back."); window.location.href="/mod_health";</script>
+                            </body>
+                            </html>`);
+                    }
                     displayView("./views/mod_health.ejs", res, { result, animalsResult });
                 })
 
@@ -981,7 +1137,16 @@ const server = http.createServer(function(req, res){
             if(notes === '') notes = null;
 
             db_con.query(`INSERT INTO health_records (animalid, veterinarianid, visitreason, visitdate, diagnosis, treatment, notes, cost) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [animal, userId, visitreason, visitdate, diagnosis, treatment, notes, cost], (err, result) => {
-                if (err) throw err;
+                if (err){
+                    console.log(err)
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Something went wrong, please go back."); window.location.href="/mod_health";</script>
+                        </body>
+                        </html>`);
+                }
                 else {
                     res.writeHead(200, { 'Content-Type': 'text/html' });
                     res.end(`<!DOCTYPE html>
@@ -1010,7 +1175,16 @@ const server = http.createServer(function(req, res){
             if(notes === '') notes = null;
 
             db_con.query(`UPDATE health_records SET animalid = ?, veterinarianid = ?, visitreason = ?, visitdate = ?, diagnosis = ?, treatment = ?, notes = ?, cost = ? WHERE recordid = ?`, [animal, vetid, visitreason, visitdate, diagnosis, treatment, notes, cost, recordid], (err, result) => {
-                if (err) throw err;
+                if (err){
+                    console.log(err)
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Something went wrong, please go back."); window.location.href="/mod_health";</script>
+                        </body>
+                        </html>`);
+                }
                 else {
                     res.writeHead(200, { 'Content-Type': 'text/html' });
                     res.end(`<!DOCTYPE html>
@@ -1028,7 +1202,16 @@ const server = http.createServer(function(req, res){
             const recordid = parsedata.id_delete;
             
             db_con.query(`UPDATE health_records SET deleted = 1 WHERE recordid = ?`, [recordid], (err, result) => {
-                if (err) throw err;
+                if (err){
+                    console.log(err)
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("Something went wrong, please go back."); window.location.href="/mod_health";</script>
+                        </body>
+                        </html>`);
+                }
                 else {
                     res.writeHead(200, { 'Content-Type': 'text/html' });
                     res.end(`<!DOCTYPE html>
@@ -1230,14 +1413,39 @@ const server = http.createServer(function(req, res){
                 const donationType = donations[donationindex]; // "Research", "Conservation", "..."
 
                 db_con.query(`SELECT * FROM donation_report WHERE donationpurpose = ? AND donationdate BETWEEN ? AND ? ORDER BY donationdate`, [donationType, startDate, endDate], (err, result) => {
-                    if (err) throw err;
+                    if (err){
+                        console.log(err)
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end(`<!DOCTYPE html>
+                            <html>
+                            <body>
+                            <script>alert("Something went wrong, please go back."); window.location.href="/admin_donor_rep";</script>
+                            </body>
+                            </html>`);
+                    }
                     else if (result.length === 0) {
                         console.log("ERROR IN DONATE REPORT")
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end(`<!DOCTYPE html>
+                            <html>
+                            <body>
+                            <script>alert("ERROR IN DONATE REPORT"); window.location.href="/admin_donor_rep";</script>
+                            </body>
+                            </html>`);
                     }
                     else {
                         console.log(result); 
                         db_con.query(`SELECT COUNT(DISTINCT guestid) AS uniqueDonors, SUM(donationamount) AS subtotal FROM donation_report WHERE donationpurpose = ? AND donationdate BETWEEN ? AND ?`, [donationType, startDate, endDate], (err, sumResult) => {
-                            if (err) throw err;
+                            if (err){
+                                console.log(err)
+                                res.writeHead(200, { 'Content-Type': 'text/html' });
+                                res.end(`<!DOCTYPE html>
+                                    <html>
+                                    <body>
+                                    <script>alert("Something went wrong, please go back."); window.location.href="/admin_donor_rep";</script>
+                                    </body>
+                                    </html>`);
+                            }
                             else if (sumResult.length === 0) {
                                 console.log("Subtotal Not Found");
                             }
@@ -1354,14 +1562,39 @@ const server = http.createServer(function(req, res){
                 let mostExpensiveTreatment = '';
 
                 db_con.query(`SELECT * FROM vetexpense_report WHERE visitreason = ? AND visit_date BETWEEN ? AND ? ORDER BY visit_date DESC`, [reason, startDate, endDate], (err, result) => {
-                    if (err) throw err;
+                    if (err){
+                        console.log(err)
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end(`<!DOCTYPE html>
+                            <html>
+                            <body>
+                            <script>alert("Something went wrong, please go back."); window.location.href="/admin_expense_rep";</script>
+                            </body>
+                            </html>`);
+                    }
                     else if (result.length === 0) {
                         console.log("ERROR IN EXPENSE REPORT")
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end(`<!DOCTYPE html>
+                            <html>
+                            <body>
+                            <script>alert("ERROR IN EXPENSE REPORT"); window.location.href="/admin_expense_rep";</script>
+                            </body>
+                            </html>`);
                     }
                     else {
                         console.log(result); 
                         db_con.query(`SELECT SUM(cost) AS subtotal FROM vetexpense_report WHERE visitreason = ? AND visit_date BETWEEN ? AND ?`, [reason, startDate, endDate], (err, sumResult) => {
-                            if (err) throw err;
+                            if (err){
+                                console.log(err)
+                                res.writeHead(200, { 'Content-Type': 'text/html' });
+                                res.end(`<!DOCTYPE html>
+                                    <html>
+                                    <body>
+                                    <script>alert("Something went wrong, please go back."); window.location.href="/admin_expense_rep";</script>
+                                    </body>
+                                    </html>`);
+                            }
                             else if (sumResult.length === 0) {
                                 console.log("Subtotal Not Found");
                             }
@@ -1493,12 +1726,37 @@ const server = http.createServer(function(req, res){
                 const outletId = outlets[outletIndex];
                 
                 db_con.query(`SELECT * FROM revenue_report WHERE outletid = ? AND revenuedate BETWEEN ? AND ?`, [outletId, startDate, endDate], (err, result) => {
-                    if (err) throw err;
+                    if (err){
+                        console.log(err)
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end(`<!DOCTYPE html>
+                            <html>
+                            <body>
+                            <script>alert("Something went wrong, please go back."); window.location.href="/admin_rev_rep";</script>
+                            </body>
+                            </html>`);
+                    }
                     else if (result.length === 0) {
                         htmlTables.push(`<p>No data found for Outlet ${outletId}</p>`);
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end(`<!DOCTYPE html>
+                            <html>
+                            <body>
+                            <script>alert("No data found for Outlet ${outletId}"); window.location.href="/admin_rev_rep";</script>
+                            </body>
+                            </html>`);
                     } else {
                         db_con.query(`SELECT SUM(revenueamount) AS subtotal, MIN(revenueamount) AS minProfit, MAX(revenueamount) AS maxProfit FROM revenue_report WHERE outletid = ? AND revenuedate BETWEEN ? AND ?`, [outletId, startDate, endDate], (err, sumResult) => {
-                            if (err) throw err;
+                            if (err){
+                                console.log(err)
+                                res.writeHead(200, { 'Content-Type': 'text/html' });
+                                res.end(`<!DOCTYPE html>
+                                    <html>
+                                    <body>
+                                    <script>alert("Something went wrong, please go back."); window.location.href="/admin_rev_rep";</script>
+                                    </body>
+                                    </html>`);
+                            }
                             else if (sumResult.length === 0) {
                                 console.log("Subtotal Not Found");
                             } else {
@@ -1687,7 +1945,16 @@ const server = http.createServer(function(req, res){
             if(enclosure === '') enclosure = null;
 
             db_con.query(`UPDATE animals SET class = ?, species = ?, name = ?, birthdate = ?, arrivaldate = ?, sex = ?, enclosureid = ? WHERE animalid = ?`, [animalclass, species, name, birthday, arrival, sex, enclosure, animalid], (err, result) => {
-                if (err) throw err;
+                if (err){
+                    console.log(err)
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("${err}. Please go back."); window.location.href="/mod_animal";</script>
+                        </body>
+                        </html>`);
+                }
                 else {
                     res.writeHead(200, { 'Content-Type': 'text/html' });
                     res.end(`<!DOCTYPE html>
@@ -1706,7 +1973,16 @@ const server = http.createServer(function(req, res){
             const animalid = parsedata.id_delete;
             
             db_con.query(`UPDATE animals SET deleted = 1 WHERE animalid = ?`, [animalid], (err, result) => {
-                if (err) throw err;
+                if (err){
+                    console.log(err)
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("${err}. Please go back."); window.location.href="/mod_animal";</script>
+                        </body>
+                        </html>`);
+                }
                 else {
                     res.writeHead(200, { 'Content-Type': 'text/html' });
                     res.end(`<!DOCTYPE html>
@@ -1830,12 +2106,32 @@ const server = http.createServer(function(req, res){
                     LEFT JOIN employees AS m ON e.managerid = m.employeeid AND m.deleted = 0
                     WHERE e.deleted = 0 AND o.deleted = 0
                     ORDER BY FIELD(e.position, 'manager', 'cashier', 'veterinarian', 'zookeeper');` , (err, result) => {
-            if(err) throw err;
+                        
+            if(err) {
+                console.log(err)
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.end(`<!DOCTYPE html>
+                <html>
+                <body>
+                <script>alert("An error has occured."); window.location.href="/mod_employee";</script>
+                </body>
+                </html>`);   
+            }
+  
 
             const outletIds = result.map(row => row.worksat);
 
             db_con.query(`SELECT * from outlets WHERE outletid IN (?) AND deleted = 0`, [outletIds], (err, outletResults) => {
-                if(err) throw err;
+                if(err) {
+                    console.log(err)
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                    <html>
+                    <body>
+                    <script>alert("An error has occured."); window.location.href="/mod_employee";</script>
+                    </body>
+                    </html>`);   
+                }
 
                 result.forEach(row => {
                     row.hiredate = yyyymmdd(row.hiredate)
@@ -1907,7 +2203,16 @@ const server = http.createServer(function(req, res){
                             }
                             else {
                                 db_con.query(`SELECT * FROM employees WHERE worksat = ? AND position = 'manager' AND deleted = 0`, [worksat], (err, managerresult) => {
-                                    if(err) throw err;
+                                    if(err) {
+                                        console.log(err)
+                                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                                        res.end(`<!DOCTYPE html>
+                                        <html>
+                                        <body>
+                                        <script>alert("An error has occured."); window.location.href="/mod_employee";</script>
+                                        </body>
+                                        </html>`);   
+                                    }
 
                                     db_con.query(`UPDATE employees SET managerid = ? WHERE worksat = ? AND position <> 'manager'`, [managerresult[0].employeeid, worksat], (err, result) =>{
                                         if(err) {
@@ -1928,13 +2233,8 @@ const server = http.createServer(function(req, res){
                                             </html>`);
                                         }
                                     })
-                                })
-
-
-                                
-                                
-                            }
-                            
+                                })   
+                            }     
                         });
                     }
                 });
@@ -1949,10 +2249,28 @@ const server = http.createServer(function(req, res){
                 if(mname === '') mname = null;
 
                 db_con.query(`SELECT * FROM employees WHERE worksat = ? AND position = 'manager' AND deleted = 0`, [worksat], (err, managerResult) => {
-                    if(err) throw err;
+                    if(err) {
+                        console.log(err)
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("An error has occured."); window.location.href="/mod_employee";</script>
+                        </body>
+                        </html>`);   
+                    }
                     else {
                         db_con.query(`UPDATE employees SET managerid = ? WHERE worksat = ? AND position <> 'manager'`, [managerResult[0].employeeid, worksat], (err, result) => {
-                            if(err) throw err;
+                            if(err) {
+                                console.log(err)
+                                res.writeHead(200, { 'Content-Type': 'text/html' });
+                                res.end(`<!DOCTYPE html>
+                                <html>
+                                <body>
+                                <script>alert("An error has occured."); window.location.href="/mod_employee";</script>
+                                </body>
+                                </html>`);   
+                            }
         
                             else {
                                 const manager = managerResult[0].employeeid;
@@ -1964,15 +2282,9 @@ const server = http.createServer(function(req, res){
                                     }
                                 });
                             }   
-                            
                         })
                     }
-                })
-
-
-                
-    
-                
+                })     
             }
         });
     }
@@ -2005,18 +2317,40 @@ const server = http.createServer(function(req, res){
             if(mname === '') mname = null;
 
             db_con.query(`SELECT * FROM employees WHERE managerid IS NULL AND worksat = ? AND deleted = 0`, [worksat], (err, result) => {
-                if(err) throw err;
-
+                if(err) {
+                    console.log(err)
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(`<!DOCTYPE html>
+                    <html>
+                    <body>
+                    <script>alert("An error has occured."); window.location.href="/mod_employee";</script>
+                    </body>
+                    </html>`);   
+                }
                 
+                const manager = result[0].employeeid;
 
-                const manager = result.employeeid;
                 // updating a manager
                 if(manager == empid) {
                     db_con.query(`UPDATE employees SET employee_email = ?, password = ?, position = ?, hiredate = ?, worksat = ?, name_firstname = ?, name_middlename = ?, name_lastname = ?, workschedule = ?, salary = ?, managerid = null WHERE employeeid = ?`, [email, password, position, hiredate, worksat, fname, mname, lname, schedule, salary, empid], (err, result) => {
-                        if (err) throw err;
+                        if(err) {
+                            console.log(err)
+                            res.writeHead(200, { 'Content-Type': 'text/html' });
+                            res.end(`<!DOCTYPE html>
+                            <html>
+                            <body>
+                            <script>alert("An error has occured."); window.location.href="/mod_employee";</script>
+                            </body>
+                            </html>`);   
+                        }
                         else {
-                            res.writeHead(302, {Location: '/mod_employee'});
-                            res.end('Employee edited')
+                            res.writeHead(200, { 'Content-Type': 'text/html' });
+                            res.end(`<!DOCTYPE html>
+                            <html>
+                            <body>
+                            <script>alert("Manager edited."); window.location.href="/mod_employee";</script>
+                            </body>
+                            </html>`);  
                         }
                     })
                 }
@@ -2025,19 +2359,29 @@ const server = http.createServer(function(req, res){
                 else {
                     
                     db_con.query(`UPDATE employees SET employee_email = ?, password = ?, position = ?, hiredate = ?, worksat = ?, name_firstname = ?, name_middlename = ?, name_lastname = ?, workschedule = ?, salary = ?, managerid = ? WHERE employeeid = ?`, [email, password, position, hiredate, worksat, fname, mname, lname, schedule, salary, manager, empid], (err, result) => {
-                        if (err) throw err;
+                        if(err) {
+                            console.log(err)
+                            res.writeHead(200, { 'Content-Type': 'text/html' });
+                            res.end(`<!DOCTYPE html>
+                            <html>
+                            <body>
+                            <script>alert("An error has occured."); window.location.href="/mod_employee";</script>
+                            </body>
+                            </html>`);   
+                        }
                         else {
-                            res.writeHead(302, {Location: '/mod_employee'});
-                            res.end('Employee edited')
+                            res.writeHead(200, { 'Content-Type': 'text/html' });
+                            res.end(`<!DOCTYPE html>
+                            <html>
+                            <body>
+                            <script>alert("Employee edited."); window.location.href="/mod_employee";</script>
+                            </body>
+                            </html>`);  
                         }
                     })
                 }
-                
             })
-
-            
         })
-        
     }
     else if(req.url === "/mod_employee/delete" && req.method === 'POST') {
         collectinput(req, parsedata => {
@@ -2047,13 +2391,27 @@ const server = http.createServer(function(req, res){
 
             if(position === 'manager') {
                 db_con.query(`UPDATE employees SET managerid = null WHERE worksat = ?`, [worksat], (err, manaresult) => {
-                    if(err) throw err;
+                    if(err) {
+                        console.log(err)
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("An error has occured."); window.location.href="/mod_employee";</script>
+                        </body>
+                        </html>`);   
+                    }
                     else {
                         db_con.query(`UPDATE employees SET deleted = 1 WHERE employeeid = ?`, [employeeid], (err, result) => {
                             if (err) throw err;
                             else {
-                                res.writeHead(302, {Location: '/mod_employee'});
-                                res.end('Employee deleted')
+                                res.writeHead(200, { 'Content-Type': 'text/html' });
+                                res.end(`<!DOCTYPE html>
+                                <html>
+                                <body>
+                                <script>alert("The manager was deleted."); window.location.href="/mod_employee";</script>
+                                </body>
+                                </html>`);  
                             }
                         })
                     }
@@ -2061,10 +2419,26 @@ const server = http.createServer(function(req, res){
             }
             else {
                 db_con.query(`UPDATE employees SET deleted = 1 WHERE employeeid = ?`, [employeeid], (err, result) => {
-                    if (err) throw err;
+                    if(err) {
+                        console.log(err)
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("An error has occured."); window.location.href="/mod_employee";</script>
+                        </body>
+                        </html>`);   
+                    }
                     else {
-                        res.writeHead(302, {Location: '/mod_employee'});
-                        res.end('Employee deleted')
+                        //res.writeHead(302, {Location: '/mod_employee'});
+                        //res.end('Employee deleted')
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end(`<!DOCTYPE html>
+                        <html>
+                        <body>
+                        <script>alert("The employee was deleted."); window.location.href="/mod_employee";</script>
+                        </body>
+                        </html>`);  
                     }
                 })
             }
