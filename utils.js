@@ -1,5 +1,7 @@
 const fs = require('fs');
 const ejs = require('ejs');
+const bcrypt = require("bcrypt");
+const db_con = require('./models/db');
 
 const {parse} = require('querystring')
 function displayPage(path,res){
@@ -49,11 +51,4 @@ const displayView = (viewPath, res, data) => {
     });
   };
 
-  function alerting(message) {
-    alert(message);
-  }
-
-
-
-
-module.exports = {displayPage, collectinput, getcurrentdate, yyyymmdd, displayView, alerting}
+module.exports = {displayPage, collectinput, getcurrentdate, yyyymmdd, displayView}
