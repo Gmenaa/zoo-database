@@ -2099,7 +2099,7 @@ const server = http.createServer(function(req, res){
     // ADMIN mod employee
     else if(req.url === "/mod_employee" && req.method === 'GET') {
 
-        db_con.query(`SELECT e.*, o.outletname, m.name_firstname AS manager_firstname, m.name_lastname AS manager_lastname
+        db_con.query(`SELECT e.*, o.outletname, o.outletid, m.name_firstname AS manager_firstname, m.name_lastname AS manager_lastname
                     FROM employees AS e
                     LEFT JOIN outlets AS o ON e.worksat = o.outletid
                     LEFT JOIN employees AS m ON e.managerid = m.employeeid AND m.deleted = 0
@@ -2293,15 +2293,16 @@ const server = http.createServer(function(req, res){
 
             const email = parsedata.editemail;
             const password = parsedata.editpassword;
-            const position = parsedata.editposition;
+            let position = parsedata.editposition;
             const hiredate = parsedata.edithiredate;
-            const worksat = parsedata.editworksat;  // 1, 2, 3, 4, 5, 6
+            let worksat = parsedata.editworksat;  // 1, 2, 3, 4, 5, 6
             const fname = parsedata.editfname;
             let mname = parsedata.editmname;
             const lname = parsedata.editlname;
             const schedule = parsedata.editschedule; // "MON-THU"...
             const salary = parsedata.editsalary;
 
+            console.log("Editing employee: "+ empid);
             console.log(email);
             console.log(password);
             console.log(position);
@@ -2314,6 +2315,12 @@ const server = http.createServer(function(req, res){
             console.log(salary);
 
             if(mname === '') mname = null;
+            if(Array.isArray(position)) {
+                position = position[0];
+            }
+            if(Array.isArray(worksat)) {
+                worksat = worksat[0];
+            }
 
             db_con.query(`SELECT * FROM employees WHERE managerid IS NULL AND worksat = ? AND deleted = 0`, [worksat], (err, result) => {
                 if(err) {
@@ -2328,6 +2335,7 @@ const server = http.createServer(function(req, res){
                 }
                 
                 const manager = result[0].employeeid;
+                console.log("Maanager id: " + manager);
 
                 // updating a manager
                 if(manager == empid) {

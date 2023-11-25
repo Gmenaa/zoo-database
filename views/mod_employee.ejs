@@ -112,11 +112,15 @@
                                     <div class="field input-field">
                                         <label for="works_at_edit">Works At: </label>
 
-                                        <!-- <input type="hidden" name="editworksat" value="<%= row.outletid %>"> -->
-                                        <select id="works_at_edit"  name="editworksat"  required>
-                                            <% outletResults.forEach(outlet => { %>
-                                                <option value="<%= outlet.outletid %>"><%= outlet.outletname %></option> 
-                                            <% }); %>
+                                        <input type="hidden" name="editworksat" value="<%= row.outletid %>">
+                                        <select id="works_at_edit"  name="editworksat"  <% if (row.position === 'manager') { %> disabled <% } %>  required>
+                                            <option value= "1" <%= row.outletname  === 'Safari Treasures Emporium' ? 'selected' : '' %> > Safari Treasures Emporium </option> 
+                                            <option value= "2" <%= row.outletname  === 'Trinkets and Charms' ? 'selected' : '' %> > Trinkets and Charms </option> 
+                                            <option value= "3" <%= row.outletname  === 'Creature Cuisine Corner' ? 'selected' : '' %> > Creature Cuisine Corner </option> 
+                                            <option value= "4" <%= row.outletname  === 'Lions Lollipops and Sweets' ? 'selected' : '' %> > Lions Lollipops and Sweets </option> 
+                                            <option value= "5" <%= row.outletname  === 'WildHeart Animal Clinic' ? 'selected' : '' %> > WildHeart Animal Clinic </option> 
+                                            <option value= "6" <%= row.outletname  === 'Zookeeper Department' ? 'selected' : '' %> > Zookeeper Department </option> 
+                                            
                                         </select>
                                     </div>
                         
