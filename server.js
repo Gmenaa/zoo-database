@@ -762,18 +762,18 @@ const server = http.createServer(function(req, res){
                                         <td class="outletname-col">${row.outletname}</td>
                                         <td class="outlettype-col">${row.outlettype}</td>
                                         <td class="revenuedate-col">${yyyymmdd(row.revenuedate)}</td>
-                                        <td class="revenueamount-col">$${row.revenueamount}</td>
+                                        <td class="revenueamount-col">$${(row.revenueamount).toFixed(2)}</td>
                                     </tr>`).join('') 
                                 + `</table> 
                                 <div class = "results">
                                     <div class="subtotal">
-                                        <strong> <span style="text-decoration: underline;">Revenue Subtotal</span>: $${sumResult[0].subtotal}</strong>
+                                        <strong> <span style="text-decoration: underline;">Revenue Subtotal</span>: $${(sumResult[0].subtotal).toFixed(2)}</strong>
                                     </div>
                                     <div class="most-profitable">
-                                        <strong> <span style="text-decoration: underline;">Most Profitable Date</span>: ${mostProfitableDate}:  ($${maxProfit}) </strong>
+                                        <strong> <span style="text-decoration: underline;">Most Profitable Date</span>: ${mostProfitableDate}:  ($${(maxProfit).toFixed(2)}) </strong>
                                     </div>
                                     <div class="least-profitable">
-                                        <strong> <span style="text-decoration: underline;">Least Profitable Date</span>: ${leastProfitableDate}:  ($${minProfit}) </strong>
+                                        <strong> <span style="text-decoration: underline;">Least Profitable Date</span>: ${leastProfitableDate}:  ($${(minProfit).toFixed(2)}) </strong>
                                     </div>
                                     <div class="avg-daily">
                                         <strong> <span style="text-decoration: underline;">Average Daily Revenue</span>: $${(sumResult[0].subtotal / result.length).toFixed(2)} </strong>
@@ -789,7 +789,6 @@ const server = http.createServer(function(req, res){
             });
         })
     }
-
     else if(req.url ==="/man_notif" && req.method === 'GET') {
         db_con.query(`SELECT * FROM notifications WHERE employeeid = ? AND to_notify = 1 `, [userId], (err, result) => {
             if (err) {
@@ -1046,13 +1045,13 @@ const server = http.createServer(function(req, res){
                                             <td class="">${row.diagnosis}</td>
                                             <td class="">${row.treatment}</td>
                                             <td class="">${row.notes !== null ? row.notes : ''}</td>
-                                            <td class="">$${row.cost}</td>
+                                            <td class="">$${(row.cost).toFixed(2)}</td>
                                         </tr>`).join('') 
                                     + `</table> 
                                     <div class = "results">
                                         
-                                        <div class="subtotal"><strong>Zoo Veterinary Expense:  -$${sumResult[0].subtotal}</strong></div>
-                                        <div class="subtotal"><strong>Most expensive treatment: $${maxTreatmentCost} - ${mostExpensiveTreatment}</strong></div>
+                                        <div class="subtotal"><strong> <span style="text-decoration: underline;">Zoo Veterinary Expense</span>:  -$${(sumResult[0].subtotal).toFixed(2)}</strong></div>
+                                        <div class="subtotal"><strong> <span style="text-decoration: underline;">Most expensive treatment</span>: $${(maxTreatmentCost).toFixed(2)} - ${mostExpensiveTreatment}</strong></div>
                                         
                                         </div>
                                     </div>`;
@@ -1365,7 +1364,7 @@ const server = http.createServer(function(req, res){
                             </div>
                         </header>
                         ${responseHtml}
-                        <div class="total-sum"><strong>Total Donations Pool: $${totalSum.toFixed(2)}</strong></div>
+                        <div class="total-sum"><strong> <span style="text-decoration: underline;">Total Donations Pool</span>: $${totalSum.toFixed(2)}</strong></div>
 
                         
                         <div id="pieChartContainer" style="width: 650px; height: 650px; margin: 0 auto; text-align: center;"">
@@ -1473,13 +1472,13 @@ const server = http.createServer(function(req, res){
                                             <td class="">${row.name_lastname}</td>
                                             <td class="">${row.donationpurpose}</td>
                                             <td class="">${yyyymmdd(row.donationdate)}</td>
-                                            <td class="">$${row.donationamount}</td>
+                                            <td class="">$${(row.donationamount).toFixed(2)}</td>
                                         </tr>`).join('') 
                                     + `</table> 
                                     <div class = "results">
-                                        <div class="subtotal"><strong>Total Donations:  ${result.length}</strong></div>
-                                        <div class="subtotal"><strong>Total Unique Donations:  ${sumResult[0].uniqueDonors}</strong></div>
-                                        <div class="subtotal"><strong>Donations Subtotal:  $${sumResult[0].subtotal}</strong></div>
+                                        <div class="subtotal"><strong> <span style="text-decoration: underline;">Total Donations</span>:  ${result.length}</strong></div>
+                                        <div class="subtotal"><strong> <span style="text-decoration: underline;">Total Unique Donations</span>:  ${sumResult[0].uniqueDonors}</strong></div>
+                                        <div class="subtotal"><strong> <span style="text-decoration: underline;">Donations Subtotal</span>: $${(sumResult[0].subtotal).toFixed(2)}</strong></div>
                                         
                                         </div>
                                     </div>`;
@@ -1642,13 +1641,13 @@ const server = http.createServer(function(req, res){
                                             <td class="">${row.diagnosis}</td>
                                             <td class="">${row.treatment}</td>
                                             <td class="">${row.notes !== null ? row.notes : ''}</td>
-                                            <td class="">$${row.cost}</td>
+                                            <td class="">$${(row.cost).toFixed(2)}</td>
                                         </tr>`).join('') 
                                     + `</table> 
                                     <div class = "results">
                                         
-                                        <div class="subtotal"><strong>Zoo Veterinary Expense:  -$${sumResult[0].subtotal}</strong></div>
-                                        <div class="subtotal"><strong>Most expensive treatment: $${maxTreatmentCost} - ${mostExpensiveTreatment}</strong></div>
+                                        <div class="subtotal"><strong> <span style="text-decoration: underline;">Zoo Veterinary Expense</span>:  -$${(sumResult[0].subtotal).toFixed(2)}</strong></div>
+                                        <div class="subtotal"><strong> <span style="text-decoration: underline;">Most Expensive treatment</span>: $${(maxTreatmentCost).toFixed(2)} - ${mostExpensiveTreatment}</strong></div>
                                         
                                         </div>
                                     </div>`;
@@ -1791,18 +1790,18 @@ const server = http.createServer(function(req, res){
                                             <td class="outletname-col">${row.outletname}</td>
                                             <td class="outlettype-col">${row.outlettype}</td>
                                             <td class="revenuedate-col">${yyyymmdd(row.revenuedate)}</td>
-                                            <td class="revenueamount-col">$${row.revenueamount}</td>
+                                            <td class="revenueamount-col">$${(row.revenueamount).toFixed(2)}</td>
                                         </tr>`).join('') 
                                     + `</table> 
                                     <div class = "results">
                                         <div class="subtotal">
-                                            <strong> <span style="text-decoration: underline;">Revenue Subtotal</span>: $${sumResult[0].subtotal}</strong>
+                                            <strong> <span style="text-decoration: underline;">Revenue Subtotal</span>: $${(sumResult[0].subtotal).toFixed(2)}</strong>
                                         </div>
                                         <div class="most-profitable">
-                                            <strong> <span style="text-decoration: underline;">Most Profitable Date</span>: ${mostProfitableDate}:  ($${maxProfit}) </strong>
+                                            <strong> <span style="text-decoration: underline;">Most Profitable Date</span>: ${mostProfitableDate}:  ($${(maxProfit).toFixed(2)}) </strong>
                                         </div>
                                         <div class="least-profitable">
-                                            <strong> <span style="text-decoration: underline;">Least Profitable Date</span>: ${leastProfitableDate}:  ($${minProfit}) </strong>
+                                            <strong> <span style="text-decoration: underline;">Least Profitable Date</span>: ${leastProfitableDate}:  ($${(minProfit).toFixed(2)}) </strong>
                                         </div>
                                         <div class="avg-daily">
                                             <strong> <span style="text-decoration: underline;">Average Daily Revenue</span>: $${(sumResult[0].subtotal / result.length).toFixed(2)} </strong>
@@ -2403,7 +2402,17 @@ const server = http.createServer(function(req, res){
                     }
                     else {
                         db_con.query(`UPDATE employees SET deleted = 1 WHERE employeeid = ?`, [employeeid], (err, result) => {
-                            if (err) throw err;
+                            //! one of six unhandled errors
+                            if (err) {
+                                console.log(err)
+                                res.writeHead(200, { 'Content-Type': 'text/html' });
+                                res.end(`<!DOCTYPE html>
+                                <html>
+                                <body>
+                                <script>alert("An error has occured."); window.location.href="/mod_employee";</script>
+                                </body>
+                                </html>`); 
+                            }
                             else {
                                 res.writeHead(200, { 'Content-Type': 'text/html' });
                                 res.end(`<!DOCTYPE html>
